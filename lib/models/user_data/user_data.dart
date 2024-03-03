@@ -1,0 +1,42 @@
+import 'package:json_annotation/json_annotation.dart';
+
+part 'user_data.g.dart';
+
+@JsonSerializable()
+class UserDataModel {
+  String? accessToken,
+      avatar,
+      deviceType,
+      email,
+      firstName,
+      lastName,
+      phone,
+      position,
+      refreshToken,
+      tenantName,
+      type;
+  int? active, userId, tenantId, countryCode, isAdmin, storeId, isPaid;
+
+  UserDataModel(
+      {this.accessToken,
+      this.firstName,
+      this.countryCode,
+      this.active,
+      this.avatar,
+      this.email,
+      this.isPaid,
+      this.lastName,
+      this.phone,
+      this.position,
+      this.type,
+      this.userId,
+      this.deviceType,
+      this.isAdmin,
+      this.storeId,
+      this.refreshToken,
+      this.tenantId,
+      this.tenantName});
+  factory UserDataModel.fromJson(Map<String, dynamic> json) =>
+      _$UserDataModelFromJson(json);
+  Map<String, dynamic> toJson() => _$UserDataModelToJson(this);
+}
