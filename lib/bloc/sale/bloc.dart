@@ -37,8 +37,10 @@ class SaleBloc extends Bloc<SaleEvent, SaleState> {
         } else {
           body = {"storeId": Utils.getStoreId(), "products": otpList.toList()};
         }
+        print(body);
         Response response =
             await apiService.postRequest('/v1/product/sale', body: body);
+        print(response);
         AuthenticationResponseModel dataResponse =
             AuthenticationResponseModel.fromJson(response.data);
         if (response.statusCode == 200 && dataResponse.status == "success") {

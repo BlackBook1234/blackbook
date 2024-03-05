@@ -38,7 +38,18 @@ class _BottomSheetsWidgetState extends State<SellProductBottomSheetsWidget> {
 
   void saleProduct() {
     if (cashType != '') {
-      _bloc.add(CreateSaleEvent(widget.data.sizes!, cashType));
+      List<ProductInDetialModel> otpData = [];
+      for (ProductInDetialModel data in widget.data.sizes!) {
+        if (data.ware_stock > 0) {
+          otpData.add(data);
+        }
+      }
+      if (otpData.isEmpty) {
+        ErrorMessage.attentionMessage(context, "Бараа оруулна уу");
+      } else {
+        print(otpData.length);
+        _bloc.add(CreateSaleEvent(otpData, cashType));
+      }
     }
   }
 

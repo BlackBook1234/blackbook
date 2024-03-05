@@ -295,6 +295,9 @@ class _MainSellProductScreenState extends State<MainSellProductScreen> {
                                 shape: const Border(),
                                 trailing: InkWell(
                                     onTap: () {
+                                      for(ProductInDetialModel data in list[index].sizes!){
+                                        data.ware_stock = 0;
+                                      }
                                       showModalBottomSheet(
                                           context: context,
                                           isScrollControlled: true,
