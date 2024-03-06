@@ -28,7 +28,10 @@ class ApiTokenService {
             receiveTimeout: const Duration(milliseconds: 9000),
             sendTimeout: const Duration(milliseconds: 9000),
             headers: {"Authorization": "Bearer $token"}))
-          ..interceptors.add(CustomInterceptors());
+          ..interceptors.add(
+            CustomInterceptors(),
+          );
+
   Future<Response> postRequest(String path, {dynamic body}) async {
     return dio.post(path, data: body);
   }
@@ -45,7 +48,8 @@ class ApiTokenService {
 class ApiFormService {
   final Dio dio;
   ApiFormService(String token)
-      : dio = Dio(BaseOptions(
+      : dio = Dio(
+          BaseOptions(
             baseUrl: "https://khardevter.horshoo.com",
             receiveTimeout: const Duration(milliseconds: 90000),
             sendTimeout: const Duration(milliseconds: 90000),
@@ -55,12 +59,20 @@ class ApiFormService {
               "Accept": "*/*",
               "Content-type": "multipart/form-data",
               "Authorization": "Bearer $token"
-            }));
+            },
+          ),
+        );
+
   Future<Response> postRequest(String path, {dynamic body}) async {
-    return dio.post(path, data: body);
+    return dio.post(
+      path,
+      data: body,
+    );
   }
 
   Future<Response> getRequest(String path) async {
-    return dio.get(path);
+    return dio.get(
+      path,
+    );
   }
 }

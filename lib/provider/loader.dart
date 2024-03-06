@@ -8,16 +8,19 @@ class LoaderProvider extends ChangeNotifier {
     if (!_isLoading) {
       _isLoading = true;
       showDialog(
-          barrierColor: Colors.transparent,
-          context: contexts,
-          builder: (contexts) => Container(
-              color: Colors.transparent,
-              child: const Center(
-                  child: SizedBox(
-                      height: 30,
-                      width: 30,
-                      child:
-                          CircularProgressIndicator(color: kPrimaryColor)))));
+        barrierColor: Colors.transparent,
+        context: contexts,
+        builder: (contexts) => Container(
+          color: Colors.transparent,
+          child: const Center(
+            child: SizedBox(
+              height: 30,
+              width: 30,
+              child: CircularProgressIndicator(color: kPrimaryColor),
+            ),
+          ),
+        ),
+      );
     }
   }
 

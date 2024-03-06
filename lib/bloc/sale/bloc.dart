@@ -92,12 +92,19 @@ class SaleBloc extends Bloc<SaleEvent, SaleState> {
         } else {
           emit(GetSaleFailure(""));
         }
-      } catch (ex) {
-        if (ex.toString() ==
-            "DioException [bad response]: The request returned an invalid status code of 403.") {
+
+        if(response.statusCode == 403){
           final bloc = RefreshBloc();
           bloc.add(const RefreshTokenEvent());
           emit(GetSaleFailure("Token"));
+        }
+
+      } catch (ex) {
+        if (ex.toString() ==
+            "DioException [bad response]: The request returned an invalid status code of 403.") {
+          // final bloc = RefreshBloc();
+          // bloc.add(const RefreshTokenEvent());
+          // emit(GetSaleFailure("Token"));
         } else {
           print(ex);
           emit(GetSaleFailure("Серверийн алдаа"));

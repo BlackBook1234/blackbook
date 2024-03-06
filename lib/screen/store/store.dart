@@ -33,76 +33,90 @@ class _DivisionScreenState extends State<DivisionScreen> {
   @override
   Widget build(BuildContext context) {
     return MultiBlocListener(
-        listeners: [
-          BlocListener<StoreBloc, StoreState>(
-              bloc: _bloc,
-              listener: (context, state) {
-                if (state is GetStoreLoading) {
-                  Utils.startLoader(context);
-                }
-                if (state is GetStoreFailure) {
-                  if (state.message == "Token") {
-                    _bloc.add(const GetStoreEvent());
-                  } else {
-                    Utils.cancelLoader(context);
-                    ErrorMessage.attentionMessage(context, state.message);
-                  }
-                }
-                if (state is GetStoreSuccess) {
-                  Utils.cancelLoader(context);
-                  setState(() {
-                    lst = state.list;
-                  });
-                }
-              })
-        ],
-        child: Scaffold(
-            appBar: AppBar(
-                leading: IconButton(
-                    onPressed: () {
-                      Navigator.pop(context);
-                    },
-                    icon: const Icon(Icons.keyboard_arrow_left, size: 30)),
-                foregroundColor: kWhite,
-                title: Image.asset('assets/images/logoSecond.png', width: 160),
-                backgroundColor: kPrimarySecondColor),
-            body: Column(children: [
-              const SizedBox(height: 5),
-              Expanded(
-                  child: ListView.builder(
-                      itemCount: lst.length,
-                      itemBuilder: (context, index) {
-                        return Padding(
-                            padding: const EdgeInsets.symmetric(
-                                vertical: 6, horizontal: 20),
-                            child: Container(
-                                decoration: BoxDecoration(
-                                    color: kWhite,
-                                    boxShadow: [
-                                      BoxShadow(
-                                          color: Colors.grey.shade300,
-                                          blurRadius: 3,
-                                          offset: const Offset(2, 2))
-                                    ],
-                                    borderRadius: BorderRadius.circular(20)),
-                                child: ListTile(
-                                    leading: SvgPicture.asset(
-                                        "assets/icons/store.svg",
-                                        width: 40,
-                                        colorFilter: const ColorFilter.mode(
-                                            kPrimaryColor, BlendMode.srcIn)),
-                                    title: Text(lst[index].name!,
-                                        style: const TextStyle(
-                                            fontSize: 13.0,
-                                            fontWeight: FontWeight.bold)),
-                                    onTap: () {
-                                      Navigator.of(context).push(
-                                          CupertinoPageRoute(
-                                              builder: (context) =>
-                                                  StoreItemScreen(
-                                                      id: lst[index].id!)));
-                                    })));
-                      }))
-            ])));
+      listeners: [
+        BlocListener<StoreBloc, StoreState>(
+          bloc: _bloc,
+          listener: (context, state) {
+            if (state is GetStoreLoading) {
+              Utils.startLoader(context);
+            }
+            if (state is GetStoreFailure) {
+              if (state.message == "Token") {
+                _bloc.add(const GetStoreEvent());
+              } else {
+                Utils.cancelLoader(context);
+                ErrorMessage.attentionMessage(context, state.message);
+              }
+            }
+            if (state is GetStoreSuccess) {
+              Utils.cancelLoader(context);
+              setState(() {
+                lst = state.list;
+              });
+            }
+          },
+        )
+      ],
+      child: Scaffold(
+        appBar: AppBar(
+            leading: IconButton(
+                onPressed: () {
+                  Navigator.pop(context);
+                },
+                icon: const Icon(Icons.keyboard_arrow_left, size: 30)),
+            foregroundColor: kWhite,
+            title: Image.asset('assets/images/logoSecond.png', width: 160),
+            backgroundColor: kPrimarySecondColor),
+        body: Column(
+          children: [
+            const SizedBox(height: 5),
+            Expanded(
+              child: ListView.builder(
+                itemCount: lst.length,
+                itemBuilder: (context, index) {
+                  return Padding(
+                    padding:
+                        const EdgeInsets.symmetric(vertical: 6, horizontal: 20),
+                    child: Container(
+                      decoration: BoxDecoration(
+                        color: kWhite,
+                        boxShadow: [
+                          BoxShadow(
+                              color: Colors.grey.shade300,
+                              blurRadius: 3,
+                              offset: const Offset(2, 2))
+                        ],
+                        borderRadius: BorderRadius.circular(20),
+                      ),
+                      child: ListTile(
+                        leading: SvgPicture.asset(
+                          "assets/icons/store.svg",
+                          width: 40,
+                          colorFilter: const ColorFilter.mode(
+                              kPrimaryColor, BlendMode.srcIn),
+                        ),
+                        title: Text(
+                          lst[index].name!,
+                          style: const TextStyle(
+                              fontSize: 13.0, fontWeight: FontWeight.bold),
+                        ),
+                        onTap: () {
+                          Navigator.of(context).push(
+                            CupertinoPageRoute(
+                              builder: (context) =>
+                                  StoreItemScreen(id: lst[index].id!),
+                            ),
+                          );
+                        },
+                      ),
+                    ),
+                  );
+                },
+              ),
+            )
+          ],
+        ),
+      ),
+    );
   }
 }
