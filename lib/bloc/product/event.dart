@@ -34,8 +34,12 @@ class GetProductEvent extends ProductEvent {
 
 //дэлгүүрийн барааны мэдээлэл авах
 class GetStoreItemEvent extends ProductEvent {
-  const GetStoreItemEvent(this.id);
+  const GetStoreItemEvent(
+      this.id, this.chosenValue, this.page, this.searchAgian, this.searchValue);
   final int id;
+  final int page;
+  final bool searchAgian;
+  final String chosenValue, searchValue;
   @override
   List<Object> get props => [id];
 }

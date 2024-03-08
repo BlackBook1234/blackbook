@@ -14,33 +14,26 @@ class CategoryBloc extends Bloc<CategoryEvent, CategoryState> {
     on<CreateCategoryEvent>((event, emit) async {
       emit(CategoryLoading());
       try {
-        String accessToken = Utils.getToken();
-        print(accessToken);
-        final apiService = ApiTokenService(accessToken);
+        final apiService = ApiTokenService(Utils.getToken());
         var body = {"name": event.name, "parent": event.parent};
         print(body);
         Response response =
             await apiService.postRequest('/v1/category/create', body: body);
         print("this reponse  = ${response.data}");
         AuthenticationResponseModel dataResponse =
-            AuthenticationResponseModel.fromJson(
-                response.data); //TODO ene hesegt oor responeod huleej avna
+            AuthenticationResponseModel.fromJson(response.data);
         if (response.statusCode == 200 && dataResponse.status == "success") {
           emit(CategorySuccess());
         } else if (dataResponse.status == "error" &&
-            dataResponse.message.show) {
-          emit(CategoryFailure(dataResponse.message.text!));
+            dataResponse.message.reason == "auth_token_error") {
+          final bloc = RefreshBloc();
+          bloc.add(const RefreshTokenEvent());
+          emit(CategoryFailure("Token"));
         } else {
           emit(CategoryFailure(""));
         }
       } catch (ex) {
-        print(ex);
-        if (ex.toString() ==
-            "DioException [bad response]: The request returned an invalid status code of 403.") {
-          final bloc = RefreshBloc();
-          bloc.add(const RefreshTokenEvent());
-        }
-        emit(CategoryFailure(ex.toString()));
+        emit(CategoryFailure("Серверийн алдаа"));
       }
     });
     on<GetCategoryEvent>((event, emit) async {
@@ -57,18 +50,18 @@ class CategoryBloc extends Bloc<CategoryEvent, CategoryState> {
         if (response.statusCode == 200 && dataResponse.status == "success") {
           emit(GetCategorySuccess(dataResponse.data!));
         } else if (dataResponse.status == "error" &&
+            dataResponse.message.reason == "auth_token_error") {
+          final bloc = RefreshBloc();
+          bloc.add(const RefreshTokenEvent());
+          emit(GetCategoryFailure("Token"));
+        } else if (dataResponse.status == "error" &&
             dataResponse.message.show) {
-          emit(GetCategoryFailure(dataResponse.message.text!));
+          emit(GetCategoryFailure(dataResponse.message.reason!));
         } else {
-          emit(GetCategoryFailure(""));
+          emit(GetCategoryFailure("Серверийн алдаа"));
         }
       } catch (ex) {
         print(ex);
-        if (ex.toString() ==
-            "DioException [bad response]: The request returned an invalid status code of 403.") {
-          final bloc = RefreshBloc();
-          bloc.add(const RefreshTokenEvent());
-        }
         emit(GetCategoryFailure("Серверийн алдаа"));
       }
     });

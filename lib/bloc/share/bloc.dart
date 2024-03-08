@@ -52,21 +52,20 @@ class ShareBloc extends Bloc<ShareEvent, ShareState> {
                 response.data); //TODO ene hesegt oor reponeod huleej avna
         if (response.statusCode == 200 && dataResponse.status == "success") {
           emit(ShareSuccess());
-        } else if (dataResponse.status == "error") {
-          emit(ShareFailure(dataResponse.message.text!));
-        } else {
-          emit(ShareFailure(""));
-        }
-      } catch (ex) {
-        if (ex.toString() ==
-            "DioException [bad response]: The request returned an invalid status code of 403.") {
+        } else if (dataResponse.status == "error" &&
+            dataResponse.message.reason == "auth_token_error") {
           final bloc = RefreshBloc();
           bloc.add(const RefreshTokenEvent());
           emit(ShareFailure("Token"));
+        } else if (dataResponse.status == "error" &&
+            dataResponse.message.show) {
+          emit(ShareFailure(dataResponse.message.reason!));
         } else {
-          print(ex);
           emit(ShareFailure("Серверийн алдаа"));
         }
+      } catch (ex) {
+        print(ex);
+        emit(ShareFailure("Серверийн алдаа"));
       }
     });
     on<ShareHistoryEvent>((event, emit) async {
@@ -107,22 +106,20 @@ class ShareBloc extends Bloc<ShareEvent, ShareState> {
           if (dataResponse.data!.length < 40) {
             hasMoreOrder = false;
           }
-          emit(ShareHistorySuccess(
-              dataResponse.data!, hasMoreOrder));
-        } else if (dataResponse.status == "error") {
-          emit(ShareHistoryFailure(dataResponse.message.text!));
-        } else {
-          emit(ShareHistoryFailure(""));
-        }
-      } catch (ex) {
-        if (ex.toString() ==
-            "DioException [bad response]: The request returned an invalid status code of 403.") {
+          emit(ShareHistorySuccess(dataResponse.data!, hasMoreOrder));
+        } else if (dataResponse.status == "error" &&
+            dataResponse.message.reason == "auth_token_error") {
           final bloc = RefreshBloc();
           bloc.add(const RefreshTokenEvent());
           emit(ShareHistoryFailure("Token"));
+        } else if (dataResponse.status == "error" &&
+            dataResponse.message.show) {
+          emit(ShareHistoryFailure(dataResponse.message.reason!));
         } else {
           emit(ShareHistoryFailure("Серверийн алдаа"));
         }
+      } catch (ex) {
+        emit(ShareHistoryFailure("Серверийн алдаа"));
       }
     });
     on<ShareProductDataEvent>((event, emit) async {
@@ -159,20 +156,19 @@ class ShareBloc extends Bloc<ShareEvent, ShareState> {
             hasMoreOrder = false;
           }
           emit(ShareProductDataSuccess(dataResponse.data!, hasMoreOrder));
-        } else if (dataResponse.status == "error") {
-          emit(ShareProductDataFailure(dataResponse.message.text!));
-        } else {
-          emit(ShareProductDataFailure(""));
-        }
-      } catch (ex) {
-        if (ex.toString() ==
-            "DioException [bad response]: The request returned an invalid status code of 403.") {
+        } else if (dataResponse.status == "error" &&
+            dataResponse.message.reason == "auth_token_error") {
           final bloc = RefreshBloc();
           bloc.add(const RefreshTokenEvent());
           emit(ShareProductDataFailure("Token"));
+        } else if (dataResponse.status == "error" &&
+            dataResponse.message.show) {
+          emit(ShareProductDataFailure(dataResponse.message.reason!));
         } else {
           emit(ShareProductDataFailure("Серверийн алдаа"));
         }
+      } catch (ex) {
+        emit(ShareProductDataFailure("Серверийн алдаа"));
       }
     });
   }

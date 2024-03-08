@@ -22,21 +22,24 @@ class BannerBloc extends Bloc<BannerEvent, BannerState> {
         if (response.statusCode == 200 && dataResponse.status == "success") {
           emit(BannerSuccess(dataResponse.data!));
         } else if (dataResponse.status == "error" &&
+            dataResponse.message.reason == "auth_token_error") {
+          final bloc = RefreshBloc();
+          bloc.add(const RefreshTokenEvent());
+          emit(BannerFailure("Token"));
+        } else if (dataResponse.status == "error" &&
             dataResponse.message.show) {
           emit(BannerFailure(dataResponse.message.text!));
         } else {
-          emit(BannerFailure(""));
+          emit(BannerFailure("Серверийн алдаа"));
         }
       } catch (ex) {
         print(ex);
-        if (ex.toString() ==
-            "DioException [bad response]: The request returned an invalid status code of 403.") {
-          final bloc = RefreshBloc();
-          bloc.add(const RefreshTokenEvent());
-        } else {
-          emit(BannerFailure(ex.toString()));
-        }
+        emit(BannerFailure("Серверийн алдаа"));
       }
     });
   }
 }
+//  else if (dataResponse.status == "error" &&
+//             dataResponse.message.reason =="auth_token_error") {
+//           emit(BannerFailure("Token"));
+//         }

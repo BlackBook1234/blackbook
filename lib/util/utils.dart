@@ -49,4 +49,12 @@ class Utils {
             .storeId ??
         0;
   }
+
+  static int getIpaid() {
+    return Provider.of<CommonProvider>(GlobalKeys.navigatorKey.currentContext!,
+                listen: false)
+            .userInfo!
+            .isPaid ??
+        0;
+  }
 }

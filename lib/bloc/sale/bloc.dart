@@ -45,29 +45,26 @@ class SaleBloc extends Bloc<SaleEvent, SaleState> {
             AuthenticationResponseModel.fromJson(response.data);
         if (response.statusCode == 200 && dataResponse.status == "success") {
           emit(SaleSuccess());
-        } else if (dataResponse.status == "error") {
-          emit(SaleFailure(dataResponse.message.text!));
-        } else {
-          emit(SaleFailure(""));
-        }
-      } catch (ex) {
-        if (ex.toString() ==
-            "DioException [bad response]: The request returned an invalid status code of 403.") {
+        } else if (dataResponse.status == "error" &&
+            dataResponse.message.reason == "auth_token_error") {
           final bloc = RefreshBloc();
           bloc.add(const RefreshTokenEvent());
           emit(SaleFailure("Token"));
+        } else if (dataResponse.status == "error" &&
+            dataResponse.message.show) {
+          emit(SaleFailure(dataResponse.message.reason!));
         } else {
-          print(ex);
           emit(SaleFailure("Серверийн алдаа"));
         }
+      } catch (ex) {
+        print(ex);
+        emit(SaleFailure("Серверийн алдаа"));
       }
     });
     on<GetSaleEvent>((event, emit) async {
       emit(GetSaleLoading());
       try {
-        String accessToken = Utils.getToken();
-        final apiService = ApiTokenService(accessToken);
-        print(accessToken);
+        final apiService = ApiTokenService(Utils.getToken());
         String path = "";
         if (event.searchAgian) {
           path =
@@ -87,28 +84,20 @@ class SaleBloc extends Bloc<SaleEvent, SaleState> {
           }
           emit(GetSaleSuccess(dataResponse.data!.list!,
               dataResponse.data!.total!, hasMoreOrder));
-        } else if (dataResponse.status == "error") {
-          emit(GetSaleFailure(dataResponse.message.text!));
-        } else {
-          emit(GetSaleFailure(""));
-        }
-
-        if(response.statusCode == 403){
+        } else if (dataResponse.status == "error" &&
+            dataResponse.message.reason == "auth_token_error") {
           final bloc = RefreshBloc();
           bloc.add(const RefreshTokenEvent());
           emit(GetSaleFailure("Token"));
-        }
-
-      } catch (ex) {
-        if (ex.toString() ==
-            "DioException [bad response]: The request returned an invalid status code of 403.") {
-          // final bloc = RefreshBloc();
-          // bloc.add(const RefreshTokenEvent());
-          // emit(GetSaleFailure("Token"));
+        } else if (dataResponse.status == "error" &&
+            dataResponse.message.show) {
+          emit(GetSaleFailure(dataResponse.message.reason!));
         } else {
-          print(ex);
           emit(GetSaleFailure("Серверийн алдаа"));
         }
+      } catch (ex) {
+        print(ex);
+        emit(GetSaleFailure("Серверийн алдаа"));
       }
     });
     on<GetMainSaleEvent>((event, emit) async {
@@ -151,21 +140,20 @@ class SaleBloc extends Bloc<SaleEvent, SaleState> {
             hasMoreOrder = false;
           }
           emit(GetMainSaleSuccess(dataResponse.data!, hasMoreOrder));
-        } else if (dataResponse.status == "error") {
-          emit(GetMainSaleFailure(dataResponse.message.text!));
-        } else {
-          emit(GetMainSaleFailure(""));
-        }
-      } catch (ex) {
-        if (ex.toString() ==
-            "DioException [bad response]: The request returned an invalid status code of 403.") {
+        } else if (dataResponse.status == "error" &&
+            dataResponse.message.reason == "auth_token_error") {
           final bloc = RefreshBloc();
           bloc.add(const RefreshTokenEvent());
           emit(GetMainSaleFailure("Token"));
+        } else if (dataResponse.status == "error" &&
+            dataResponse.message.show) {
+          emit(GetMainSaleFailure(dataResponse.message.reason!));
         } else {
-          print(ex);
           emit(GetMainSaleFailure("Серверийн алдаа"));
         }
+      } catch (ex) {
+        print(ex);
+        emit(GetMainSaleFailure("Серверийн алдаа"));
       }
     });
     on<SaleProductBack>((event, emit) async {
@@ -182,21 +170,20 @@ class SaleBloc extends Bloc<SaleEvent, SaleState> {
             AuthenticationResponseModel.fromJson(response.data);
         if (response.statusCode == 200 && dataResponse.status == "success") {
           emit(SaleProductBackSuccess());
-        } else if (dataResponse.status == "error") {
-          emit(SaleProductBackFailure(dataResponse.message.text!));
-        } else {
-          emit(SaleProductBackFailure(""));
-        }
-      } catch (ex) {
-        if (ex.toString() ==
-            "DioException [bad response]: The request returned an invalid status code of 403.") {
+        } else if (dataResponse.status == "error" &&
+            dataResponse.message.reason == "auth_token_error") {
           final bloc = RefreshBloc();
           bloc.add(const RefreshTokenEvent());
           emit(SaleProductBackFailure("Token"));
+        } else if (dataResponse.status == "error" &&
+            dataResponse.message.show) {
+          emit(SaleProductBackFailure(dataResponse.message.reason!));
         } else {
-          print(ex);
           emit(SaleProductBackFailure("Серверийн алдаа"));
         }
+      } catch (ex) {
+        print(ex);
+        emit(SaleProductBackFailure("Серверийн алдаа"));
       }
     });
   }

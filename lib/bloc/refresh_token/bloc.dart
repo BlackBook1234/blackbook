@@ -43,7 +43,7 @@ class RefreshBloc extends Bloc<RefreshEvent, RefreshTokenState> {
             await apiService.postRequest('/v1/auth/refresh', body: body);
         UserDataResponseModel dataResponse =
             UserDataResponseModel.fromJson(response.data);
-        print("reponse = ${response}");
+        print("refresh reponse = ${response}");
         if (response.statusCode == 200 && dataResponse.status == "success") {
           Utils.getCommonProvider().setUserInfo(dataResponse.data!);
           final prefs = await SharedPreferences.getInstance();
@@ -51,7 +51,7 @@ class RefreshBloc extends Bloc<RefreshEvent, RefreshTokenState> {
           prefs.setString("userInfo", jsonEncode(dataResponse.data));
           emit(RefreshSuccess());
         } else if (dataResponse.status == "error") {
-          emit(RefreshFailure(dataResponse.message.text!));
+          emit(RefreshFailure(dataResponse.message.reason!));
         } else {
           emit(RefreshFailure(""));
         }

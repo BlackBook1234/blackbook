@@ -70,7 +70,8 @@ class GetStoreItemFailure extends ProductState {
 
 class GetStoreItemSuccess extends ProductState {
   final List<ProductDetialModel> list;
-  GetStoreItemSuccess(this.list);
+  final bool hasMoreOrder;
+  GetStoreItemSuccess(this.list, this.hasMoreOrder);
   @override
   List<Object?> get props => [list];
 }

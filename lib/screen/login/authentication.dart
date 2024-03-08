@@ -11,21 +11,19 @@ import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
-
 import 'packages.dart';
 
-// ignore: must_be_immutable
 class AuthenticationScreen extends StatefulWidget {
-  AuthenticationScreen(
+  const AuthenticationScreen(
       {super.key,
       required this.deviceToken,
       required this.deviceType,
       required this.phoneNumber});
   @override
   State<AuthenticationScreen> createState() => _LoginScreenState();
-  String deviceType;
-  String deviceToken;
-  String phoneNumber;
+  final String deviceType;
+  final String deviceToken;
+  final String phoneNumber;
 }
 
 class _LoginScreenState extends State<AuthenticationScreen> {

@@ -22,21 +22,20 @@ class RemoveBloc extends Bloc<RemoveEvent, RemoveState> {
             AuthenticationResponseModel.fromJson(response.data);
         if (response.statusCode == 200 && dataResponse.status == "success") {
           emit(RemoveSuccess());
-        } else if (dataResponse.status == "error") {
-          emit(RemoveFailure(dataResponse.message.text!));
-        } else {
-          emit(RemoveFailure(""));
-        }
-      } catch (ex) {
-        if (ex.toString() ==
-            "DioException [bad response]: The request returned an invalid status code of 403.") {
+        } else if (dataResponse.status == "error" &&
+            dataResponse.message.reason == "auth_token_error") {
           final bloc = RefreshBloc();
           bloc.add(const RefreshTokenEvent());
           emit(RemoveFailure("Token"));
+        } else if (dataResponse.status == "error" &&
+            dataResponse.message.show) {
+          emit(RemoveFailure(dataResponse.message.reason!));
         } else {
-          print(ex);
           emit(RemoveFailure("Серверийн алдаа"));
         }
+      } catch (ex) {
+        print(ex);
+        emit(RemoveFailure("Серверийн алдаа"));
       }
     });
   }

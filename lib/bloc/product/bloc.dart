@@ -14,9 +14,7 @@ class ProductBloc extends Bloc<ProductEvent, ProductState> {
     on<CreateProductEvent>((event, emit) async {
       emit(ProductLoading());
       try {
-        String accessToken = Utils.getToken();
-        final apiService = ApiTokenService(accessToken);
-        print(accessToken);
+        final apiService = ApiTokenService(Utils.getToken());
         var body = {
           "name": event.name,
           "code": event.code,
@@ -31,21 +29,22 @@ class ProductBloc extends Bloc<ProductEvent, ProductState> {
             AuthenticationResponseModel.fromJson(response.data);
         if (response.statusCode == 200 && dataResponse.status == "success") {
           emit(ProductSuccess());
-        } else if (dataResponse.status == "error") {
-          emit(ProductFailure(dataResponse.message.text!));
-        } else {
-          emit(ProductFailure(""));
-        }
-      } catch (ex) {
-        if (ex.toString() ==
-            "DioException [bad response]: The request returned an invalid status code of 403.") {
+        } else if (dataResponse.status == "error" &&
+            dataResponse.message.reason == "auth_token_error") {
           final bloc = RefreshBloc();
           bloc.add(const RefreshTokenEvent());
           emit(ProductFailure("Token"));
+        } else if (dataResponse.status == "error" &&
+            dataResponse.message.show) {
+          emit(ProductFailure(dataResponse.message.reason!));
+        } else {
+          emit(ProductFailure("Серверийн алдаа"));
         }
+      } catch (ex) {
         emit(ProductFailure("Серверийн алдаа"));
       }
     });
+
     on<GetProductEvent>((event, emit) async {
       emit(GetProductLoading());
       try {
@@ -75,7 +74,7 @@ class ProductBloc extends Bloc<ProductEvent, ProductState> {
                 '/v1/product/my/list?limit=40&store_id=${Utils.getStoreId()}&page=${event.page}&sort=desc';
           }
         }
-        print(path);
+        print(" search value = $path");
         Response response = await apiService.getRequest(path);
         ProductResponseModel dataResponse =
             ProductResponseModel.fromJson(response.data);
@@ -86,21 +85,20 @@ class ProductBloc extends Bloc<ProductEvent, ProductState> {
           }
           emit(GetProductSuccess(
               dataResponse.data!, dataResponse.stores!, hasMoreOrder));
-        } else if (dataResponse.message.show) {
-          emit(GetProductFailure(dataResponse.message.text!));
-        } else {
-          emit(GetProductFailure(""));
-        }
-      } catch (ex) {
-        if (ex.toString() ==
-            "DioException [bad response]: The request returned an invalid status code of 403.") {
+        } else if (dataResponse.status == "error" &&
+            dataResponse.message.reason == "auth_token_error") {
           final bloc = RefreshBloc();
           bloc.add(const RefreshTokenEvent());
           emit(GetProductFailure("Token"));
+        } else if (dataResponse.status == "error" &&
+            dataResponse.message.show) {
+          emit(GetProductFailure(dataResponse.message.reason!));
         } else {
-          print(ex);
           emit(GetProductFailure("Серверийн алдаа"));
         }
+      } catch (ex) {
+        print(ex);
+        emit(GetProductFailure("Серверийн алдаа"));
       }
     });
     on<GetStoreItemEvent>((event, emit) async {
@@ -109,28 +107,37 @@ class ProductBloc extends Bloc<ProductEvent, ProductState> {
         String accessToken = Utils.getToken();
         print(" this is product token = $accessToken");
         final apiService = ApiTokenService(accessToken);
-        Response response = await apiService.getRequest(
-            '/v1/product/store/list?page=1&limit=40&store_id=${event.id}&sort=desc');
+        String path = "";
+        if (event.searchAgian) {
+          path =
+              '/v1/product/store/list?page=${event.page}&limit=40&store_id=${event.id}&sort=desc&parent_category=${event.chosenValue}&q=${event.searchValue}';
+        } else {
+          path =
+              '/v1/product/store/list?page=${event.page}&limit=40&store_id=${event.id}&sort=desc';
+        }
+        Response response = await apiService.getRequest(path);
         print(response);
         ProductResponseModel dataResponse =
             ProductResponseModel.fromJson(response.data);
         if (response.statusCode == 200 && dataResponse.status == "success") {
-          emit(GetStoreItemSuccess(dataResponse.data!));
+           bool hasMoreOrder = true;
+          if (dataResponse.data!.length < 40) {
+            hasMoreOrder = false;
+          }
+          emit(GetStoreItemSuccess(dataResponse.data!,hasMoreOrder));
         } else if (dataResponse.status == "error" &&
-            dataResponse.message.show) {
-          emit(GetStoreItemFailure(dataResponse.message.text!));
-        } else {
-          emit(GetStoreItemFailure(""));
-        }
-      } catch (ex) {
-        if (ex.toString() ==
-            "DioException [bad response]: The request returned an invalid status code of 403.") {
+            dataResponse.message.reason == "auth_token_error") {
           final bloc = RefreshBloc();
           bloc.add(const RefreshTokenEvent());
           emit(GetStoreItemFailure("Token"));
+        } else if (dataResponse.status == "error" &&
+            dataResponse.message.show) {
+          emit(GetStoreItemFailure(dataResponse.message.reason!));
         } else {
           emit(GetStoreItemFailure("Серверийн алдаа"));
         }
+      } catch (ex) {
+        emit(GetStoreItemFailure("Серверийн алдаа"));
       }
     });
     on<GetProductSearchEvent>((event, emit) async {
@@ -143,14 +150,13 @@ class ProductBloc extends Bloc<ProductEvent, ProductState> {
         if (event.searchAgian) {
           if (event.chosenType == "") {
             path =
-                '/v1/product/my/list?page=${event.page}&limit=40&q=${event.searchValue}&parent_category=${event.chosenValue}&is_warehouse=1&sort=desc';
+                '/v1/product/my/list?page=${event.page}&limit=40&q=${event.searchValue}&parent_category=${event.chosenValue}&sort=desc';
           } else {
             path =
                 '/v1/product/my/list?page=${event.page}&limit=40&q=${event.searchValue}&parent_category=${event.chosenValue}&store_id=${event.chosenType}&sort=desc';
           }
         } else {
-          path =
-              '/v1/product/my/list?page=${event.page}&is_warehouse=1&limit=40&sort=desc';
+          path = '/v1/product/my/list?page=${event.page}&limit=40&sort=desc';
         }
         print(path);
         Response response = await apiService.getRequest(path);
@@ -164,21 +170,19 @@ class ProductBloc extends Bloc<ProductEvent, ProductState> {
           emit(GetProductSuccess(
               dataResponse.data!, dataResponse.stores!, hasMoreOrder));
         } else if (dataResponse.status == "error" &&
-            dataResponse.message.show) {
-          emit(GetProductFailure(dataResponse.message.text!));
-        } else {
-          emit(GetProductFailure(""));
-        }
-      } catch (ex) {
-        if (ex.toString() ==
-            "DioException [bad response]: The request returned an invalid status code of 403.") {
+            dataResponse.message.reason == "auth_token_error") {
           final bloc = RefreshBloc();
           bloc.add(const RefreshTokenEvent());
           emit(GetProductFailure("Token"));
+        } else if (dataResponse.status == "error" &&
+            dataResponse.message.show) {
+          emit(GetProductFailure(dataResponse.message.reason!));
         } else {
-          print(ex);
           emit(GetProductFailure("Серверийн алдаа"));
         }
+      } catch (ex) {
+        print(ex);
+        emit(GetProductFailure("Серверийн алдаа"));
       }
     });
   }

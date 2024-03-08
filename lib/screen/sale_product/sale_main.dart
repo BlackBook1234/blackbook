@@ -1,12 +1,14 @@
 import 'package:black_book/bloc/product/bloc.dart';
 import 'package:black_book/bloc/product/event.dart';
 import 'package:black_book/bloc/product/state.dart';
-import 'package:black_book/constant.dart';
 import 'package:black_book/models/product/product_detial.dart';
 import 'package:black_book/models/product/product_inlist.dart';
 import 'package:black_book/models/product/product_store.dart';
 import 'package:black_book/util/utils.dart';
 import 'package:black_book/widget/bottom_sheet.dart/sale_product.dart';
+import 'package:black_book/widget/component/choose_type.dart';
+import 'package:black_book/widget/component/list_builder.dart';
+import 'package:black_book/widget/component/search.dart';
 import 'package:black_book/widget/error.dart';
 import 'package:flutter/material.dart' hide Badge;
 import 'package:flutter_bloc/flutter_bloc.dart';
@@ -39,6 +41,7 @@ class _MainSellProductScreenState extends State<MainSellProductScreen> {
   bool _loadingOrder = false;
   late ScrollController _controller;
   String userRole = "BOSS";
+  int index = 0;
 
   @override
   void initState() {
@@ -66,7 +69,11 @@ class _MainSellProductScreenState extends State<MainSellProductScreen> {
     if (chosenType == "Бүх дэлгүүр" &&
         chosenValue == "Бүх төрөл" &&
         searchValue == "") {
-      null;
+      setState(() {
+        _page = 1;
+      });
+      _bloc.add(
+          GetProductEvent(_page, false, storeId, productType, searchValue));
     } else {
       for (ProductStoreModel data in storeList) {
         if (data.name == chosenType) {
@@ -126,9 +133,10 @@ class _MainSellProductScreenState extends State<MainSellProductScreen> {
                     if (searchAgian) {
                       list = state.list;
                       listSearch = state.list;
+                    } else {
+                      list.addAll(state.list);
+                      listSearch.addAll(state.list);
                     }
-                    list.addAll(state.list);
-                    listSearch.addAll(state.list);
                     list.sort((b, a) => a.created_at!.compareTo(b.created_at!));
                     storeList = state.storeList;
                     for (ProductStoreModel data in storeList) {
@@ -140,262 +148,64 @@ class _MainSellProductScreenState extends State<MainSellProductScreen> {
               })
         ],
         child: Column(children: [
-          Padding(
-              padding: const EdgeInsets.symmetric(horizontal: 10, vertical: 10),
-              child: Row(children: [
-                userRole == "BOSS"
-                    ? Expanded(
-                        child: Container(
-                            width: 80,
-                            height: 38,
-                            decoration: BoxDecoration(
-                                color: kWhite,
-                                boxShadow: [
-                                  BoxShadow(
-                                      color: Colors.grey.shade300,
-                                      blurRadius: 3,
-                                      offset: const Offset(2, 2))
-                                ],
-                                borderRadius: BorderRadius.circular(10)),
-                            child: Padding(
-                                padding:
-                                    const EdgeInsets.only(right: 10, left: 10),
-                                child: DropdownButton<String>(
-                                    isExpanded: true,
-                                    iconEnabledColor: kPrimarySecondColor,
-                                    value: chosenType,
-                                    style: const TextStyle(
-                                        color: kPrimarySecondColor,
-                                        fontSize: 12,
-                                        fontWeight: FontWeight.w500),
-                                    items: typeStore
-                                        .map<DropdownMenuItem<String>>(
-                                            (String value) {
-                                      return DropdownMenuItem<String>(
-                                          value: value, child: Text(value));
-                                    }).toList(),
-                                    underline: Container(
-                                        height: 0, color: Colors.transparent),
-                                    onChanged: (value) {
-                                      setState(() {
-                                        chosenType = value!;
-                                      });
-                                    }))))
-                    : const SizedBox(width: 0),
-                const SizedBox(width: 10),
-                Expanded(
-                    child: Container(
-                        width: 80,
-                        height: 38,
-                        decoration: BoxDecoration(
-                            color: kWhite,
-                            boxShadow: [
-                              BoxShadow(
-                                  color: Colors.grey.shade300,
-                                  blurRadius: 3,
-                                  offset: const Offset(2, 2))
-                            ],
-                            borderRadius: BorderRadius.circular(10)),
-                        child: Padding(
-                            padding: const EdgeInsets.only(right: 10, left: 10),
-                            child: DropdownButton<String>(
-                                isExpanded: true,
-                                iconEnabledColor: kPrimarySecondColor,
-                                value: chosenValue,
-                                style: const TextStyle(
-                                    color: kPrimarySecondColor,
-                                    fontSize: 12,
-                                    fontWeight: FontWeight.w500),
-                                items: typeValue.map<DropdownMenuItem<String>>(
-                                    (String value) {
-                                  return DropdownMenuItem<String>(
-                                      value: value, child: Text(value));
-                                }).toList(),
-                                underline: Container(
-                                    height: 0, color: Colors.transparent),
-                                onChanged: (value) {
-                                  setState(() {
-                                    chosenValue = value!;
-                                  });
-                                }))))
-              ])),
-          Padding(
-              padding: const EdgeInsets.symmetric(vertical: 2, horizontal: 10),
-              child: Row(children: [
-                Expanded(
-                    child: SizedBox(
-                        height: 35,
-                        child: TextField(
-                            onChanged: (value) {},
-                            decoration: InputDecoration(
-                                enabledBorder: OutlineInputBorder(
-                                    borderRadius: BorderRadius.circular(10),
-                                    borderSide: const BorderSide(
-                                        color: Colors.black26, width: 1)),
-                                hoverColor: Colors.black12,
-                                hintText: "Барааны код",
-                                focusColor: Colors.black12,
-                                focusedBorder: OutlineInputBorder(
-                                    borderRadius: BorderRadius.circular(10),
-                                    borderSide: const BorderSide(
-                                        color: Colors.black26, width: 1)),
-                                fillColor: kWhite,
-                                filled: true,
-                                contentPadding: const EdgeInsets.all(10),
-                                prefixIcon: const Icon(Icons.search,
-                                    color: kPrimaryColor),
-                                border: OutlineInputBorder(
-                                    borderRadius: BorderRadius.circular(10),
-                                    borderSide: BorderSide.none),
-                                hintStyle: const TextStyle(
-                                    fontSize: 13, color: Colors.grey))))),
-                const SizedBox(width: 10),
-                InkWell(
-                    onTap: () {
-                      setState(() {
-                        searchAgian = true;
-                        _agianSearch();
-                      });
-                    },
-                    child: Container(
-                        width: 80,
-                        height: 38,
-                        decoration: BoxDecoration(
-                            color: kPrimaryColor,
-                            boxShadow: [
-                              BoxShadow(
-                                  color: Colors.grey.shade300,
-                                  blurRadius: 3,
-                                  offset: const Offset(2, 2))
-                            ],
-                            borderRadius: BorderRadius.circular(10)),
-                        child: const Center(
-                            child:
-                                Text("Хайх", style: TextStyle(color: kWhite)))))
-              ])),
-          Expanded(
-              child: ListView.builder(
-                  itemCount: list.length,
-                  controller: _controller,
-                  itemBuilder: (context, index) {
-                    return Padding(
-                        padding: const EdgeInsets.symmetric(
-                            vertical: 8, horizontal: 20),
-                        child: Container(
-                            decoration: BoxDecoration(
-                                color: kWhite,
-                                boxShadow: [
-                                  BoxShadow(
-                                      color: Colors.grey.shade300,
-                                      blurRadius: 3,
-                                      offset: const Offset(2, 2))
-                                ],
-                                borderRadius: BorderRadius.circular(20)),
-                            child: ExpansionTile(
-                                shape: const Border(),
-                                trailing: InkWell(
-                                    onTap: () {
-                                      for(ProductInDetialModel data in list[index].sizes!){
-                                        data.ware_stock = 0;
-                                      }
-                                      showModalBottomSheet(
-                                          context: context,
-                                          isScrollControlled: true,
-                                          builder: (context) {
-                                            return FractionallySizedBox(
-                                                heightFactor: 0.7,
-                                                child:
-                                                    SellProductBottomSheetsWidget(
-                                                        title: "Борлуулах",
-                                                        data: list[index]));
-                                          });
-                                    },
-                                    child: const Column(children: [
-                                      Icon(Icons.sell, color: kPrimaryColor),
-                                      Text("Борлуулах",
-                                          style: TextStyle(fontSize: 10))
-                                    ])),
-                                leading: list[index].photo == null
-                                    ? Container(
-                                        height: 80.0,
-                                        width: 80.0,
-                                        decoration: BoxDecoration(
-                                            borderRadius:
-                                                BorderRadius.circular(20.0)),
-                                        child: ClipRRect(
-                                            borderRadius:
-                                                BorderRadius.circular(9),
-                                            child: Image.asset(
-                                                "assets/images/saleProduct.jpg",
-                                                fit: BoxFit.cover)))
-                                    : Container(
-                                        height: 80.0,
-                                        width: 80.0,
-                                        decoration: BoxDecoration(
-                                            borderRadius:
-                                                BorderRadius.circular(20.0)),
-                                        child: ClipRRect(
-                                            borderRadius:
-                                                BorderRadius.circular(9),
-                                            child: Image.network(list[index].photo!,
-                                                fit: BoxFit.cover))),
-                                title: Text("Барааны нэр: ${list[index].name}",
-                                    style: const TextStyle(fontSize: 12.0, fontWeight: FontWeight.bold)),
-                                subtitle: Column(mainAxisAlignment: MainAxisAlignment.start, crossAxisAlignment: CrossAxisAlignment.start, children: [
-                                  Text("Барааны код: ${list[index].code}",
-                                      style: const TextStyle(
-                                          fontSize: 12.0,
-                                          fontWeight: FontWeight.normal)),
-                                  Text(
-                                      'Анхны үнэ: ${list[index].sizes!.first.cost}₮',
-                                      style: const TextStyle(
-                                          fontSize: 11.0,
-                                          fontWeight: FontWeight.normal)),
-                                  Text(
-                                      'Зарах үнэ: ${list[index].sizes!.first.price}₮',
-                                      style: const TextStyle(
-                                          fontSize: 11.0,
-                                          fontWeight: FontWeight.normal))
-                                ]),
-                                initiallyExpanded: _isExpanded,
-                                children: [
-                                  const Row(children: [
-                                    Expanded(child: Divider(indent: 10)),
-                                    SizedBox(width: 4),
-                                    Icon(Icons.circle,
-                                        size: 4, color: kPrimaryColor),
-                                    SizedBox(width: 4),
-                                    Expanded(child: Divider(endIndent: 10))
-                                  ]),
-                                  Row(
-                                      mainAxisAlignment:
-                                          MainAxisAlignment.spaceAround,
-                                      children: [
-                                        Text(getSizesString(list[index].sizes),
-                                            style: const TextStyle(
-                                                fontSize: 11.0,
-                                                fontWeight: FontWeight.normal)),
-                                        Text(getWareString(list[index].sizes),
-                                            style: const TextStyle(
-                                                fontSize: 11.0,
-                                                fontWeight: FontWeight.normal))
-                                      ])
-                                ])));
-                  }))
+          TypeBuilder(
+            chosenValue: chosenValue,
+            chosenType: chosenType,
+            userRole: userRole,
+            typeStore: typeStore,
+            chooseType: (String value) {
+              setState(() {
+                chosenValue = value;
+              });
+            },
+            chooseStore: (String value) {
+              setState(() {
+                chosenType = value;
+              });
+            },
+          ),
+          SearchBuilder(
+            searchAgian: (bool type) {
+              setState(() {
+                searchAgian = type;
+              });
+              _agianSearch();
+            },
+            searchValue: (String value) {
+              setState(() {
+                searchValue = value;
+              });
+            },
+          ),
+          ListBuilder(
+            list: list,
+            showWarningCallback: (int? id) {
+              setState(() {
+                index = id!;
+              });
+            },
+            showDilaog: () {
+              for (ProductInDetialModel data in list[index].sizes!) {
+                data.ware_stock = 0;
+              }
+              showModalBottomSheet(
+                  context: context,
+                  isScrollControlled: true,
+                  builder: (context) {
+                    return FractionallySizedBox(
+                        heightFactor: 0.7,
+                        child: SellProductBottomSheetsWidget(
+                            title: "Борлуулах", data: list[index]));
+                  });
+            },
+            controller: _controller,
+            userRole: userRole,
+            isExpanded: _isExpanded,
+            typeTrailling: true,
+            icon: Icons.sell,
+            trailingText: "Борлуулах",
+            screenType: 'sale',
+          ),
         ]));
   }
-}
-
-String getSizesString(List<ProductInDetialModel>? sizes) {
-  if (sizes == null || sizes.isEmpty) {
-    return 'No sizes available';
-  }
-  return sizes.map((size) => 'Хэмжээ: ${size.type}').join('\n');
-}
-
-String getWareString(List<ProductInDetialModel>? sizes) {
-  if (sizes == null || sizes.isEmpty) {
-    return 'No sizes available';
-  }
-  return sizes.map((size) => 'Үлдэгдэл: ${size.stock}ш').join('\n');
 }

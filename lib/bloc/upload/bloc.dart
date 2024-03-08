@@ -23,25 +23,19 @@ class UploadBloc extends Bloc<UploadPhotoEvent, UploadPhotoState> {
             UploadResponseModel.fromJson(response.data);
         if (response.statusCode == 200 && dataResponse.status == "success") {
           emit(UploadSuccess(dataResponse.data!));
-        } else if (dataResponse.message.show) {
-          emit(UploadFailure(dataResponse.message.text!));
-        } else {
-          emit(UploadFailure(""));
-        }
-      } catch (ex, stackTrace) {
-        if (ex.toString() ==
-            "DioException [bad response]: The request returned an invalid status code of 403.") {
+        } else if (dataResponse.status == "error" &&
+            dataResponse.message.reason == "auth_token_error") {
           final bloc = RefreshBloc();
           bloc.add(const RefreshTokenEvent());
           emit(UploadFailure("Token"));
+        } else if (dataResponse.status == "error" &&
+            dataResponse.message.show) {
+          emit(UploadFailure(dataResponse.message.reason!));
         } else {
-          print("Error: $ex");
-          print("Stacktrace: $stackTrace");
-          if (ex is DioError) {
-            print("Response data: ${ex.response?.data}");
-          }
           emit(UploadFailure("Серверийн алдаа"));
         }
+      } catch (ex) {
+        emit(UploadFailure("Серверийн алдаа"));
       }
     });
   }

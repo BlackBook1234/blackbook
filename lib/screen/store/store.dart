@@ -19,8 +19,6 @@ class DivisionScreen extends StatefulWidget {
 
 // GetStoreEvent
 class _DivisionScreenState extends State<DivisionScreen> {
-  DateTime dateTime = DateTime.now();
-  DateTime date = DateTime.now();
   final _bloc = StoreBloc();
   List<StoreDetialModel> lst = [];
 
