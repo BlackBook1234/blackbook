@@ -59,7 +59,7 @@ class ShareBloc extends Bloc<ShareEvent, ShareState> {
           emit(ShareFailure("Token"));
         } else if (dataResponse.status == "error" &&
             dataResponse.message.show) {
-          emit(ShareFailure(dataResponse.message.reason!));
+          emit(ShareFailure(dataResponse.message.text!));
         } else {
           emit(ShareFailure("Серверийн алдаа"));
         }
@@ -114,7 +114,7 @@ class ShareBloc extends Bloc<ShareEvent, ShareState> {
           emit(ShareHistoryFailure("Token"));
         } else if (dataResponse.status == "error" &&
             dataResponse.message.show) {
-          emit(ShareHistoryFailure(dataResponse.message.reason!));
+          emit(ShareHistoryFailure(dataResponse.message.text!));
         } else {
           emit(ShareHistoryFailure("Серверийн алдаа"));
         }
@@ -163,7 +163,7 @@ class ShareBloc extends Bloc<ShareEvent, ShareState> {
           emit(ShareProductDataFailure("Token"));
         } else if (dataResponse.status == "error" &&
             dataResponse.message.show) {
-          emit(ShareProductDataFailure(dataResponse.message.reason!));
+          emit(ShareProductDataFailure(dataResponse.message.text!));
         } else {
           emit(ShareProductDataFailure("Серверийн алдаа"));
         }

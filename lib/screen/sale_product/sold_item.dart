@@ -6,7 +6,7 @@ import 'package:black_book/models/sale/total.dart';
 import 'package:black_book/models/sale_product/product_in_detial.dart';
 import 'package:black_book/util/utils.dart';
 import 'package:black_book/widget/bottom_sheet.dart/show_bottom.dart';
-import 'package:black_book/widget/error.dart';
+import 'package:black_book/widget/alert/error.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 

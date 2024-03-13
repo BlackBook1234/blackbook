@@ -11,7 +11,7 @@ import "package:black_book/models/product/product_inlist.dart";
 import "package:black_book/models/store/store_detial.dart";
 import "package:black_book/provider/product_share_provider.dart";
 import "package:black_book/util/utils.dart";
-import "package:black_book/widget/error.dart";
+import "package:black_book/widget/alert/show_dilaog.dart";
 import "package:flutter/material.dart";
 import "package:flutter_bloc/flutter_bloc.dart";
 import "package:flutter_svg/svg.dart";
@@ -65,8 +65,12 @@ class _ChooseStoreBottomSheetsWidgetState
         setState(() {
           storeId = data.id!;
         });
-        _shareBloc.add(CreateShareEvent(data.id!, sendData));
       }
+    }
+    if (storeId == null) {
+      AlertMessage.statusMessage(context, "Анхаар!", "Дэлгүүр сонгон уу", true);
+    } else {
+      _shareBloc.add(CreateShareEvent(storeId!, sendData));
     }
   }
 
@@ -86,7 +90,8 @@ class _ChooseStoreBottomSheetsWidgetState
                       _bloc.add(const GetStoreEvent());
                     } else {
                       Utils.cancelLoader(context);
-                      ErrorMessage.attentionMessage(context, state.message);
+                      AlertMessage.statusMessage(
+                          context, "Анхаар!", state.message, true);
                     }
                   }
                   if (state is GetStoreSuccess) {
@@ -110,28 +115,14 @@ class _ChooseStoreBottomSheetsWidgetState
                       _shareBloc.add(CreateShareEvent(storeId!, sendData));
                     } else {
                       Utils.cancelLoader(context);
-                      ErrorMessage.attentionMessage(context, state.message);
+                      AlertMessage.statusMessage(
+                          context, "Анхаар!", state.message, true);
                     }
                   }
                   if (state is ShareSuccess) {
                     Utils.cancelLoader(context);
-                    showDialog(
-                        context: context,
-                        builder: (context) {
-                          return const AlertDialog(
-                              shape: RoundedRectangleBorder(
-                                  borderRadius:
-                                      BorderRadius.all(Radius.circular(15))),
-                              scrollable: true,
-                              title:
-                                  Text("Мэдээлэл", textAlign: TextAlign.center),
-                              contentPadding: EdgeInsets.only(
-                                  right: 20, left: 20, bottom: 20, top: 20),
-                              content: Column(children: [
-                                Text("Амжилттай шилжлээ"),
-                                SizedBox(height: 20)
-                              ]));
-                        });
+                    AlertMessage.statusMessage(
+                        context, "Амжилттай", "Бараа шилжлээ", false);
                     provider.removeAllItem();
                     Future.delayed(const Duration(seconds: 1), () {
                       Navigator.pop(context);
@@ -159,7 +150,7 @@ class _ChooseStoreBottomSheetsWidgetState
                               child: Container(
                                   decoration: BoxDecoration(
                                       color: lst[index].isChecked
-                                          ? Colors.grey
+                                          ? Colors.grey.shade600
                                           : kWhite,
                                       boxShadow: [
                                         BoxShadow(
@@ -172,12 +163,20 @@ class _ChooseStoreBottomSheetsWidgetState
                                       leading: SvgPicture.asset(
                                           "assets/icons/store.svg",
                                           width: 40,
-                                          colorFilter: const ColorFilter.mode(
-                                              kPrimaryColor, BlendMode.srcIn)),
+                                          colorFilter: ColorFilter.mode(
+                                              lst[index].isChecked
+                                                  ? kWhite
+                                                  : kPrimaryColor,
+                                              BlendMode.srcIn)),
                                       title: Text(lst[index].name!,
-                                          style: const TextStyle(
-                                              fontSize: 14.0,
-                                              fontWeight: FontWeight.bold)),
+                                          style: lst[index].isChecked
+                                              ? const TextStyle(
+                                                  color: kWhite,
+                                                  fontSize: 14.0,
+                                                  fontWeight: FontWeight.bold)
+                                              : const TextStyle(
+                                                  fontSize: 14.0,
+                                                  fontWeight: FontWeight.bold)),
                                       onTap: () {
                                         setState(() {
                                           for (StoreDetialModel data in lst) {

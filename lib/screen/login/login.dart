@@ -4,7 +4,7 @@ import 'package:black_book/bloc/authentication/state.dart';
 import 'package:black_book/constant.dart';
 import 'package:black_book/screen/login/login_controller.dart';
 import 'package:black_book/util/utils.dart';
-import 'package:black_book/widget/error.dart';
+import 'package:black_book/widget/alert/error.dart';
 import 'package:black_book/widget/login_header.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';

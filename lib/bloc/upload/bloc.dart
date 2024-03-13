@@ -30,7 +30,7 @@ class UploadBloc extends Bloc<UploadPhotoEvent, UploadPhotoState> {
           emit(UploadFailure("Token"));
         } else if (dataResponse.status == "error" &&
             dataResponse.message.show) {
-          emit(UploadFailure(dataResponse.message.reason!));
+          emit(UploadFailure(dataResponse.message.text!));
         } else {
           emit(UploadFailure("Серверийн алдаа"));
         }

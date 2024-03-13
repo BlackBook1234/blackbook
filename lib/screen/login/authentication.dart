@@ -6,7 +6,8 @@ import 'package:black_book/bloc/authentication/state.dart';
 import 'package:black_book/constant.dart';
 import 'package:black_book/screen/home/navigator.dart';
 import 'package:black_book/util/utils.dart';
-import 'package:black_book/widget/error.dart';
+import 'package:black_book/widget/alert/error.dart';
+import 'package:black_book/widget/alert/show_dilaog.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
@@ -103,7 +104,10 @@ class _LoginScreenState extends State<AuthenticationScreen> {
                 }
                 if (state is UserAuthenticationSuccess) {
                   Utils.cancelLoader(context);
-                  if (state.data.isPaid == 1) {
+                  if (state.data.type == "WORKER") {
+                    Navigator.of(context).push(CupertinoPageRoute(
+                        builder: (context) => NavigatorScreen()));
+                  } else if (state.data.isPaid == 1) {
                     Navigator.of(context).push(CupertinoPageRoute(
                         builder: (context) => NavigatorScreen()));
                   } else {
@@ -179,33 +183,8 @@ class _LoginScreenState extends State<AuthenticationScreen> {
                               ElevatedButton.styleFrom(foregroundColor: kWhite),
                           onPressed: () {
                             if (showTimer == "0:00") {
-                              showDialog(
-                                  context: context,
-                                  builder: (context) {
-                                    return const AlertDialog(
-                                        icon: Icon(Icons.info,
-                                            size: 30, color: kPrimaryColor),
-                                        shape: RoundedRectangleBorder(
-                                            borderRadius: BorderRadius.all(
-                                                Radius.circular(15))),
-                                        scrollable: true,
-                                        title: Text("Амжилтгүй",
-                                            style: TextStyle(
-                                                fontSize: 16,
-                                                fontWeight: FontWeight.bold),
-                                            textAlign: TextAlign.center),
-                                        contentPadding: EdgeInsets.only(
-                                            right: 20,
-                                            left: 20,
-                                            bottom: 20,
-                                            top: 10),
-                                        content: Column(children: [
-                                          Text(
-                                              "Хугацаа дуусхаас өмнө баталгаажуулах тоог оруулна уу",
-                                              textAlign: TextAlign.center),
-                                          SizedBox(height: 20)
-                                        ]));
-                                  });
+                              AlertMessage.alertMessage(context, "Амжилтгүй !",
+                                  "Хугацаа дуусхаас өмнө баталгаажуулах тоог оруулна уу");
                             } else {
                               onLogin();
                             }

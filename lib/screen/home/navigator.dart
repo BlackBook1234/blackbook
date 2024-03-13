@@ -19,24 +19,24 @@ import 'ware_house_user_admin.dart';
 
 const Color inActiveIconColor = Colors.grey;
 
+// ignore: must_be_immutable
 class NavigatorScreen extends StatelessWidget {
   NavigatorScreen({super.key});
-
-  final ctrl = Get.put(NavigatorController());
-  final pages = Get.find<NavigatorController>().userRole == "BOSS"
-      ? [
-          const HomeScreen(),
-          const WareHouseAdminScreen(),
-          const AddIemScreen(),
-          const MainSellProductScreen(),
-          const SearchScreen()
-        ]
-      : [
-          const HomeScreen(),
-          const WareHouseAdminScreen(),
-          const MainSellProductScreen(),
-          const SearchScreen()
-        ];
+  NavigatorController ctrl = Get.put(NavigatorController());
+  // List<Widget> pages = Get.find<NavigatorController>().userRole == "BOSS"
+  //     ? [
+  //         const HomeScreen(),
+  //         const WareHouseAdminScreen(),
+  //         const AddIemScreen(),
+  //         const MainSellProductScreen(),
+  //         const SearchScreen()
+  //       ]
+  //     : [
+  //         const HomeScreen(),
+  //         const WareHouseAdminScreen(),
+  //         const MainSellProductScreen(),
+  //         const SearchScreen()
+  //       ];
 
   _showLogOutWarning(BuildContext context) async {
     Widget continueButton = TextButton(
@@ -93,6 +93,20 @@ class NavigatorScreen extends StatelessWidget {
             TabItem(icon: Icons.favorite_border_outlined, title: 'Миний бараа'),
             TabItem(icon: Icons.shopping_cart_outlined, title: 'Борлуулах'),
             TabItem(icon: Icons.search_outlined, title: 'Хайх')
+          ];
+    List<Widget> pages = Utils.getUserRole() == "BOSS"
+        ? [
+            const HomeScreen(),
+            const WareHouseAdminScreen(),
+            const AddIemScreen(),
+            const MainSellProductScreen(),
+            const SearchScreen()
+          ]
+        : [
+            const HomeScreen(),
+            const WareHouseAdminScreen(),
+            const MainSellProductScreen(),
+            const SearchScreen()
           ];
     return Obx(() => Scaffold(
         resizeToAvoidBottomInset: false,

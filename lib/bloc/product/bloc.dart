@@ -36,7 +36,7 @@ class ProductBloc extends Bloc<ProductEvent, ProductState> {
           emit(ProductFailure("Token"));
         } else if (dataResponse.status == "error" &&
             dataResponse.message.show) {
-          emit(ProductFailure(dataResponse.message.reason!));
+          emit(ProductFailure(dataResponse.message.text!));
         } else {
           emit(ProductFailure("Серверийн алдаа"));
         }
@@ -92,7 +92,7 @@ class ProductBloc extends Bloc<ProductEvent, ProductState> {
           emit(GetProductFailure("Token"));
         } else if (dataResponse.status == "error" &&
             dataResponse.message.show) {
-          emit(GetProductFailure(dataResponse.message.reason!));
+          emit(GetProductFailure(dataResponse.message.text!));
         } else {
           emit(GetProductFailure("Серверийн алдаа"));
         }
@@ -132,7 +132,7 @@ class ProductBloc extends Bloc<ProductEvent, ProductState> {
           emit(GetStoreItemFailure("Token"));
         } else if (dataResponse.status == "error" &&
             dataResponse.message.show) {
-          emit(GetStoreItemFailure(dataResponse.message.reason!));
+          emit(GetStoreItemFailure(dataResponse.message.text!));
         } else {
           emit(GetStoreItemFailure("Серверийн алдаа"));
         }
@@ -165,6 +165,7 @@ class ProductBloc extends Bloc<ProductEvent, ProductState> {
         if (response.statusCode == 200 && dataResponse.status == "success") {
           bool hasMoreOrder = true;
           if (dataResponse.data!.length < 40) {
+            print("baga bna");
             hasMoreOrder = false;
           }
           emit(GetProductSuccess(
@@ -176,7 +177,7 @@ class ProductBloc extends Bloc<ProductEvent, ProductState> {
           emit(GetProductFailure("Token"));
         } else if (dataResponse.status == "error" &&
             dataResponse.message.show) {
-          emit(GetProductFailure(dataResponse.message.reason!));
+          emit(GetProductFailure(dataResponse.message.text!));
         } else {
           emit(GetProductFailure("Серверийн алдаа"));
         }

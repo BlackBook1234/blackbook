@@ -91,7 +91,7 @@ class SaleBloc extends Bloc<SaleEvent, SaleState> {
           emit(GetSaleFailure("Token"));
         } else if (dataResponse.status == "error" &&
             dataResponse.message.show) {
-          emit(GetSaleFailure(dataResponse.message.reason!));
+          emit(GetSaleFailure(dataResponse.message.text!));
         } else {
           emit(GetSaleFailure("Серверийн алдаа"));
         }
@@ -147,7 +147,7 @@ class SaleBloc extends Bloc<SaleEvent, SaleState> {
           emit(GetMainSaleFailure("Token"));
         } else if (dataResponse.status == "error" &&
             dataResponse.message.show) {
-          emit(GetMainSaleFailure(dataResponse.message.reason!));
+          emit(GetMainSaleFailure(dataResponse.message.text!));
         } else {
           emit(GetMainSaleFailure("Серверийн алдаа"));
         }
@@ -177,7 +177,7 @@ class SaleBloc extends Bloc<SaleEvent, SaleState> {
           emit(SaleProductBackFailure("Token"));
         } else if (dataResponse.status == "error" &&
             dataResponse.message.show) {
-          emit(SaleProductBackFailure(dataResponse.message.reason!));
+          emit(SaleProductBackFailure(dataResponse.message.text!));
         } else {
           emit(SaleProductBackFailure("Серверийн алдаа"));
         }

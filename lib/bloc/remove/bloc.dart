@@ -29,7 +29,7 @@ class RemoveBloc extends Bloc<RemoveEvent, RemoveState> {
           emit(RemoveFailure("Token"));
         } else if (dataResponse.status == "error" &&
             dataResponse.message.show) {
-          emit(RemoveFailure(dataResponse.message.reason!));
+          emit(RemoveFailure(dataResponse.message.text!));
         } else {
           emit(RemoveFailure("Серверийн алдаа"));
         }

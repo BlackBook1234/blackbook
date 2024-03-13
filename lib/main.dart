@@ -82,7 +82,14 @@ class MyAppState extends State<MyApp> {
                       }
                       if (state is RefreshSuccess) {
                         Utils.cancelLoader(context);
-                        if (Utils.getIpaid() == 1) {
+                        if (Utils.getUserRole() == "WORKER") {
+                          Navigator.pushAndRemoveUntil(
+                              context,
+                              CupertinoPageRoute(
+                                builder: (context) => NavigatorScreen(),
+                              ),
+                              (route) => false);
+                        } else if (Utils.getIpaid() == 1) {
                           Navigator.pushAndRemoveUntil(
                               context,
                               CupertinoPageRoute(
@@ -90,6 +97,8 @@ class MyAppState extends State<MyApp> {
                               ),
                               (route) => false);
                         } else {
+                          Provider.of<CommonProvider>(context, listen: false)
+                              .logout();
                           Navigator.pushAndRemoveUntil(
                               context,
                               CupertinoPageRoute(

@@ -5,7 +5,8 @@ import 'package:black_book/constant.dart';
 import 'package:black_book/models/invoice/detial.dart';
 import 'package:black_book/screen/home/navigator.dart';
 import 'package:black_book/util/utils.dart';
-import 'package:black_book/widget/error.dart';
+import 'package:black_book/widget/alert/error.dart';
+import 'package:black_book/widget/alert/show_dilaog.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
@@ -33,9 +34,8 @@ class _PayScreenState extends State<PayScreen> {
   }
 
   void checkPayment() {
-      Navigator.of(context).push(CupertinoPageRoute(
-                      builder: (context) => NavigatorScreen()));
-    // _bloc.add(CheckInvoiceEvent(lst.qpay!.invoice_id!, "h"));
+    print("here");
+    _bloc.add(CheckInvoiceEvent(lst.orderId!));
   }
 
   @override
@@ -50,7 +50,7 @@ class _PayScreenState extends State<PayScreen> {
                 }
                 if (state is InvoiceFailure) {
                   Utils.cancelLoader(context);
-                  ErrorMessage.attentionMessage(context, state.message);
+                  AlertMessage.alertMessage(context,"Мэдээлэл", state.message);
                 }
                 if (state is InvoiceSuccess) {
                   setState(() {
@@ -257,316 +257,6 @@ class _PayScreenState extends State<PayScreen> {
                                   : const Center(
                                       child: CircularProgressIndicator()))
                         ])),
-                    // SingleChildScrollView(
-                    //     child: Padding(
-                    //         padding: const EdgeInsets.all(12),
-                    //         child: Column(children: [
-                    //           const Padding(
-                    //               padding: EdgeInsets.only(top: 8),
-                    //               child: Text("Төлөх дүн",
-                    //                   style: TextStyle(
-                    //                       fontWeight: FontWeight.w400,
-                    //                       fontSize: 14))),
-                    //           const SizedBox(height: 5),
-                    //           const Text("10,000 ₮",
-                    //               style: TextStyle(
-                    //                   fontWeight: FontWeight.w900,
-                    //                   fontSize: 30,
-                    //                   color: kPrimaryColor)),
-                    //           const Text("Банкны апп-аар",
-                    //               style: TextStyle(
-                    //                   fontSize: 16, fontWeight: FontWeight.bold)),
-                    //           const SizedBox(height: 20),
-                    //           Row(
-                    //               mainAxisAlignment: MainAxisAlignment.spaceAround,
-                    //               children: [
-                    //                 Column(children: [
-                    //                   Container(
-                    //                       height: 60.0,
-                    //                       width: 60.0,
-                    //                       decoration: BoxDecoration(
-                    //                           color: Colors.grey,
-                    //                           borderRadius:
-                    //                               BorderRadius.circular(20.0)),
-                    //                       child: ClipRRect(
-                    //                           borderRadius:
-                    //                               BorderRadius.circular(9),
-                    //                           child: Image.asset(
-                    //                               'assets/bank/khanBank.png',
-                    //                               fit: BoxFit.cover))),
-                    //                   const Text("Хаан банк",
-                    //                       style: TextStyle(fontSize: 12))
-                    //                 ]),
-                    //                 Column(children: [
-                    //                   Container(
-                    //                       height: 60.0,
-                    //                       width: 60.0,
-                    //                       decoration: BoxDecoration(
-                    //                           borderRadius:
-                    //                               BorderRadius.circular(20.0)),
-                    //                       child: ClipRRect(
-                    //                           borderRadius:
-                    //                               BorderRadius.circular(9),
-                    //                           child: Image.asset(
-                    //                               'assets/bank/tdb.png',
-                    //                               fit: BoxFit.cover))),
-                    //                   const Text("TDB",
-                    //                       style: TextStyle(fontSize: 12))
-                    //                 ]),
-                    //                 Column(children: [
-                    //                   Container(
-                    //                       height: 60.0,
-                    //                       width: 60.0,
-                    //                       decoration: BoxDecoration(
-                    //                           borderRadius:
-                    //                               BorderRadius.circular(20.0)),
-                    //                       child: ClipRRect(
-                    //                           borderRadius:
-                    //                               BorderRadius.circular(9),
-                    //                           child: Image.asset(
-                    //                               'assets/bank/socialpay.png',
-                    //                               fit: BoxFit.cover))),
-                    //                   const Text("Social Pay",
-                    //                       style: TextStyle(fontSize: 12))
-                    //                 ])
-                    //               ]),
-                    //           const SizedBox(height: 20.0),
-                    //           Row(
-                    //               mainAxisAlignment: MainAxisAlignment.spaceAround,
-                    //               children: [
-                    //                 Column(children: [
-                    //                   Container(
-                    //                       height: 60.0,
-                    //                       width: 60.0,
-                    //                       decoration: BoxDecoration(
-                    //                           borderRadius:
-                    //                               BorderRadius.circular(20.0)),
-                    //                       child: ClipRRect(
-                    //                           borderRadius:
-                    //                               BorderRadius.circular(9),
-                    //                           child: Image.asset(
-                    //                               'assets/bank/statebank.png',
-                    //                               fit: BoxFit.cover))),
-                    //                   const Text("  Төрийн банк  ",
-                    //                       style: TextStyle(fontSize: 12))
-                    //                 ]),
-                    //                 Column(children: [
-                    //                   Container(
-                    //                       height: 60.0,
-                    //                       width: 60.0,
-                    //                       decoration: BoxDecoration(
-                    //                           borderRadius:
-                    //                               BorderRadius.circular(20.0)),
-                    //                       child: ClipRRect(
-                    //                           borderRadius:
-                    //                               BorderRadius.circular(9),
-                    //                           child: Image.asset(
-                    //                               'assets/bank/statebank3.0.png',
-                    //                               fit: BoxFit.cover))),
-                    //                   const Text("Төрийн банк 3.0",
-                    //                       style: TextStyle(fontSize: 12))
-                    //                 ]),
-                    //                 Column(children: [
-                    //                   Container(
-                    //                       height: 60.0,
-                    //                       width: 60.0,
-                    //                       decoration: BoxDecoration(
-                    //                           borderRadius:
-                    //                               BorderRadius.circular(20.0)),
-                    //                       child: ClipRRect(
-                    //                           borderRadius:
-                    //                               BorderRadius.circular(9),
-                    //                           child: Image.asset(
-                    //                               'assets/bank/hasbank.jpg',
-                    //                               fit: BoxFit.cover))),
-                    //                   const Text("    Хас банк    ",
-                    //                       style: TextStyle(fontSize: 12))
-                    //                 ])
-                    //               ]),
-                    //           const SizedBox(height: 20.0),
-                    //           Row(
-                    //               mainAxisAlignment: MainAxisAlignment.spaceAround,
-                    //               children: [
-                    //                 Column(
-                    //                     crossAxisAlignment:
-                    //                         CrossAxisAlignment.center,
-                    //                     children: [
-                    //                       Container(
-                    //                           height: 60.0,
-                    //                           width: 60.0,
-                    //                           decoration: BoxDecoration(
-                    //                               borderRadius:
-                    //                                   BorderRadius.circular(20.0)),
-                    //                           child: ClipRRect(
-                    //                               borderRadius:
-                    //                                   BorderRadius.circular(9),
-                    //                               child: Image.asset(
-                    //                                   'assets/bank/capitronbank.png',
-                    //                                   fit: BoxFit.cover))),
-                    //                       const Text("Капитрон банк",
-                    //                           style: TextStyle(fontSize: 12))
-                    //                     ]),
-                    //                 Column(children: [
-                    //                   Container(
-                    //                       height: 60.0,
-                    //                       width: 60.0,
-                    //                       decoration: BoxDecoration(
-                    //                           borderRadius:
-                    //                               BorderRadius.circular(20.0)),
-                    //                       child: ClipRRect(
-                    //                           borderRadius:
-                    //                               BorderRadius.circular(9),
-                    //                           child: Image.asset(
-                    //                               'assets/bank/chinggisbank.png',
-                    //                               fit: BoxFit.cover))),
-                    //                   const Text("Chinggis khaan",
-                    //                       style: TextStyle(fontSize: 12))
-                    //                 ]),
-                    //                 Column(children: [
-                    //                   Container(
-                    //                       height: 60.0,
-                    //                       width: 60.0,
-                    //                       decoration: BoxDecoration(
-                    //                           borderRadius:
-                    //                               BorderRadius.circular(20.0)),
-                    //                       child: ClipRRect(
-                    //                           borderRadius:
-                    //                               BorderRadius.circular(9),
-                    //                           child: Image.asset(
-                    //                               'assets/bank/bogdbank.jpg',
-                    //                               fit: BoxFit.cover))),
-                    //                   const Text("    Богд банк   ",
-                    //                       style: TextStyle(fontSize: 12))
-                    //                 ])
-                    //               ]),
-                    //           const SizedBox(height: 20.0),
-                    //           Row(
-                    //               mainAxisAlignment: MainAxisAlignment.spaceAround,
-                    //               children: [
-                    //                 Column(children: [
-                    //                   Container(
-                    //                       height: 60.0,
-                    //                       width: 60.0,
-                    //                       decoration: BoxDecoration(
-                    //                           borderRadius:
-                    //                               BorderRadius.circular(20.0)),
-                    //                       child: ClipRRect(
-                    //                           borderRadius:
-                    //                               BorderRadius.circular(9),
-                    //                           child: Image.asset(
-                    //                               'assets/bank/nibank.jpeg',
-                    //                               fit: BoxFit.cover))),
-                    //                   const Text("NIBank",
-                    //                       style: TextStyle(fontSize: 12))
-                    //                 ]),
-                    //                 Column(children: [
-                    //                   Container(
-                    //                       height: 60.0,
-                    //                       width: 60.0,
-                    //                       decoration: BoxDecoration(
-                    //                           borderRadius:
-                    //                               BorderRadius.circular(20.0)),
-                    //                       child: ClipRRect(
-                    //                           borderRadius:
-                    //                               BorderRadius.circular(9),
-                    //                           child: Image.asset(
-                    //                               'assets/bank/mostmoney.png',
-                    //                               fit: BoxFit.cover))),
-                    //                   const Text("MostMoney",
-                    //                       style: TextStyle(fontSize: 12))
-                    //                 ]),
-                    //                 Column(children: [
-                    //                   Container(
-                    //                       height: 60.0,
-                    //                       width: 60.0,
-                    //                       decoration: BoxDecoration(
-                    //                           borderRadius:
-                    //                               BorderRadius.circular(20.0)),
-                    //                       child: ClipRRect(
-                    //                           borderRadius:
-                    //                               BorderRadius.circular(9),
-                    //                           child: Image.asset(
-                    //                               'assets/bank/transbank.png',
-                    //                               fit: BoxFit.cover))),
-                    //                   const Text("TransBank",
-                    //                       style: TextStyle(fontSize: 12))
-                    //                 ])
-                    //               ]),
-                    //           const SizedBox(height: 20.0),
-                    //           Row(
-                    //               mainAxisAlignment: MainAxisAlignment.spaceAround,
-                    //               children: [
-                    //                 Column(children: [
-                    //                   Container(
-                    //                       height: 60.0,
-                    //                       width: 60.0,
-                    //                       decoration: BoxDecoration(
-                    //                           borderRadius:
-                    //                               BorderRadius.circular(20.0)),
-                    //                       child: ClipRRect(
-                    //                           borderRadius:
-                    //                               BorderRadius.circular(9),
-                    //                           child: Image.asset(
-                    //                               'assets/bank/mbank.png',
-                    //                               fit: BoxFit.cover))),
-                    //                   const Text("M bank",
-                    //                       style: TextStyle(fontSize: 12))
-                    //                 ]),
-                    //                 Column(children: [
-                    //                   Container(
-                    //                       height: 60.0,
-                    //                       width: 60.0,
-                    //                       decoration: BoxDecoration(
-                    //                           borderRadius:
-                    //                               BorderRadius.circular(20.0)),
-                    //                       child: ClipRRect(
-                    //                           borderRadius:
-                    //                               BorderRadius.circular(9),
-                    //                           child: Image.asset(
-                    //                               'assets/bank/monpay.png',
-                    //                               fit: BoxFit.cover))),
-                    //                   const Text("Monpay",
-                    //                       style: TextStyle(fontSize: 12))
-                    //                 ]),
-                    //                 Column(children: [
-                    //                   Container(
-                    //                       height: 60.0,
-                    //                       width: 60.0,
-                    //                       decoration: BoxDecoration(
-                    //                           borderRadius:
-                    //                               BorderRadius.circular(20.0)),
-                    //                       child: ClipRRect(
-                    //                           borderRadius:
-                    //                               BorderRadius.circular(9),
-                    //                           child: Image.asset(
-                    //                               'assets/bank/ardapp.png',
-                    //                               fit: BoxFit.cover))),
-                    //                   const Text("Ard App",
-                    //                       style: TextStyle(fontSize: 12))
-                    //                 ])
-                    //               ]),
-                    //           const SizedBox(height: 20.0),
-                    //           Row(
-                    //               mainAxisAlignment: MainAxisAlignment.spaceAround,
-                    //               children: [
-                    //                 Column(children: [
-                    //                   Container(
-                    //                       height: 60.0,
-                    //                       width: 60.0,
-                    //                       decoration: BoxDecoration(
-                    //                           borderRadius:
-                    //                               BorderRadius.circular(20.0)),
-                    //                       child: ClipRRect(
-                    //                           borderRadius:
-                    //                               BorderRadius.circular(9),
-                    //                           child: Image.asset(
-                    //                               'assets/bank/qpaywallet.png',
-                    //                               fit: BoxFit.cover))),
-                    //                   const Text("QPAY wallet",
-                    //                       style: TextStyle(fontSize: 12))
-                    //                 ])
-                    //               ])
-                    //         ]))),
                     SingleChildScrollView(
                         child: Column(children: [
                       const Padding(
@@ -633,7 +323,9 @@ class _PayScreenState extends State<PayScreen> {
                                                       style: TextStyle(
                                                           color: Colors.grey,
                                                           fontSize: 12)),
-                                                  Text(lst.manual![0].description.toString(),
+                                                  Text(
+                                                      lst.manual![0].description
+                                                          .toString(),
                                                       style: const TextStyle(
                                                           fontWeight:
                                                               FontWeight.w500))
@@ -689,8 +381,10 @@ class _PayScreenState extends State<PayScreen> {
                                                 ]),
                                             InkWell(
                                                 onTap: () {
-                                                  Clipboard.setData(ClipboardData(
-                                                  text: lst.manual![0].account!));
+                                                  Clipboard.setData(
+                                                      ClipboardData(
+                                                          text: lst.manual![0]
+                                                              .account!));
                                                   ScaffoldMessenger.of(context)
                                                       .showSnackBar(const SnackBar(
                                                           content: Text(
@@ -729,24 +423,23 @@ class _PayScreenState extends State<PayScreen> {
                                                       style: TextStyle(
                                                           color: Colors.grey,
                                                           fontSize: 12)),
-                                                  Text(lst.manual![0].accountName!,
+                                                  Text(
+                                                      lst.manual![0]
+                                                          .accountName!,
                                                       style: const TextStyle(
                                                           fontWeight:
                                                               FontWeight.w500))
                                                 ]),
                                             InkWell(
                                                 onTap: () {
-                                                  Clipboard.setData(ClipboardData(
-                                                      text: lst
-                                                          .manual![0].accountName!));
+                                                  Clipboard.setData(
+                                                      ClipboardData(
+                                                          text: lst.manual![0]
+                                                              .accountName!));
                                                   ScaffoldMessenger.of(context)
                                                       .showSnackBar(const SnackBar(
                                                           content: Text(
                                                               "Амжилттай хуулагдлаа")));
-                                                  Navigator.of(context).push(
-                                                      CupertinoPageRoute(
-                                                          builder: (context) =>
-                                                              NavigatorScreen()));
                                                 },
                                                 child: Container(
                                                     width: 100,

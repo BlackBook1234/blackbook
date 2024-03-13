@@ -5,7 +5,9 @@ import 'package:black_book/constant.dart';
 import 'package:black_book/models/product/product_store.dart';
 import 'package:black_book/models/transfer/detial.dart';
 import 'package:black_book/util/utils.dart';
-import 'package:black_book/widget/error.dart';
+import 'package:black_book/widget/alert/error.dart';
+import 'package:black_book/widget/component/choose_type.dart';
+import 'package:black_book/widget/component/search.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 
@@ -21,9 +23,8 @@ class _ShareListHistoryScreenState extends State<ShareListHistoryScreen> {
   List<TransferDetial> listSearch = [];
   String userRole = "BOSS";
   List<ProductStoreModel> storeList = [];
-  String chosenType = "Бүх дэлгүүр";
-
-  List<String> typeStore = ["Бүх дэлгүүр"];
+  String chosenType = "Агуулахаас дэлгүүр рүү шилжүүлэг";
+  List<String> typeStore = ["Агуулахаас дэлгүүр рүү шилжүүлэг"];
   String searchValue = "";
   bool searchAgian = false;
   String storeId = "";
@@ -121,6 +122,47 @@ class _ShareListHistoryScreenState extends State<ShareListHistoryScreen> {
                     icon: const Icon(Icons.keyboard_arrow_left, size: 30)),
                 backgroundColor: kPrimarySecondColor),
             body: Column(children: [
+              // TypeBuilder(
+              //   chosenValue: "",
+              //   chosenType: chosenType,
+              //   userRole: userRole,
+              //   typeStore: typeStore,
+              //   chooseType: (String value) {
+              //     setState(() {
+              //       chosenType = value;
+              //     });
+              //   },
+               
+              // ),
+              // SearchBuilder(
+              //   searchAgian: (bool type) {
+              //     setState(() {
+              //       searchAgian = type;
+              //     });
+              //     _agianSearch();
+              //   },
+              //   searchValue: (String value) {
+              //     setState(() {
+              //       searchValue = value;
+              //     });
+              //   },
+              // ),
+              // ListBuilder(
+              //   list: list,
+              //   showWarningCallback: (String? id) {
+              //     setState(() {
+              //       goodId = id!;
+              //     });
+              //   },
+              //   showDilaog: () {
+              //     _showLogOutWarning(context);
+              //   },
+              //   controller: _controller,
+              //   userRole: userRole,
+              //   isExpanded: _isExpanded,
+              //   typeTrailling: true, icon: Icons.delete_outline_outlined,
+              //   trailingText: "Устгах", screenType: 'ware',
+              // )
               Padding(
                   padding:
                       const EdgeInsets.symmetric(horizontal: 10, vertical: 10),
@@ -245,56 +287,57 @@ class _ShareListHistoryScreenState extends State<ShareListHistoryScreen> {
                                     ],
                                     borderRadius: BorderRadius.circular(20)),
                                 child: ListTile(
-                                    leading: Image.asset(
-                                        "assets/images/socks.png",
-                                        width: 80.0),
+                                    leading: Container(
+                                        height: 80.0,
+                                        width: 80.0,
+                                        decoration: BoxDecoration(
+                                            borderRadius:
+                                                BorderRadius.circular(20.0)),
+                                        child: ClipRRect(
+                                            borderRadius:
+                                                BorderRadius.circular(9),
+                                            child: list[index].product_photo == null
+                                                ? Image.asset(
+                                                    "assets/images/saleProduct.jpg",
+                                                    fit: BoxFit.cover)
+                                                : Image.network(
+                                                    list[index].product_photo!,
+                                                    fit: BoxFit.cover))),
                                     title: Text(
                                         "Барааны нэр: ${list[index].product_name}",
                                         style: const TextStyle(
                                             fontSize: 12.0,
                                             fontWeight: FontWeight.bold)),
-                                    subtitle: Column(
-                                        mainAxisAlignment:
-                                            MainAxisAlignment.start,
-                                        crossAxisAlignment:
-                                            CrossAxisAlignment.start,
-                                        children: [
-                                          Text(
-                                              "Барааны код: ${list[index].product_code}",
-                                              style: const TextStyle(
-                                                  fontSize: 12.0,
-                                                  fontWeight:
-                                                      FontWeight.normal)),
-                                          Text('Хэмжээ: ${list[index].type!}',
-                                              style: const TextStyle(
-                                                  fontSize: 11.0,
-                                                  fontWeight:
-                                                      FontWeight.normal)),
-                                          Text(
-                                              'Дэлгүүр: ${list[index].store_name!}',
-                                              style: const TextStyle(
-                                                  fontSize: 11.0,
-                                                  fontWeight:
-                                                      FontWeight.normal)),
-                                          Text(
-                                              'Анхны үнэ: ${list[index].cost!}',
-                                              style: const TextStyle(
-                                                  fontSize: 11.0,
-                                                  fontWeight:
-                                                      FontWeight.normal)),
-                                          Text(
-                                              'Зарах үнэ: ${list[index].price!}',
-                                              style: const TextStyle(
-                                                  fontSize: 11.0,
-                                                  fontWeight:
-                                                      FontWeight.normal)),
-                                          Text(
-                                              'Төрөл: ${list[index].transfer_type!}',
-                                              style: const TextStyle(
-                                                  fontSize: 11.0,
-                                                  fontWeight:
-                                                      FontWeight.normal))
-                                        ]))));
+                                    subtitle:
+                                        Column(mainAxisAlignment: MainAxisAlignment.start, crossAxisAlignment: CrossAxisAlignment.start, children: [
+                                      Text(
+                                          "Барааны код: ${list[index].product_code}",
+                                          style: const TextStyle(
+                                              fontSize: 12.0,
+                                              fontWeight: FontWeight.normal)),
+                                      Text('Хэмжээ: ${list[index].type!}',
+                                          style: const TextStyle(
+                                              fontSize: 11.0,
+                                              fontWeight: FontWeight.normal)),
+                                      Text(
+                                          'Дэлгүүр: ${list[index].store_name!}',
+                                          style: const TextStyle(
+                                              fontSize: 11.0,
+                                              fontWeight: FontWeight.normal)),
+                                      Text('Анхны үнэ: ${list[index].cost!}',
+                                          style: const TextStyle(
+                                              fontSize: 11.0,
+                                              fontWeight: FontWeight.normal)),
+                                      Text('Зарах үнэ: ${list[index].price!}',
+                                          style: const TextStyle(
+                                              fontSize: 11.0,
+                                              fontWeight: FontWeight.normal)),
+                                      Text(
+                                          'Төрөл: ${list[index].transfer_type!}',
+                                          style: const TextStyle(
+                                              fontSize: 11.0,
+                                              fontWeight: FontWeight.normal))
+                                    ]))));
                       }))
             ])));
   }

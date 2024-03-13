@@ -15,6 +15,7 @@ InvoiceDetial _$InvoiceDetialFromJson(Map<String, dynamic> json) =>
           : Qpay.fromJson(json['qpay'] as Map<String, dynamic>),
       description: json['description'] as String?,
       title: json['title'] as String?,
+      orderId: json['orderId'] as int?,
       manual: (json['manual'] as List<dynamic>?)
           ?.map((e) => Manual.fromJson(e as Map<String, dynamic>))
           .toList(),
@@ -24,6 +25,7 @@ Map<String, dynamic> _$InvoiceDetialToJson(InvoiceDetial instance) =>
     <String, dynamic>{
       'amount': instance.amount,
       'period': instance.period,
+      'orderId': instance.orderId,
       'description': instance.description,
       'title': instance.title,
       'qpay': instance.qpay,

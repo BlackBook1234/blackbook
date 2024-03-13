@@ -8,7 +8,10 @@ import 'package:black_book/models/product/product_inlist.dart';
 import 'package:black_book/provider/product_share_provider.dart';
 import 'package:black_book/util/utils.dart';
 import 'package:black_book/widget/bottom_sheet.dart/product_draft_bottom.dart';
-import 'package:black_book/widget/error.dart';
+import 'package:black_book/widget/alert/error.dart';
+import 'package:black_book/widget/component/choose_type.dart';
+import 'package:black_book/widget/component/list_builder.dart';
+import 'package:black_book/widget/component/search.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart' hide Badge;
 import 'package:flutter_bloc/flutter_bloc.dart';
@@ -37,6 +40,7 @@ class _ShareProductScreenState extends State<ShareProductScreen> {
   bool _hasMoreOrder = false;
   bool _loadingOrder = false;
   late ScrollController _controller;
+  int? index;
 
   @override
   void initState() {
@@ -146,231 +150,61 @@ class _ShareProductScreenState extends State<ShareProductScreen> {
                       Image.asset('assets/images/logoSecond.png', width: 160),
                   backgroundColor: kPrimarySecondColor),
               body: Column(children: [
-                Padding(
-                    padding: const EdgeInsets.symmetric(
-                        horizontal: 10, vertical: 10),
-                    child: Row(children: [
-                      // const SizedBox(width: 10),
-                      Expanded(
-                          child: Container(
-                              width: 80,
-                              height: 38,
-                              decoration: BoxDecoration(
-                                  color: kWhite,
-                                  boxShadow: [
-                                    BoxShadow(
-                                        color: Colors.grey.shade300,
-                                        blurRadius: 3,
-                                        offset: const Offset(2, 2))
-                                  ],
-                                  borderRadius: BorderRadius.circular(10)),
-                              child: Padding(
-                                  padding: const EdgeInsets.only(
-                                      right: 10, left: 10),
-                                  child: DropdownButton<String>(
-                                      isExpanded: true,
-                                      iconEnabledColor: kPrimarySecondColor,
-                                      value: chosenValue,
-                                      style: const TextStyle(
-                                          color: kPrimarySecondColor,
-                                          fontSize: 12,
-                                          fontWeight: FontWeight.w500),
-                                      items: typeValue
-                                          .map<DropdownMenuItem<String>>(
-                                              (String value) {
-                                        return DropdownMenuItem<String>(
-                                            value: value, child: Text(value));
-                                      }).toList(),
-                                      underline: Container(
-                                          height: 0, color: Colors.transparent),
-                                      onChanged: (value) {
-                                        setState(() {
-                                          chosenValue = value!;
-                                        });
-                                      }))))
-                    ])),
-                Padding(
-                    padding:
-                        const EdgeInsets.symmetric(vertical: 2, horizontal: 10),
-                    child: Row(children: [
-                      Expanded(
-                          child: SizedBox(
-                              height: 35,
-                              child: TextField(
-                                  onChanged: (value) {
-                                    setState(() {});
-                                  },
-                                  decoration: InputDecoration(
-                                      enabledBorder: OutlineInputBorder(
-                                          borderRadius:
-                                              BorderRadius.circular(10),
-                                          borderSide: const BorderSide(
-                                              color: Colors.black26, width: 1)),
-                                      hoverColor: Colors.black12,
-                                      focusColor: Colors.black12,
-                                      focusedBorder: OutlineInputBorder(
-                                          borderRadius:
-                                              BorderRadius.circular(10),
-                                          borderSide: const BorderSide(
-                                              color: Colors.black26, width: 1)),
-                                      fillColor: kWhite,
-                                      filled: true,
-                                      contentPadding: const EdgeInsets.all(10),
-                                      prefixIcon: const Icon(Icons.search,
-                                          color: kPrimaryColor),
-                                      border: OutlineInputBorder(
-                                          borderRadius:
-                                              BorderRadius.circular(10),
-                                          borderSide: BorderSide.none),
-                                      hintStyle:
-                                          const TextStyle(fontSize: 14))))),
-                      const SizedBox(width: 10),
-                      InkWell(
-                          onTap: () {
-                            setState(() {
-                              searchAgian = true;
-                              _agianSearch();
-                            });
-                          },
-                          child: Container(
-                              width: 80,
-                              height: 38,
-                              decoration: BoxDecoration(
-                                  color: kPrimaryColor,
-                                  boxShadow: [
-                                    BoxShadow(
-                                        color: Colors.grey.shade300,
-                                        blurRadius: 3,
-                                        offset: const Offset(2, 2))
-                                  ],
-                                  borderRadius: BorderRadius.circular(10)),
-                              child: const Center(
-                                  child: Text("Хайх",
-                                      style: TextStyle(color: kWhite)))))
-                    ])),
-                Expanded(
-                    child: ListView.builder(
-                        controller: _controller,
-                        itemCount: list.length,
-                        itemBuilder: (context, index) {
-                          return Padding(
-                              padding: const EdgeInsets.symmetric(
-                                  vertical: 8, horizontal: 20),
-                              child: Container(
-                                  decoration: BoxDecoration(
-                                      color: kWhite,
-                                      boxShadow: [
-                                        BoxShadow(
-                                            color: Colors.grey.shade300,
-                                            blurRadius: 3,
-                                            offset: const Offset(2, 2))
-                                      ],
-                                      borderRadius: BorderRadius.circular(20)),
-                                  child: ExpansionTile(
-                                      trailing: InkWell(
-                                          onTap: () {
-                                            showModalBottomSheet(
-                                                context: context,
-                                                isScrollControlled: true,
-                                                builder: (context) {
-                                                  return FractionallySizedBox(
-                                                      heightFactor: 0.7,
-                                                      child:
-                                                          ProductBottomSheetsWidget(
-                                                              title: "Сагс",
-                                                              data:
-                                                                  list[index]));
-                                                });
-                                          },
-                                          child: const Icon(
-                                              Icons.add_shopping_cart_rounded,
-                                              color: kPrimaryColor)),
-                                      shape: const Border(),
-                                      collapsedIconColor: kPrimaryColor,
-                                      leading: list[index].photo == null
-                                          ? Container(
-                                              height: 80.0,
-                                              width: 80.0,
-                                              decoration: BoxDecoration(
-                                                  borderRadius: BorderRadius.circular(
-                                                      20.0)),
-                                              child: ClipRRect(
-                                                  borderRadius:
-                                                      BorderRadius.circular(9),
-                                                  child: Image.asset(
-                                                      "assets/images/saleProduct.jpg",
-                                                      fit: BoxFit.cover)))
-                                          : Container(
-                                              height: 80.0,
-                                              width: 80.0,
-                                              decoration: BoxDecoration(
-                                                  borderRadius:
-                                                      BorderRadius.circular(20.0)),
-                                              child: ClipRRect(borderRadius: BorderRadius.circular(9), child: Image.network(list[index].photo!, fit: BoxFit.cover))),
-                                      title: Text("Барааны нэр: ${list[index].name}", style: const TextStyle(fontSize: 12.0, fontWeight: FontWeight.bold)),
-                                      subtitle: Column(mainAxisAlignment: MainAxisAlignment.start, crossAxisAlignment: CrossAxisAlignment.start, children: [
-                                        Text("Барааны код: ${list[index].code}",
-                                            style: const TextStyle(
-                                                fontSize: 12.0,
-                                                fontWeight: FontWeight.normal)),
-                                        Text(
-                                            'Анхны үнэ: ${list[index].sizes!.first.cost}₮',
-                                            style: const TextStyle(
-                                                fontSize: 11.0,
-                                                fontWeight: FontWeight.normal)),
-                                        Text(
-                                            'Зарах үнэ: ${list[index].sizes!.first.price}₮',
-                                            style: const TextStyle(
-                                                fontSize: 11.0,
-                                                fontWeight: FontWeight.normal))
-                                      ]),
-                                      initiallyExpanded: _isExpanded,
-                                      children: [
-                                        const Row(children: [
-                                          Expanded(child: Divider(indent: 10)),
-                                          SizedBox(width: 4),
-                                          Icon(Icons.circle,
-                                              size: 4, color: kPrimaryColor),
-                                          SizedBox(width: 4),
-                                          Expanded(
-                                              child: Divider(endIndent: 10))
-                                        ]),
-                                        Row(
-                                            mainAxisAlignment:
-                                                MainAxisAlignment.spaceAround,
-                                            children: [
-                                              Text(
-                                                  getSizesString(
-                                                      list[index].sizes),
-                                                  style: const TextStyle(
-                                                      fontSize: 11.0,
-                                                      fontWeight:
-                                                          FontWeight.normal)),
-                                              Text(
-                                                  getWareString(
-                                                      list[index].sizes),
-                                                  style: const TextStyle(
-                                                      fontSize: 11.0,
-                                                      fontWeight:
-                                                          FontWeight.normal))
-                                            ])
-                                      ])));
-                        }))
+                TypeBuilder(
+                  chosenValue: chosenValue,
+                  chosenType: "",
+                  userRole: Utils.getUserRole(),
+                  chooseType: (String value) {
+                    setState(() {
+                      chosenValue = value;
+                    });
+                  },
+                ),
+                SearchBuilder(
+                  searchAgian: (bool type) {
+                    setState(() {
+                      searchAgian = type;
+                    });
+                    _agianSearch();
+                  },
+                  searchValue: (String value) {
+                    setState(() {
+                      searchValue = value;
+                    });
+                  },
+                ),
+                ListBuilder(
+                  screenType: "sale",
+                  list: list,
+                  showWarningCallback: (int? ind) {
+                    setState(() {
+                      index = ind;
+                    });
+                  },
+                  showDilaog: () {
+                    for(ProductInDetialModel data in list[index!].sizes!){
+                      setState(() {
+                        data.ware_stock = 0;
+                      });
+                    }
+                    showModalBottomSheet(
+                        context: context,
+                        isScrollControlled: true,
+                        builder: (context) {
+                          return FractionallySizedBox(
+                              heightFactor: 0.7,
+                              child: ProductBottomSheetsWidget(
+                                  title: "Сагс", data: list[index!]));
+                        });
+                  },
+                  controller: _controller,
+                  userRole: "ADMIN",
+                  isExpanded: _isExpanded,
+                  typeTrailling: true,
+                  icon: Icons.add_shopping_cart_rounded,
+                  trailingText: "Сагс",
+                )
               ]));
         }));
   }
-}
-
-String getSizesString(List<ProductInDetialModel>? sizes) {
-  if (sizes == null || sizes.isEmpty) {
-    return 'No sizes available';
-  }
-  return sizes.map((size) => 'Хэмжээ: ${size.type}').join('\n');
-}
-
-String getWareString(List<ProductInDetialModel>? sizes) {
-  if (sizes == null || sizes.isEmpty) {
-    return 'No sizes available';
-  }
-  return sizes.map((size) => 'Үлдэгдэл: ${size.stock}ш').join('\n');
 }

@@ -1,5 +1,7 @@
 import 'dart:convert';
 
+import 'package:black_book/bloc/refresh_token/bloc.dart';
+import 'package:black_book/bloc/refresh_token/event.dart';
 import 'package:black_book/models/login/authentication.dart';
 import 'package:black_book/models/user_data/user_data_response.dart';
 import 'package:black_book/service/api.dart';
@@ -31,15 +33,14 @@ class AuthenticationBloc extends Bloc<UserEvent, UserState> {
         if (response.statusCode == 200 && dataResponse.status == "success") {
           emit(UserSuccess());
         } else {
-          if (dataResponse.message.show) {
+          if (dataResponse.message.show && dataResponse.status == "error") {
             emit(UserFailure(dataResponse.message.text!));
           } else {
-            emit(UserFailure(""));
+            emit(UserFailure("Серверийн алдаа"));
           }
         }
       } catch (ex) {
-        print("aldaa = ${ex}");
-        emit(UserFailure(ex.toString()));
+        emit(UserFailure("Серверийн алдаа"));
       }
     });
     on<UserAuthenticationEvent>((event, emit) async {
@@ -59,6 +60,9 @@ class AuthenticationBloc extends Bloc<UserEvent, UserState> {
         UserDataResponseModel dataResponse =
             UserDataResponseModel.fromJson(response.data);
         if (response.statusCode == 200 && dataResponse.status == "success") {
+          final prefs = await SharedPreferences.getInstance();
+          prefs.setString("userInfo", jsonEncode(dataResponse.data));
+          Utils.getCommonProvider().setUserInfo(dataResponse.data!);
           emit(UserAuthenticationSuccess(dataResponse.data!));
         } else if (dataResponse.status == "error" &&
             dataResponse.message.show) {
@@ -66,63 +70,45 @@ class AuthenticationBloc extends Bloc<UserEvent, UserState> {
         } else {
           emit(UserAuthenticationFailure(""));
         }
-        final prefs = await SharedPreferences
-            .getInstance(); //TODO mash chuhal ene heseg tolbor tolson uyd hadgalna
-        prefs.setString("userInfo", jsonEncode(dataResponse.data));
-        Utils.getCommonProvider().setUserInfo(dataResponse.data!);
-        // ignore: deprecated_member_use
-      } on DioError catch (ex) {
-        if (ex.response!.statusCode == 500) {
-          emit(UserAuthenticationFailure("Серверийн алдаа"));
-        } else {
-          emit(UserAuthenticationFailure(ex.toString()));
-        }
+      } catch (ex) {
+        emit(UserAuthenticationFailure("Серверийн алдаа"));
       }
     });
-    // on<UserLoginEvent>((event, emit) async {
-    //   emit(UserLoading());
-    //   try {
-    //     final apiService = ApiService();
-    //     var body = {};
-
-    //     Response response = await apiService.getRequest('/api/getUserData');
-    //     print(response.data);
-    //     print("object");
-    //     emit(UserSuccess());
-    //   } catch (ex) {
-    //     print("this ex = ${ex.toString()}");
-    //     emit(UserFailure(ex.toString()));
-    //   }
-    // });
-    //  on<InterruptedGoodsEvent>((event, emit) async {
-    //   emit(InterruptedGoodsLoading());
-    //   try {
-    //     String locationKey =
-    //         Utils.getUserProvider().location?.locationKey ?? '';
-    //     String userKey = Utils.getUserProvider().userInfo?.userkey ?? '';
-    //     final apiService = ApiService();
-    //     var body = {
-    //       "latitude": "47.8963126",
-    //       "searchValue": "",
-    //       "userKey": "230118412885200570",
-    //       "page": 0,
-    //       "longitude": "106.8889575",
-    //       "locationKey": "220429027174500000",
-    //       "deviceId": ""
-    //     };
-    //     Response response =
-    //         await apiService.postRequest('/order/getAllItemList', body: body);
-    // print("---------hELLO -------" "${response}");
-
-    // InterruptedResponse reportDatas =
-    //     InterruptedResponse.fromJson(response.data);
-    // bool hasMoreOrder = true;
-    //   if (reportDatas.list.length < 20) hasMoreOrder = false;
-    //   emit(InterruptedGoodsSuccess(
-    //       interruptedGoodsList: reportDatas.list, hasMoreItem: hasMoreOrder));
-    // } catch (ex) {
-    //   emit(InterruptedGoodsFailure(ex.toString()));
-    // }
-    // });
+    on<ChangeUserEvent>((event, emit) async {
+      emit(ChangeUserLoading());
+      try {
+        final apiService = ApiTokenService(Utils.getToken());
+        var body = {
+          "storeId": event.storeId,
+          "phoneNumber": event.phoneNumber,
+          "countryCode": "976"
+        };
+        print(body);
+        Response response =
+            await apiService.postRequest('/v1/store/change/phone', body: body);
+        print("this reponse  = ${response.data}");
+        UserDataResponseModel dataResponse =
+            UserDataResponseModel.fromJson(response.data);
+        if (response.statusCode == 200 && dataResponse.status == "success") {
+          final prefs = await SharedPreferences.getInstance();
+          prefs.setString("userInfo", jsonEncode(dataResponse.data));
+          Utils.getCommonProvider().setUserInfo(dataResponse.data!);
+          emit(ChangeUserSuccess());
+        } else if (dataResponse.status == "error" &&
+            dataResponse.message.reason == "auth_token_error") {
+          final bloc = RefreshBloc();
+          bloc.add(const RefreshTokenEvent());
+          emit(ChangeUserFailure("Token"));
+        } else if (dataResponse.status == "error" &&
+            dataResponse.message.show) {
+          emit(ChangeUserFailure(dataResponse.message.text!));
+        } else {
+          emit(ChangeUserFailure("Серверийн алдаа"));
+        }
+      } catch (ex) {
+        print(ex);
+        emit(ChangeUserFailure("Серверийн алдаа"));
+      }
+    });
   }
 }

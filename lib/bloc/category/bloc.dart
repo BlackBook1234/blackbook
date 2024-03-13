@@ -29,8 +29,11 @@ class CategoryBloc extends Bloc<CategoryEvent, CategoryState> {
           final bloc = RefreshBloc();
           bloc.add(const RefreshTokenEvent());
           emit(CategoryFailure("Token"));
+        } else if (dataResponse.status == "error" &&
+            dataResponse.message.show) {
+          emit(CategoryFailure(dataResponse.message.text!));
         } else {
-          emit(CategoryFailure(""));
+          emit(CategoryFailure("Серверийн алдаа"));
         }
       } catch (ex) {
         emit(CategoryFailure("Серверийн алдаа"));
@@ -56,7 +59,7 @@ class CategoryBloc extends Bloc<CategoryEvent, CategoryState> {
           emit(GetCategoryFailure("Token"));
         } else if (dataResponse.status == "error" &&
             dataResponse.message.show) {
-          emit(GetCategoryFailure(dataResponse.message.reason!));
+          emit(GetCategoryFailure(dataResponse.message.text!));
         } else {
           emit(GetCategoryFailure("Серверийн алдаа"));
         }

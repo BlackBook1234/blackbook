@@ -6,7 +6,7 @@ part 'detial.g.dart';
 
 @JsonSerializable()
 class InvoiceDetial {
-  int? amount, period;
+  int? amount, period, orderId;
   String? description, title;
   Qpay? qpay;
   List<Manual>? manual;
@@ -17,6 +17,7 @@ class InvoiceDetial {
       this.qpay,
       this.description,
       this.title,
+      this.orderId,
       this.manual});
   factory InvoiceDetial.fromJson(Map<String, dynamic> json) =>
       _$InvoiceDetialFromJson(json);

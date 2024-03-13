@@ -47,3 +47,23 @@ class UserAuthenticationSuccess extends UserState {
   @override
   List<Object?> get props => [];
 }
+
+//chnage user
+class ChangeUserLoading extends UserState {
+  @override
+  List<Object?> get props => [];
+}
+
+class ChangeUserFailure extends UserState {
+  final String message;
+
+  ChangeUserFailure(this.message);
+  @override
+  List<Object?> get props => [message];
+}
+
+class ChangeUserSuccess extends UserState {
+  ChangeUserSuccess();
+  @override
+  List<Object?> get props => [];
+}

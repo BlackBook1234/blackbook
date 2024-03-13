@@ -3,6 +3,7 @@ import "package:black_book/global_keys.dart";
 import "package:black_book/models/product/product_detial.dart";
 import "package:black_book/models/product/product_inlist.dart";
 import "package:black_book/provider/product_share_provider.dart";
+import "package:black_book/widget/alert/show_dilaog.dart";
 import "package:flutter/material.dart";
 import "package:flutter/services.dart";
 import "package:provider/provider.dart";
@@ -22,7 +23,8 @@ class ProductBottomSheetsWidget extends StatefulWidget {
 
 class _BottomSheetsWidgetState extends State<ProductBottomSheetsWidget> {
   void changeOrderQty(ProductInDetialModel data, int type) {
-    if (type == 1 && data.ware_stock < data.warehouse_stock!) {
+    print(data.stock);
+    if (type == 1 && data.ware_stock < data.stock!) {
       setState(() {
         data.ware_stock++;
       });
@@ -48,20 +50,24 @@ class _BottomSheetsWidgetState extends State<ProductBottomSheetsWidget> {
         listData.add(inData);
       }
     }
-    ProductDetialModel draftData = ProductDetialModel(
-        name: widget.data.name,
-        code: widget.data.code,
-        category_id: widget.data.category_id,
-        created_at: widget.data.created_at,
-        parent_category: widget.data.parent_category,
-        parent_name: widget.data.parent_name,
-        good_id: widget.data.good_id,
-        sizes: listData,
-        category_name: widget.data.category_name);
-    Provider.of<ProductProvider>(GlobalKeys.navigatorKey.currentContext!,
-            listen: false)
-        .setProductItemsData(draftData);
-    Navigator.pop(context);
+    if (listData.isEmpty) {
+      AlertMessage.statusMessage(context, "Анхаар!", "Бараа оруулна уу", true);
+    } else {
+      ProductDetialModel draftData = ProductDetialModel(
+          name: widget.data.name,
+          code: widget.data.code,
+          category_id: widget.data.category_id,
+          created_at: widget.data.created_at,
+          parent_category: widget.data.parent_category,
+          parent_name: widget.data.parent_name,
+          good_id: widget.data.good_id,
+          sizes: listData,
+          category_name: widget.data.category_name);
+      Provider.of<ProductProvider>(GlobalKeys.navigatorKey.currentContext!,
+              listen: false)
+          .setProductItemsData(draftData);
+      Navigator.pop(context);
+    }
   }
 
   @override
@@ -77,7 +83,17 @@ class _BottomSheetsWidgetState extends State<ProductBottomSheetsWidget> {
                     fontWeight: FontWeight.bold)),
             const Divider(),
             ListTile(
-                leading: Image.asset("assets/images/socks.png", width: 80.0),
+                leading: Container(
+                    height: 80.0,
+                    width: 80.0,
+                    decoration: BoxDecoration(
+                        borderRadius: BorderRadius.circular(20.0)),
+                    child: ClipRRect(
+                        borderRadius: BorderRadius.circular(9),
+                        child: widget.data.photo == null
+                            ? Image.asset("assets/images/saleProduct.jpg",
+                                fit: BoxFit.cover)
+                            : Image.network(widget.data.photo!))),
                 title: Text("Барааны нэр: ${widget.data.name}",
                     style: const TextStyle(
                         fontSize: 12.0, fontWeight: FontWeight.bold)),
@@ -107,7 +123,7 @@ class _BottomSheetsWidgetState extends State<ProductBottomSheetsWidget> {
                               crossAxisAlignment: CrossAxisAlignment.start,
                               children: [
                                 Text(
-                                    'Үлдэгдэл: ${widget.data.sizes![index].warehouse_stock}ш',
+                                    'Үлдэгдэл: ${widget.data.sizes![index].stock}ш',
                                     style: const TextStyle(
                                         fontSize: 11.0,
                                         fontWeight: FontWeight.normal)),

@@ -5,6 +5,7 @@ import 'package:black_book/screen/sale_product/sold.dart';
 import 'package:black_book/screen/login/login.dart';
 import 'package:black_book/screen/share/share_list.dart';
 import 'package:black_book/screen/share/share_product.dart';
+import 'package:black_book/widget/bottom_sheet.dart/change_user_store.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_svg/svg.dart';
@@ -54,7 +55,8 @@ class NavBar extends StatelessWidget {
                               fontWeight: FontWeight.bold)),
                       onTap: () {
                         Navigator.of(context).push(CupertinoPageRoute(
-                            builder: (context) => const WareHouseAdminScreen()));
+                            builder: (context) =>
+                                const WareHouseAdminScreen()));
                       }),
                   ListTile(
                       trailing: SvgPicture.asset("assets/svg/right_arrow.svg",
@@ -132,8 +134,23 @@ class NavBar extends StatelessWidget {
           Icon(Icons.mail_outline, color: Colors.grey),
           SizedBox(width: 10),
           Text("KharDevter@gmail.com", style: TextStyle(color: Colors.grey))
-        ])
+        ]),
       ])),
+      ListTile(
+          title: const Row(children: [
+            Icon(Icons.sync, color: kPrimaryColor),
+            SizedBox(width: 10),
+            Text(
+              "Хэрэглэгч солих",
+              style: TextStyle(
+                  fontWeight: FontWeight.bold,
+                  fontSize: 16,
+                  color: kPrimarySecondColor),
+            )
+          ]),
+          onTap: () {
+            _changeUser(context);
+          }),
       ListTile(
           title: Row(children: [
             SvgPicture.asset("assets/icons/arrow_right.svg",
@@ -191,6 +208,16 @@ class NavBar extends StatelessWidget {
         context: context,
         builder: (BuildContext context) {
           return alert;
+        });
+  }
+
+  _changeUser(BuildContext context) {
+    showModalBottomSheet(
+        context: context,
+        isScrollControlled: true,
+        builder: (context) {
+          return const FractionallySizedBox(
+              heightFactor: 0.6, child: ChangeUserBottom(title: "Хэрэглэгч солих"));
         });
   }
 }

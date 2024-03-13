@@ -5,7 +5,7 @@ import "package:black_book/constant.dart";
 import "package:black_book/models/product/product_detial.dart";
 import "package:black_book/models/product/product_inlist.dart";
 import "package:black_book/util/utils.dart";
-import "package:black_book/widget/error.dart";
+import "package:black_book/widget/alert/show_dilaog.dart";
 import "package:flutter/material.dart";
 import "package:flutter/services.dart";
 import "package:flutter_bloc/flutter_bloc.dart";
@@ -45,7 +45,7 @@ class _BottomSheetsWidgetState extends State<SellProductBottomSheetsWidget> {
         }
       }
       if (otpData.isEmpty) {
-        ErrorMessage.attentionMessage(context, "Бараа оруулна уу");
+        AlertMessage.attentionMessage(context, "Бараа оруулна уу");
       } else {
         print(otpData.length);
         _bloc.add(CreateSaleEvent(otpData, cashType));
@@ -99,28 +99,13 @@ class _BottomSheetsWidgetState extends State<SellProductBottomSheetsWidget> {
                             .add(CreateSaleEvent(widget.data.sizes!, cashType));
                       } else {
                         Utils.cancelLoader(context);
-                        ErrorMessage.attentionMessage(context, state.message);
+                        AlertMessage.attentionMessage(context, state.message);
                       }
                     }
                     if (state is SaleSuccess) {
                       Utils.cancelLoader(context);
-                      showDialog(
-                          context: context,
-                          builder: (context) {
-                            return const AlertDialog(
-                                shape: RoundedRectangleBorder(
-                                    borderRadius:
-                                        BorderRadius.all(Radius.circular(15))),
-                                scrollable: true,
-                                title: Text("Мэдээлэл",
-                                    textAlign: TextAlign.center),
-                                contentPadding: EdgeInsets.only(
-                                    right: 20, left: 20, bottom: 20, top: 20),
-                                content: Column(children: [
-                                  Text("Амжилттай зарагдлаа"),
-                                  SizedBox(height: 20)
-                                ]));
-                          });
+                      AlertMessage.statusMessage(
+                          context, "Амжилттай", "Бараа борлуулагдлаа", false);
                       Future.delayed(const Duration(seconds: 1), () {
                         Navigator.pop(context);
                         Navigator.pop(context);
@@ -401,6 +386,9 @@ class _BottomSheetsWidgetState extends State<SellProductBottomSheetsWidget> {
                               }
                               if (otpCheck) {
                                 saleProduct();
+                              } else {
+                                AlertMessage.alertMessage(
+                                    context, "Анхаар!", "Бараа оруулна уу!");
                               }
                             },
                             child: const Text("Борлуулах",

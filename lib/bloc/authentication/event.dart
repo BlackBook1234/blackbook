@@ -27,3 +27,13 @@ class UserAuthenticationEvent extends UserEvent {
   @override
   List<Object> get props => [phoneNumber, deviceToken, deviceType, otpCode];
 }
+
+class ChangeUserEvent extends UserEvent {
+  final String phoneNumber;
+  final int storeId;
+
+  const ChangeUserEvent(this.storeId, this.phoneNumber);
+
+  @override
+  List<Object> get props => [phoneNumber, storeId];
+}

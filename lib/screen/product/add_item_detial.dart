@@ -3,7 +3,7 @@ import 'package:black_book/constant.dart';
 import 'package:black_book/models/default/product.dart';
 import 'package:black_book/widget/camera.dart';
 import 'package:black_book/widget/dynamic_item.dart';
-import 'package:black_book/widget/error.dart';
+import 'package:black_book/widget/alert/error.dart';
 import 'package:camera/camera.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';

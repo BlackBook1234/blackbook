@@ -22,8 +22,8 @@ class GetInvoiceEvent extends PaymentEvent {
 }
 
 class CheckInvoiceEvent extends PaymentEvent {
-  final String id, h;
-  const CheckInvoiceEvent(this.id, this.h);
+  final int orderId;
+  const CheckInvoiceEvent(this.orderId);
   @override
-  List<Object> get props => [id, h];
+  List<Object> get props => [orderId];
 }

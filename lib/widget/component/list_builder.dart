@@ -53,12 +53,11 @@ class ListBuilder extends StatelessWidget {
                           borderRadius: BorderRadius.circular(20)),
                       child: ExpansionTile(
                           trailing: typeTrailling
-                              ? userRole == "BOSS"
+                              ? userRole == "BOSS" || userRole == "ADMIN"
                                   ? InkWell(
                                       onTap: () {
                                         if (screenType == "sale") {
-                                          showWarningCallback
-                                            ?.call(index);
+                                          showWarningCallback?.call(index);
                                         } else if (screenType == "ware") {
                                           showWarningCallback
                                               ?.call(list[index].good_id);
@@ -76,45 +75,41 @@ class ListBuilder extends StatelessWidget {
                               : const Text(""),
                           shape: const Border(),
                           collapsedIconColor: kPrimaryColor,
-                          leading: list[index].photo == null
-                              ? Container(
-                                  height: 80.0,
-                                  width: 80.0,
-                                  decoration: BoxDecoration(
-                                      borderRadius:
-                                          BorderRadius.circular(20.0)),
-                                  child: ClipRRect(
-                                      borderRadius: BorderRadius.circular(9),
-                                      child: Image.asset("assets/images/saleProduct.jpg",
-                                          fit: BoxFit.cover)))
-                              : Container(
-                                  height: 80.0,
-                                  width: 80.0,
-                                  decoration: BoxDecoration(
-                                      borderRadius:
-                                          BorderRadius.circular(20.0)),
-                                  child: ClipRRect(
-                                      borderRadius: BorderRadius.circular(9),
-                                      child: Image.network(list[index].photo!,
+                          leading: Container(
+                              height: 80.0,
+                              width: 80.0,
+                              decoration: BoxDecoration(
+                                  borderRadius: BorderRadius.circular(20.0)),
+                              child: ClipRRect(
+                                  borderRadius: BorderRadius.circular(9),
+                                  child: list[index].photo == null
+                                      ? Image.asset(
+                                          "assets/images/saleProduct.jpg",
+                                          fit: BoxFit.cover)
+                                      : Image.network(list[index].photo!,
                                           fit: BoxFit.cover))),
                           title: Text("Барааны нэр: ${list[index].name}",
                               style: const TextStyle(
                                   fontSize: 12.0, fontWeight: FontWeight.bold)),
-                          subtitle: Column(mainAxisAlignment: MainAxisAlignment.start, crossAxisAlignment: CrossAxisAlignment.start, children: [
-                            Text("Барааны код: ${list[index].code}",
-                                style: const TextStyle(
-                                    fontSize: 12.0,
-                                    fontWeight: FontWeight.normal)),
-                            Text('Анхны үнэ: ${list[index].sizes!.first.cost}₮',
-                                style: const TextStyle(
-                                    fontSize: 11.0,
-                                    fontWeight: FontWeight.normal)),
-                            Text(
-                                'Зарах үнэ: ${list[index].sizes!.first.price}₮',
-                                style: const TextStyle(
-                                    fontSize: 11.0,
-                                    fontWeight: FontWeight.normal))
-                          ]),
+                          subtitle: Column(
+                              mainAxisAlignment: MainAxisAlignment.start,
+                              crossAxisAlignment: CrossAxisAlignment.start,
+                              children: [
+                                Text("Барааны код: ${list[index].code}",
+                                    style: const TextStyle(
+                                        fontSize: 12.0,
+                                        fontWeight: FontWeight.normal)),
+                                Text(
+                                    'Анхны үнэ: ${list[index].sizes!.first.cost}₮',
+                                    style: const TextStyle(
+                                        fontSize: 11.0,
+                                        fontWeight: FontWeight.normal)),
+                                Text(
+                                    'Зарах үнэ: ${list[index].sizes!.first.price}₮',
+                                    style: const TextStyle(
+                                        fontSize: 11.0,
+                                        fontWeight: FontWeight.normal))
+                              ]),
                           initiallyExpanded: isExpanded,
                           children: [
                             const Row(children: [

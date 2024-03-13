@@ -10,6 +10,7 @@ TransferDetial _$TransferDetialFromJson(Map<String, dynamic> json) =>
     TransferDetial(
       transfer_id: json['transfer_id'] as int?,
       price: json['price'] as int?,
+      product_photo: json['product_photo'] as String?,
       product_code: json['product_code'] as String?,
       product_id: json['product_id'] as int?,
       product_name: json['product_name'] as String?,
@@ -39,5 +40,6 @@ Map<String, dynamic> _$TransferDetialToJson(TransferDetial instance) =>
       'store_name': instance.store_name,
       'created_at': instance.created_at,
       'transfer_type': instance.transfer_type,
+      'product_photo': instance.product_photo,
       'transfer_keyword': instance.transfer_keyword,
     };

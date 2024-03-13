@@ -30,7 +30,7 @@ class PaymentBloc extends Bloc<PaymentEvent, PaymentState> {
           emit(PackagesFailure("Token"));
         } else if (responseData.status == "error" &&
             responseData.message.show) {
-          emit(PackagesFailure(responseData.message.reason!));
+          emit(PackagesFailure(responseData.message.text!));
         } else {
           emit(PackagesFailure("Серверийн алдаа"));
         }
@@ -57,7 +57,7 @@ class PaymentBloc extends Bloc<PaymentEvent, PaymentState> {
           emit(InvoiceFailure("Token"));
         } else if (responseData.status == "error" &&
             responseData.message.show) {
-          emit(InvoiceFailure(responseData.message.reason!));
+          emit(InvoiceFailure(responseData.message.text!));
         } else {
           emit(InvoiceFailure("Серверийн алдаа"));
         }
@@ -69,12 +69,11 @@ class PaymentBloc extends Bloc<PaymentEvent, PaymentState> {
     on<CheckInvoiceEvent>((event, emit) async {
       emit(CheckInvoiceLoading());
       try {
-        String accessToken = Utils.getToken();
-        print(accessToken);
-        final apiService = ApiTokenService(accessToken);
-        Response response = await apiService.getRequest(
-            '/v1/payment/webhook/qpay?h=${event.h}&qpay_payment_id=${event.id}');
-        print("this reponse  = ${response.data}");
+        final apiService = ApiTokenService(Utils.getToken());
+        Map<String, int> body = {"orderId": event.orderId};
+        Response response =
+            await apiService.postRequest('/v1/payment/check', body: body);
+        print("this response  = ${response.data}");
         InvoiceResponse responseData = InvoiceResponse.fromJson(response.data);
         if (response.statusCode == 200 && responseData.status == "success") {
           emit(CheckInvoiceSuccess());
@@ -85,9 +84,9 @@ class PaymentBloc extends Bloc<PaymentEvent, PaymentState> {
           emit(CheckInvoiceFailure("Token"));
         } else if (responseData.status == "error" &&
             responseData.message.show) {
-          emit(CheckInvoiceFailure(responseData.message.reason!));
+          emit(CheckInvoiceFailure(responseData.message.text!));
         } else {
-          emit(CheckInvoiceFailure("Серверийн алдаа"));
+          emit(CheckInvoiceFailure("Төлбөр төлөгдөөгүй"));
         }
       } catch (ex) {
         print(ex);

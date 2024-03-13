@@ -7,7 +7,7 @@ import 'package:black_book/util/utils.dart';
 import 'package:black_book/widget/component/choose_type.dart';
 import 'package:black_book/widget/component/list_builder.dart';
 import 'package:black_book/widget/component/search.dart';
-import 'package:black_book/widget/error.dart';
+import 'package:black_book/widget/alert/error.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 

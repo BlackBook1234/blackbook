@@ -1,13 +1,14 @@
 import 'package:black_book/bloc/product/bloc.dart';
 import 'package:black_book/bloc/product/event.dart';
 import 'package:black_book/bloc/product/state.dart';
+import 'package:black_book/constant.dart';
 import 'package:black_book/models/product/product_detial.dart';
 import 'package:black_book/models/product/product_store.dart';
 import 'package:black_book/util/utils.dart';
 import 'package:black_book/widget/component/choose_type.dart';
 import 'package:black_book/widget/component/list_builder.dart';
 import 'package:black_book/widget/component/search.dart';
-import 'package:black_book/widget/error.dart';
+import 'package:black_book/widget/alert/error.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 
@@ -20,7 +21,6 @@ class SearchScreen extends StatefulWidget {
 class _SearchScreenState extends State<SearchScreen> {
   final _bloc = ProductBloc();
   List<ProductDetialModel> list = [];
-  List<ProductDetialModel> listSearch = [];
   final bool _isExpanded = false;
   List<ProductStoreModel> storeList = [];
   String chosenValue = "Бүх төрөл";
@@ -35,6 +35,7 @@ class _SearchScreenState extends State<SearchScreen> {
   bool _hasMoreOrder = false;
   bool _loadingOrder = false;
   late ScrollController _controller;
+  var refresh = GlobalKey<RefreshIndicatorState>();
 
   @override
   void initState() {
@@ -65,7 +66,7 @@ class _SearchScreenState extends State<SearchScreen> {
         _page = 1;
       });
       _bloc.add(
-          GetProductEvent(_page, false, storeId, productType, searchValue));
+          GetProductSearchEvent(_page, false, storeId, productType, searchValue));
     } else {
       for (ProductStoreModel data in storeList) {
         if (data.name == chosenType) {
@@ -89,6 +90,16 @@ class _SearchScreenState extends State<SearchScreen> {
       _bloc.add(GetProductSearchEvent(
           _page, searchAgian, storeId, productType, searchValue));
     }
+  }
+
+  Future<void> refreshList() async {
+    refresh.currentState?.show(atTop: false);
+    setState(() {
+      searchAgian = true;
+      _page = 1;
+    });
+    _bloc.add(GetProductSearchEvent(
+        _page, searchAgian, storeId, productType, searchValue));
   }
 
   @override
@@ -120,12 +131,12 @@ class _SearchScreenState extends State<SearchScreen> {
                   Utils.cancelLoader(context);
                   setState(() {
                     _hasMoreOrder = state.hasMoreOrder;
+                    if(_hasMoreOrder){
+                    }
                     if (searchAgian) {
                       list = state.list;
-                      listSearch = state.list;
                     } else {
                       list.addAll(state.list);
-                      listSearch.addAll(state.list);
                     }
                     list.sort((b, a) => a.created_at!.compareTo(b.created_at!));
                     storeList = state.storeList;
@@ -138,45 +149,51 @@ class _SearchScreenState extends State<SearchScreen> {
                 }
               })
         ],
-        child: Column(children: [
-          TypeBuilder(
-            chosenValue: chosenValue,
-            chosenType: chosenType,
-            userRole: "BOSS",
-            typeStore: typeStore,
-            chooseType: (String value) {
-              setState(() {
-                chosenValue = value;
-              });
-            },
-            chooseStore: (String value) {
-              setState(() {
-                chosenType = value;
-              });
-            },
-          ),
-          SearchBuilder(
-            searchAgian: (bool type) {
-              setState(() {
-                searchAgian = type;
-              });
-              _agianSearch();
-            },
-            searchValue: (String value) {
-              setState(() {
-                searchValue = value;
-              });
-            },
-          ),
-          ListBuilder(
-            list: list,
-            controller: _controller,
-            userRole: "BOSS",
-            isExpanded: _isExpanded,
-            typeTrailling: false,
-            icon: Icons.abc,
-            trailingText: "", screenType: 'search',
-          )
-        ]));
+        child: RefreshIndicator(
+            color: kPrimaryColor,
+            backgroundColor: kWhite,
+            key: refresh,
+            onRefresh: refreshList,
+            child: Column(children: [
+              TypeBuilder(
+                chosenValue: chosenValue,
+                chosenType: chosenType,
+                userRole: "BOSS",
+                typeStore: typeStore,
+                chooseType: (String value) {
+                  setState(() {
+                    chosenValue = value;
+                  });
+                },
+                chooseStore: (String value) {
+                  setState(() {
+                    chosenType = value;
+                  });
+                },
+              ),
+              SearchBuilder(
+                searchAgian: (bool type) {
+                  setState(() {
+                    searchAgian = type;
+                  });
+                  _agianSearch();
+                },
+                searchValue: (String value) {
+                  setState(() {
+                    searchValue = value;
+                  });
+                },
+              ),
+              ListBuilder(
+                list: list,
+                controller: _controller,
+                userRole: "BOSS",
+                isExpanded: _isExpanded,
+                typeTrailling: false,
+                icon: Icons.abc,
+                trailingText: "",
+                screenType: 'search',
+              )
+            ])));
   }
 }

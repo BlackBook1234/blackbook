@@ -37,7 +37,7 @@ class StoreBloc extends Bloc<StoreEvent, StoreState> {
           emit(StoreFailure("Token"));
         } else if (dataResponse.status == "error" &&
             dataResponse.message.show) {
-          emit(StoreFailure(dataResponse.message.reason!));
+          emit(StoreFailure(dataResponse.message.text!));
         } else {
           emit(StoreFailure("Серверийн алдаа"));
         }
@@ -64,7 +64,7 @@ class StoreBloc extends Bloc<StoreEvent, StoreState> {
           emit(GetStoreFailure("Token"));
         } else if (dataResponse.status == "error" &&
             dataResponse.message.show) {
-          emit(GetStoreFailure(dataResponse.message.reason!));
+          emit(GetStoreFailure(dataResponse.message.text!));
         } else {
           emit(GetStoreFailure("Серверийн алдаа"));
         }
@@ -105,7 +105,7 @@ class StoreBloc extends Bloc<StoreEvent, StoreState> {
           emit(GetStoreProductFailure("Token"));
         } else if (dataResponse.status == "error" &&
             dataResponse.message.show) {
-          emit(GetStoreProductFailure(dataResponse.message.reason!));
+          emit(GetStoreProductFailure(dataResponse.message.text!));
         } else {
           emit(GetStoreProductFailure("Серверийн алдаа"));
         }

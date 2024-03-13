@@ -12,11 +12,13 @@ class TransferDetial {
       store_name,
       created_at,
       transfer_type,
+      product_photo,
       transfer_keyword;
 
   TransferDetial(
       {this.transfer_id,
       this.price,
+      this.product_photo,
       this.product_code,
       this.product_id,
       this.product_name,
