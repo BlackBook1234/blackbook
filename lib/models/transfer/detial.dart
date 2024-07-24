@@ -1,37 +1,41 @@
 import 'package:json_annotation/json_annotation.dart';
 
-part 'detial.g.dart';
+import 'product.dart';
+
+part "detial.g.dart";
 
 @JsonSerializable()
-class TransferDetial {
-  int? transfer_id, product_id, cost, price, stock, store_id;
-  String? product_name,
-      product_code,
-      good_id,
-      type,
-      store_name,
-      created_at,
-      transfer_type,
-      product_photo,
-      transfer_keyword;
+class TransferItem {
+  String? tid, description;
+  String? status;
+  String? status_text;
+  // int? status_user_id;
+  String? transfer_keyword, store_name, created_at, transfer_type;
+  int? total_count;
+  int? total_cost, store_id;
+  int? total_price;
+  List<TransferProduct>? products;
+  bool? isShowConfirmation;
 
-  TransferDetial(
-      {this.transfer_id,
-      this.price,
-      this.product_photo,
-      this.product_code,
-      this.product_id,
-      this.product_name,
-      this.cost,
-      this.created_at,
-      this.good_id,
-      this.stock,
-      this.store_id,
-      this.store_name,
-      this.transfer_keyword,
+  TransferItem(
+      {this.tid,
+      this.description,
+      this.status_text,
       this.transfer_type,
-      this.type});
-  factory TransferDetial.fromJson(Map<String, dynamic> json) =>
-      _$TransferDetialFromJson(json);
-  Map<String, dynamic> toJson() => _$TransferDetialToJson(this);
+      this.store_id,
+      this.isShowConfirmation,
+      this.store_name,
+      this.status,
+      this.created_at,
+      // this.status_user_id,
+      this.transfer_keyword,
+      this.total_count,
+      this.total_cost,
+      this.total_price,
+      this.products});
+
+  factory TransferItem.fromJson(Map<String, dynamic> json) =>
+      _$TransferItemFromJson(json);
+
+  Map<String, dynamic> toJson() => _$TransferItemToJson(this);
 }

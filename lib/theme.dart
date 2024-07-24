@@ -9,26 +9,83 @@ class AppTheme {
           backgroundColor: kPrimarySecondColor,
           elevation: 0,
           titleTextStyle: TextStyle(color: Colors.black, fontSize: 13.0)),
-      inputDecorationTheme: const InputDecorationTheme(
+      inputDecorationTheme: InputDecorationTheme(
+        fillColor: Colors.white,
+        filled: true,
         floatingLabelBehavior: FloatingLabelBehavior.always,
-        // contentPadding: EdgeInsets.symmetric(horizontal: 42, vertical: 20),
-        enabledBorder: outlineInputBorder,
-        focusedBorder: outlineInputBorder,
-        border: outlineInputBorder,
+        contentPadding: const EdgeInsets.fromLTRB(16.0, 16.0, 16.0, 16.0),
+        isDense: false,
+        suffixIconColor: kTextDark,
+        labelStyle: const TextStyle(
+          color: kTextMedium,
+          fontWeight: FontWeight.normal,
+        ),
+        hintStyle: const TextStyle(
+          fontSize: 14,
+          color: kTextMedium,
+          fontWeight: FontWeight.normal,
+        ),
+        errorStyle: const TextStyle(
+          color: kDanger,
+        ),
+        border: OutlineInputBorder(
+          borderRadius: BorderRadius.circular(12),
+          borderSide: const BorderSide(
+            color: Color(0xffECEAF5),
+            width: 1,
+          ),
+        ),
+        errorBorder: OutlineInputBorder(
+          borderRadius: BorderRadius.circular(12),
+          borderSide: BorderSide(
+            color: kDanger.withOpacity(0.5),
+            width: 2,
+          ),
+        ),
+        focusedErrorBorder: OutlineInputBorder(
+          borderRadius: BorderRadius.circular(12),
+          borderSide: const BorderSide(
+            color: kDanger,
+            width: 2,
+          ),
+        ),
+        enabledBorder: OutlineInputBorder(
+          borderRadius: BorderRadius.circular(12),
+          borderSide: BorderSide(
+            color: kDivider,
+            width: 1,
+          ),
+        ),
+        focusedBorder: OutlineInputBorder(
+          borderRadius: BorderRadius.circular(12),
+          borderSide: const BorderSide(
+            color: kPrimaryColor,
+            width: 2,
+          ),
+        ),
+      ),
+      textTheme: const TextTheme(
+        bodyLarge: TextStyle(
+          fontSize: 14,
+          color: kTextDark,
+        ),
+        bodyMedium: TextStyle(
+          fontSize: 14,
+          color: kTextDark,
+        ),
+        titleLarge: TextStyle(
+          fontSize: 14,
+          color: kTextMedium,
+        ),
+        titleMedium: TextStyle(
+          color: kTextDark,
+          fontWeight: FontWeight.w500,
+        ),
+        titleSmall: TextStyle(
+          color: kTextDark,
+        ),
       ),
       visualDensity: VisualDensity.adaptivePlatformDensity,
-      
-      // elevatedButtonTheme: ElevatedButtonThemeData(
-      //   style: ElevatedButton.styleFrom(
-      //     elevation: 0,
-      //     backgroundColor: kPrimaryColor,
-      //     foregroundColor: Colors.white,
-      //     minimumSize: const Size(double.infinity, 48),
-      //     shape: const RoundedRectangleBorder(
-      //       borderRadius: BorderRadius.all(Radius.circular(16)),
-      //     ),
-      //   ),
-      // ),
     );
   }
 }

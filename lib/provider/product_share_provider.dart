@@ -9,27 +9,21 @@ class ProductProvider extends ChangeNotifier {
 
 // захиалга нэмэх хэсгээс сагсанд хийх
   void setProductItemsData(ProductDetialModel lstData) {
-    List<ProductDetialModel> itemsToAdd = [];
     if (lstDraft.isNotEmpty) {
-      for (ProductDetialModel data in lstDraft) {
-        if (data.good_id != lstData.good_id) {
-          ProductDetialModel draftData = ProductDetialModel(
-              name: lstData.name,
-              code: lstData.code,
-              good_id: lstData.good_id,
-              category_id: lstData.category_id,
-              created_at: lstData.created_at,
-              parent_category: lstData.parent_category,
-              parent_name: lstData.parent_name,
-              category_name: lstData.category_name,
-              sizes: lstData.sizes);
-          itemsToAdd.add(draftData);
+      bool found = false;
+      for (int i = 0; i < lstDraft.length; i++) {
+        ProductDetialModel data = lstDraft[i];
+        if (data.good_id == lstData.good_id) {
+          found = true;
+          break;
         }
+      }
+      if (!found) {
+        lstDraft.add(lstData);
       }
     } else {
       lstDraft.add(lstData);
     }
-    lstDraft.addAll(itemsToAdd);
     notifyListeners();
   }
 

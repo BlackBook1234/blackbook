@@ -57,4 +57,19 @@ class Utils {
             .isPaid ??
         0;
   }
+
+  static String getPhone() {
+    return Provider.of<CommonProvider>(GlobalKeys.navigatorKey.currentContext!,
+                listen: false)
+            .userInfo!
+            .phone ??
+        "";
+  }
+   static String getstoreName() {
+    return Provider.of<CommonProvider>(GlobalKeys.navigatorKey.currentContext!,
+                listen: false)
+            .userInfo!
+            .storeName ??
+        "";
+  }
 }

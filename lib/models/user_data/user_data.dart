@@ -5,6 +5,7 @@ part 'user_data.g.dart';
 @JsonSerializable()
 class UserDataModel {
   String? accessToken,
+  storeName,
       avatar,
       deviceType,
       email,
@@ -19,6 +20,7 @@ class UserDataModel {
 
   UserDataModel(
       {this.accessToken,
+      this.storeName,
       this.firstName,
       this.countryCode,
       this.active,

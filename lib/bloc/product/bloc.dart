@@ -49,12 +49,11 @@ class ProductBloc extends Bloc<ProductEvent, ProductState> {
       emit(GetProductLoading());
       try {
         String accessToken = Utils.getToken();
-        print(" this is product token = $accessToken");
         final apiService = ApiTokenService(accessToken);
         String path = "";
         if (Utils.getUserRole() == "BOSS") {
           if (event.searchAgian) {
-            if (event.chosenType == "") {
+            if (event.chosenType == "-1") {
               path =
                   "/v1/product/my/list?page=${event.page}&sort=desc&limit=40&q=${event.searchValue}&parent_category=${event.chosenValue}&is_warehouse=1";
             } else {
@@ -120,11 +119,11 @@ class ProductBloc extends Bloc<ProductEvent, ProductState> {
         ProductResponseModel dataResponse =
             ProductResponseModel.fromJson(response.data);
         if (response.statusCode == 200 && dataResponse.status == "success") {
-           bool hasMoreOrder = true;
+          bool hasMoreOrder = true;
           if (dataResponse.data!.length < 40) {
             hasMoreOrder = false;
           }
-          emit(GetStoreItemSuccess(dataResponse.data!,hasMoreOrder));
+          emit(GetStoreItemSuccess(dataResponse.data!, hasMoreOrder));
         } else if (dataResponse.status == "error" &&
             dataResponse.message.reason == "auth_token_error") {
           final bloc = RefreshBloc();
@@ -148,12 +147,17 @@ class ProductBloc extends Bloc<ProductEvent, ProductState> {
         final apiService = ApiTokenService(accessToken);
         String path = "";
         if (event.searchAgian) {
-          if (event.chosenType == "") {
+          if (event.chosenType == "-1") {
             path =
-                '/v1/product/my/list?page=${event.page}&limit=40&q=${event.searchValue}&parent_category=${event.chosenValue}&sort=desc';
+                '/v1/product/my/list?page=${event.page}&limit=40&q=${event.searchValue}&parent_category=${event.chosenValue}&sort=desc&is_warehouse=1';
           } else {
-            path =
-                '/v1/product/my/list?page=${event.page}&limit=40&q=${event.searchValue}&parent_category=${event.chosenValue}&store_id=${event.chosenType}&sort=desc';
+            if (event.chosenType == "") {
+              path =
+                  '/v1/product/my/list?page=${event.page}&limit=40&q=${event.searchValue}&parent_category=${event.chosenValue}&sort=desc';
+            } else {
+              path =
+                  '/v1/product/my/list?page=${event.page}&limit=40&q=${event.searchValue}&parent_category=${event.chosenValue}&store_id=${event.chosenType}&sort=desc';
+            }
           }
         } else {
           path = '/v1/product/my/list?page=${event.page}&limit=40&sort=desc';
@@ -184,6 +188,34 @@ class ProductBloc extends Bloc<ProductEvent, ProductState> {
       } catch (ex) {
         print(ex);
         emit(GetProductFailure("Серверийн алдаа"));
+      }
+    });
+    on<PurchaseProduct>((event, emit) async {
+      emit(PurchaseProductLoading());
+      try {
+        final apiService = ApiTokenService(Utils.getToken());
+        var body = {"products": event.sizes.map((e) => e.toJson()).toList()};
+        // print(body);
+        print(body);
+        Response response =
+            await apiService.postRequest('/v1/product/purchase', body: body);
+        AuthenticationResponseModel dataResponse =
+            AuthenticationResponseModel.fromJson(response.data);
+        if (response.statusCode == 200 && dataResponse.status == "success") {
+          emit(PurchaseProductSuccess());
+        } else if (dataResponse.status == "error" &&
+            dataResponse.message.reason == "auth_token_error") {
+          final bloc = RefreshBloc();
+          bloc.add(const RefreshTokenEvent());
+          emit(PurchaseProductFailure("Token"));
+        } else if (dataResponse.status == "error" &&
+            dataResponse.message.show) {
+          emit(PurchaseProductFailure(dataResponse.message.text!));
+        } else {
+          emit(PurchaseProductFailure("Серверийн алдаа"));
+        }
+      } catch (ex) {
+        emit(PurchaseProductFailure("Серверийн алдаа"));
       }
     });
   }

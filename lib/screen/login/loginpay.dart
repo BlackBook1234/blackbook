@@ -5,13 +5,12 @@ import 'package:black_book/constant.dart';
 import 'package:black_book/models/invoice/detial.dart';
 import 'package:black_book/screen/home/navigator.dart';
 import 'package:black_book/util/utils.dart';
-import 'package:black_book/widget/alert/error.dart';
-import 'package:black_book/widget/alert/show_dilaog.dart';
+import 'package:black_book/widget/alert/mixin_dialog.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
-import 'package:url_launcher/url_launcher.dart';
+import 'package:url_launcher/url_launcher_string.dart';
 
 class PayScreen extends StatefulWidget {
   const PayScreen({super.key, required this.keys});
@@ -20,7 +19,7 @@ class PayScreen extends StatefulWidget {
   State<PayScreen> createState() => _PayScreenState();
 }
 
-class _PayScreenState extends State<PayScreen> {
+class _PayScreenState extends State<PayScreen> with BaseStateMixin {
   final PageController _pageController = PageController();
   final String _chosenValue = "Хаан Банк";
   final _bloc = PaymentBloc();
@@ -34,8 +33,16 @@ class _PayScreenState extends State<PayScreen> {
   }
 
   void checkPayment() {
-    print("here");
     _bloc.add(CheckInvoiceEvent(lst.orderId!));
+  }
+
+  _launchURL(String path) async {
+    String url = path;
+    if (await canLaunchUrlString(url)) {
+      await launchUrlString(url);
+    } else {
+      showErrorDialog("Аппликейшн байхгүй байна!");
+    }
   }
 
   @override
@@ -50,7 +57,8 @@ class _PayScreenState extends State<PayScreen> {
                 }
                 if (state is InvoiceFailure) {
                   Utils.cancelLoader(context);
-                  AlertMessage.alertMessage(context,"Мэдээлэл", state.message);
+                  showErrorDialog(state.message);
+                  // AlertMessage.alertMessage(context, "Мэдээлэл", state.message);
                 }
                 if (state is InvoiceSuccess) {
                   setState(() {
@@ -67,12 +75,17 @@ class _PayScreenState extends State<PayScreen> {
                 }
                 if (state is CheckInvoiceFailure) {
                   Utils.cancelLoader(context);
-                  ErrorMessage.attentionMessage(context, state.message);
+                  showWarningDialog(state.message);
                 }
                 if (state is CheckInvoiceSuccess) {
-                  Navigator.of(context).push(CupertinoPageRoute(
-                      builder: (context) => NavigatorScreen()));
                   Utils.cancelLoader(context);
+                  Navigator.pushAndRemoveUntil(
+                      context,
+                      CupertinoPageRoute(
+                          builder: (context) => const NavigatorScreen()),
+                      (route) => false);
+                  // Navigator.of(context).push(CupertinoPageRoute(
+                  //     builder: (context) => const NavigatorScreen()));
                 }
               })
         ],
@@ -180,7 +193,7 @@ class _PayScreenState extends State<PayScreen> {
                                       fontWeight: FontWeight.w400,
                                       fontSize: 14))),
                           const SizedBox(height: 5),
-                          Text("${lst.amount.toString()} ₮",
+                          Text("${lst.amount ?? "0"} ₮",
                               style: const TextStyle(
                                   fontWeight: FontWeight.w900,
                                   fontSize: 30,
@@ -196,7 +209,7 @@ class _PayScreenState extends State<PayScreen> {
                                   children: [
                                     const Text("Хугацаа: ",
                                         style: TextStyle(color: kPrimaryColor)),
-                                    Text(lst.title.toString())
+                                    Text(lst.title ?? "")
                                   ])),
                           const Text("Банкны апп-аар",
                               style: TextStyle(
@@ -216,15 +229,7 @@ class _PayScreenState extends State<PayScreen> {
                                                 onTap: () async {
                                                   String url = lst
                                                       .qpay!.urls![index].link!;
-                                                  if (await canLaunchUrl(
-                                                      Uri.parse(url))) {
-                                                    await launchUrl(
-                                                        Uri.parse(url));
-                                                  } else {
-                                                    ErrorMessage.attentionMessage(
-                                                        context,
-                                                        "Аппликейшн байхгүй байна!");
-                                                  }
+                                                  _launchURL(url);
                                                 },
                                                 child: Column(children: [
                                                   Container(
@@ -319,13 +324,11 @@ class _PayScreenState extends State<PayScreen> {
                                                 crossAxisAlignment:
                                                     CrossAxisAlignment.start,
                                                 children: [
-                                                  const Text("Гүйлгээний утга",
+                                                  const Text("Дансний дугаар",
                                                       style: TextStyle(
                                                           color: Colors.grey,
                                                           fontSize: 12)),
-                                                  Text(
-                                                      lst.manual![0].description
-                                                          .toString(),
+                                                  Text(lst.manual![0].account!,
                                                       style: const TextStyle(
                                                           fontWeight:
                                                               FontWeight.w500))
@@ -335,7 +338,7 @@ class _PayScreenState extends State<PayScreen> {
                                                   Clipboard.setData(
                                                       ClipboardData(
                                                           text: lst.manual![0]
-                                                              .description!));
+                                                              .account!));
                                                   ScaffoldMessenger.of(context)
                                                       .showSnackBar(const SnackBar(
                                                           content: Text(
@@ -370,11 +373,13 @@ class _PayScreenState extends State<PayScreen> {
                                                 crossAxisAlignment:
                                                     CrossAxisAlignment.start,
                                                 children: [
-                                                  const Text("Дансний дугаар",
+                                                  const Text("Гүйлгээний утга",
                                                       style: TextStyle(
                                                           color: Colors.grey,
                                                           fontSize: 12)),
-                                                  Text(lst.manual![0].account!,
+                                                  Text(
+                                                      lst.manual![0].description
+                                                          .toString(),
                                                       style: const TextStyle(
                                                           fontWeight:
                                                               FontWeight.w500))
@@ -384,7 +389,7 @@ class _PayScreenState extends State<PayScreen> {
                                                   Clipboard.setData(
                                                       ClipboardData(
                                                           text: lst.manual![0]
-                                                              .account!));
+                                                              .description!));
                                                   ScaffoldMessenger.of(context)
                                                       .showSnackBar(const SnackBar(
                                                           content: Text(

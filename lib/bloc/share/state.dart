@@ -44,7 +44,7 @@ class ShareHistoryFailure extends ShareState {
 }
 
 class ShareHistorySuccess extends ShareState {
-  final List<TransferDetial>? data;
+  final List<TransferItem>? data;
   final bool hasMoreOrder;
   ShareHistorySuccess(this.data, this.hasMoreOrder);
   @override

@@ -63,6 +63,7 @@ class _LoginScreenState extends State<Packages> {
               SizedBox(
                   height: 40, child: Image.asset('assets/images/logo.png')),
               const SizedBox(height: 30),
+              const Text("Та сонгоно уу?"),
               Expanded(
                   child: ListView.builder(
                       itemCount: lst.length,
@@ -81,10 +82,6 @@ class _LoginScreenState extends State<Packages> {
                                               builder: (context) => PayScreen(
                                                   keys: lst[index].key!)));
                                     },
-                                    leading: const Icon(
-                                        Icons.card_membership_outlined,
-                                        size: 50,
-                                        color: kPrimaryColor),
                                     title: Center(
                                         child: Text(
                                             "${lst[index].amount.toString()}₮",
@@ -94,29 +91,16 @@ class _LoginScreenState extends State<Packages> {
                                     subtitle: Column(children: [
                                       Text(
                                         lst[index].description!,
-                                        style: TextStyle(fontSize: 12),
+                                        style: const TextStyle(fontSize: 12),
                                       ),
-                                      Text(lst[index].title!)
+                                      Text(
+                                        lst[index].title!,
+                                        style: TextStyle(
+                                            fontSize: 12,
+                                            fontWeight: FontWeight.bold),
+                                      )
                                     ]))));
                       })),
-              Padding(
-                  padding: const EdgeInsets.all(10),
-                  child: Container(
-                      width: double.infinity,
-                      height: 45,
-                      decoration: BoxDecoration(
-                          gradient: LinearGradient(colors: [
-                            kPrimaryColor,
-                            Colors.orange.shade300,
-                            kPrimaryColor
-                          ]),
-                          borderRadius: BorderRadius.circular(20)),
-                      child: TextButton(
-                          style:
-                              ElevatedButton.styleFrom(foregroundColor: kWhite),
-                          onPressed: () {},
-                          child: const Text("Төлбөр төлөх",
-                              style: TextStyle(fontSize: 14)))))
             ])));
   }
 }

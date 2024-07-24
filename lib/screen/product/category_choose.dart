@@ -10,13 +10,13 @@ import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:flutter_svg/svg.dart';
+import 'package:lottie/lottie.dart';
 
-// ignore: must_be_immutable
 class ChooseCategoryScreen extends StatefulWidget {
-  ChooseCategoryScreen({super.key, required this.itemType});
+  const ChooseCategoryScreen({super.key, required this.itemType});
   @override
   State<ChooseCategoryScreen> createState() => _ChooseCategoryScreenState();
-  String itemType;
+  final String itemType;
 }
 
 class _ChooseCategoryScreenState extends State<ChooseCategoryScreen> {
@@ -83,51 +83,66 @@ class _ChooseCategoryScreenState extends State<ChooseCategoryScreen> {
                 foregroundColor: kWhite,
                 title: Image.asset('assets/images/logoSecond.png', width: 160),
                 backgroundColor: kPrimarySecondColor),
-            body: Column(children: [
-              Expanded(
-                  child: ListView.builder(
-                      itemCount: list.length,
-                      itemBuilder: ((context, index) {
-                        return Padding(
-                            padding: const EdgeInsets.symmetric(
-                                vertical: 4, horizontal: 20),
-                            child: Container(
-                                decoration: BoxDecoration(
-                                    color: kWhite,
-                                    boxShadow: [
-                                      BoxShadow(
-                                          color: Colors.grey.shade300,
-                                          blurRadius: 3,
-                                          offset: const Offset(2, 2))
-                                    ],
-                                    borderRadius: BorderRadius.circular(20)),
-                                child: ListTile(
-                                    trailing: SvgPicture.asset(
-                                        "assets/svg/right_arrow.svg",
-                                        width: 7,
-                                        colorFilter: const ColorFilter.mode(
-                                            kPrimaryColor, BlendMode.srcIn)),
-                                    leading: Image.asset(
-                                        "assets/images/clothes.png",
-                                        width: 50.0),
-                                    title: Text(
-                                        "Багц: ${list[index].parent_name}",
-                                        style: const TextStyle(
-                                            fontSize: 13.0,
-                                            fontWeight: FontWeight.bold)),
-                                    subtitle: Text("Төрөл: ${list[index].name}",
-                                        style: const TextStyle(
-                                            fontSize: 13.0,
-                                            color: Colors.black54,
-                                            fontWeight: FontWeight.w500)),
-                                    onTap: () {
-                                      Navigator.of(context).push(
-                                          CupertinoPageRoute(
-                                              builder: (context) =>
-                                                  AddItemDetialScreen(
-                                                      id: list[index].id!)));
-                                    })));
-                      })))
-            ])));
+            body: list.isEmpty
+                ? Center(
+                    child: Column(
+                      children: [
+                        Lottie.asset('assets/json/empty-page.json'),
+                        const Text(
+                          "Та барааны ангилал нэмнэ үү!",
+                          style: TextStyle(
+                              fontSize: 14,
+                              fontWeight: FontWeight.w500,
+                              color: Colors.grey),
+                        )
+                      ],
+                    ),
+                  )
+                : Column(children: [
+                    Expanded(
+                        child: ListView.builder(
+                            itemCount: list.length,
+                            itemBuilder: ((context, index) {
+                              return Padding(
+                                  padding: const EdgeInsets.symmetric(
+                                      vertical: 4, horizontal: 20),
+                                  child: Container(
+                                      decoration: BoxDecoration(
+                                          color: kWhite,
+                                          boxShadow: [
+                                            BoxShadow(
+                                                color: Colors.grey.shade300,
+                                                blurRadius: 3,
+                                                offset: const Offset(2, 2))
+                                          ],
+                                          borderRadius:
+                                              BorderRadius.circular(20)),
+                                      child: ListTile(
+                                          trailing: SvgPicture.asset(
+                                              "assets/svg/right_arrow.svg",
+                                              width: 7,
+                                              colorFilter: const ColorFilter.mode(
+                                                  kPrimaryColor,
+                                                  BlendMode.srcIn)),
+                                          leading: Image.asset(
+                                              "assets/images/clothes.png",
+                                              width: 50.0),
+                                          title: Text(
+                                              "Багц: ${list[index].parent_name}",
+                                              style: const TextStyle(
+                                                  fontSize: 13.0,
+                                                  fontWeight: FontWeight.bold)),
+                                          subtitle: Text("Төрөл: ${list[index].name}",
+                                              style: const TextStyle(fontSize: 13.0, color: Colors.black54, fontWeight: FontWeight.w500)),
+                                          onTap: () {
+                                            Navigator.of(context).push(
+                                                CupertinoPageRoute(
+                                                    builder: (context) =>
+                                                        AddItemDetialScreen(
+                                                            id: list[index]
+                                                                .id!)));
+                                          })));
+                            })))
+                  ])));
   }
 }

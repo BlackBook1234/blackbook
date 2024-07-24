@@ -1,6 +1,7 @@
 import 'package:black_book/constant.dart';
 import 'package:black_book/models/product/product_inlist.dart';
 import 'package:black_book/provider/product_share_provider.dart';
+import 'package:black_book/util/utils.dart';
 import 'package:black_book/widget/bottom_sheet.dart/choose_store_share.dart';
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
@@ -62,45 +63,43 @@ class ProductDraft extends StatelessWidget {
                                             provider.removeOrderItem(
                                                 provider.lstDraft[index]);
                                           },
-                                          child: const Icon(
-                                              Icons.delete_outline_rounded,
-                                              size: 30,
-                                              color: kPrimaryColor)),
+                                          child: const Icon(Icons.delete_outline_rounded,
+                                              size: 30, color: kPrimaryColor)),
                                       shape: const Border(),
                                       collapsedIconColor: kPrimaryColor,
-                                      leading: provider.lstDraft[index].photo == null
-                                          ? Container(
-                                              height: 80.0,
-                                              width: 80.0,
-                                              decoration: BoxDecoration(
-                                                  borderRadius:
-                                                      BorderRadius.circular(
-                                                          20.0)),
-                                              child: ClipRRect(
-                                                  borderRadius:
-                                                      BorderRadius.circular(9),
-                                                  child: Image.asset(
+                                      leading: Container(
+                                          height: 80.0,
+                                          width: 80.0,
+                                          decoration: BoxDecoration(
+                                              borderRadius:
+                                                  BorderRadius.circular(20.0)),
+                                          child: ClipRRect(
+                                              borderRadius:
+                                                  BorderRadius.circular(9),
+                                              child: provider.lstDraft[index].photo == null
+                                                  ? Image.asset(
                                                       "assets/images/saleProduct.jpg",
-                                                      fit: BoxFit.cover)))
-                                          : Container(
-                                              height: 80.0,
-                                              width: 80.0,
-                                              decoration: BoxDecoration(
-                                                  borderRadius:
-                                                      BorderRadius.circular(20.0)),
-                                              child: ClipRRect(borderRadius: BorderRadius.circular(9), child: Image.network(provider.lstDraft[index].photo!, fit: BoxFit.cover))),
-                                      title: Text("Барааны нэр: ${provider.lstDraft[index].name}", style: const TextStyle(fontSize: 12.0, fontWeight: FontWeight.bold)),
+                                                      fit: BoxFit.cover)
+                                                  : Image.network(provider.lstDraft[index].photo!,
+                                                      fit: BoxFit.cover))),
+                                      title: Text("Барааны нэр: ${provider.lstDraft[index].name}",
+                                          style: const TextStyle(
+                                              fontSize: 12.0,
+                                              fontWeight: FontWeight.bold)),
                                       subtitle: Column(mainAxisAlignment: MainAxisAlignment.start, crossAxisAlignment: CrossAxisAlignment.start, children: [
                                         Text(
                                             "Барааны код: ${provider.lstDraft[index].code}",
                                             style: const TextStyle(
                                                 fontSize: 12.0,
                                                 fontWeight: FontWeight.normal)),
-                                        Text(
-                                            'Анхны үнэ: ${provider.lstDraft[index].sizes!.first.cost}₮',
-                                            style: const TextStyle(
-                                                fontSize: 11.0,
-                                                fontWeight: FontWeight.normal)),
+                                        Utils.getUserRole() == "BOSS"
+                                            ? Text(
+                                                'Авсан үнэ: ${provider.lstDraft[index].sizes!.first.cost}₮',
+                                                style: const TextStyle(
+                                                    fontSize: 11.0,
+                                                    fontWeight:
+                                                        FontWeight.normal))
+                                            : const SizedBox.shrink(),
                                         Text(
                                             'Зарах үнэ: ${provider.lstDraft[index].sizes!.first.price}₮',
                                             style: const TextStyle(

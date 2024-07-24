@@ -287,7 +287,7 @@
 //                                                   fontWeight:
 //                                                       FontWeight.normal)),
 //                                           Text(
-//                                               'Анхны үнэ: ${list[index].sizes!.first.cost}₮',
+//                                               'Авсан үнэ: ${list[index].sizes!.first.cost}₮',
 //                                               style: const TextStyle(
 //                                                   fontSize: 11.0,
 //                                                   fontWeight:

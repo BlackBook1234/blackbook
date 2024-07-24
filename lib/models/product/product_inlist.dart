@@ -5,15 +5,19 @@ part 'product_inlist.g.dart';
 
 @JsonSerializable()
 class ProductInDetialModel {
-  String? type;
-  int? cost, price, stock, id, warehouse_stock;
+  String? type, created_at, store_name;
+  int? cost, price, stock, id, warehouse_stock, store_id, transfer_id;
   @JsonKey(ignore: true)
   int ware_stock = 0;
 
   ProductInDetialModel(
       {this.type,
       this.cost,
+      this.transfer_id,
+      this.created_at,
       this.price,
+      this.store_name,
+      this.store_id,
       this.stock,
       this.warehouse_stock,
       this.id});

@@ -8,9 +8,10 @@ import "package:black_book/constant.dart";
 import "package:black_book/models/store/store_detial.dart";
 import "package:black_book/screen/home/navigator.dart";
 import "package:black_book/util/utils.dart";
-import "package:black_book/widget/alert/show_dilaog.dart";
+import "package:black_book/widget/alert/mixin_dialog.dart";
 import "package:flutter/cupertino.dart";
 import "package:flutter/material.dart";
+import "package:flutter/services.dart";
 import "package:flutter_bloc/flutter_bloc.dart";
 import "package:flutter_svg/svg.dart";
 
@@ -21,24 +22,76 @@ class ChangeUserBottom extends StatefulWidget {
   final String title;
 }
 
-class _ChangeUserBottomState extends State<ChangeUserBottom> {
+class _ChangeUserBottomState extends State<ChangeUserBottom>
+    with BaseStateMixin {
   List<StoreDetialModel> lst = [];
   final _bloc = StoreBloc();
   final _userBloc = AuthenticationBloc();
   int storeid = 0;
   String phoneNumber = "";
-
-  // StoreDetialModel defaultStoreModel = StoreDetialModel(
-  //     name: "Агуулах",
-  //     phone_number: "",
-  //     created_at: DateTime.now().toString(),
-  //     is_main: 1,
-  //     id: 0);
+  final TextEditingController _controller = TextEditingController();
 
   @override
   void initState() {
     _bloc.add(const GetStoreEvent());
     super.initState();
+  }
+
+  void _changePhoneNumber() {
+    var alert = AlertDialog(
+        content: TextFormField(
+            textInputAction: TextInputAction.done,
+            controller: _controller,
+            maxLength: 8,
+            keyboardType: TextInputType.number,
+            inputFormatters: [FilteringTextInputFormatter.digitsOnly],
+            style: const TextStyle(fontSize: 14, fontWeight: FontWeight.bold),
+            decoration: InputDecoration(
+                labelText: "Утасны дугаар",
+                labelStyle: const TextStyle(
+                    fontWeight: FontWeight.bold,
+                    fontSize: 14,
+                    color: Colors.black38),
+                enabledBorder: OutlineInputBorder(
+                    borderSide: const BorderSide(color: Colors.black12),
+                    borderRadius: BorderRadius.circular(10)),
+                focusedBorder: OutlineInputBorder(
+                    borderSide: const BorderSide(color: Colors.black26),
+                    borderRadius: BorderRadius.circular(10)),
+                prefix: const Padding(
+                    padding: EdgeInsets.symmetric(horizontal: 8),
+                    child: Text("(+976)",
+                        style: TextStyle(
+                            fontSize: 14, fontWeight: FontWeight.bold))))),
+        actions: [
+          Container(
+              width: double.infinity,
+              height: 45,
+              decoration: BoxDecoration(
+                  gradient: LinearGradient(colors: [
+                    kPrimaryColor,
+                    Colors.orange.shade300,
+                    kPrimaryColor
+                  ]),
+                  borderRadius: BorderRadius.circular(20)),
+              child: TextButton(
+                  style: ElevatedButton.styleFrom(foregroundColor: kWhite),
+                  onPressed: () {
+                    if (_controller.text.length == 8) {
+                      _changeUser(storeid, _controller.text);
+                    } else {
+                      showWarningDialog("Дугаараа бүрэн оруулна уу!");
+                    }
+                  },
+                  child: const Text("Солих", style: TextStyle(fontSize: 14))))
+        ]);
+
+    showDialog(
+      context: context,
+      builder: (context) {
+        return alert;
+      },
+    );
   }
 
   _changeUser(int storeId, String phoneNumber) {
@@ -60,7 +113,9 @@ class _ChangeUserBottomState extends State<ChangeUserBottom> {
                     _bloc.add(const GetStoreEvent());
                   } else {
                     Utils.cancelLoader(context);
-                    AlertMessage.alertMessage(context,"Алдаа!", state.message);
+                    showErrorDialog(state.message);
+                    // AlertMessage.statusMessage(
+                    //     context, "Алдаа!", state.message, true);
                   }
                 }
                 if (state is GetStoreSuccess) {
@@ -75,7 +130,7 @@ class _ChangeUserBottomState extends State<ChangeUserBottom> {
               }),
           BlocListener<AuthenticationBloc, UserState>(
               bloc: _userBloc,
-              listener: (context, state) {
+              listener: (context, state) async {
                 if (state is ChangeUserLoading) {
                   Utils.startLoader(context);
                 }
@@ -84,37 +139,20 @@ class _ChangeUserBottomState extends State<ChangeUserBottom> {
                     _userBloc.add(ChangeUserEvent(storeid, phoneNumber));
                   } else {
                     Utils.cancelLoader(context);
-                    AlertMessage.alertMessage(context,"Алдаа!", state.message);
+                    showErrorDialog(state.message);
+                    // AlertMessage.alertMessage(context, "Алдаа!", state.message);
                   }
                 }
                 if (state is ChangeUserSuccess) {
                   Utils.cancelLoader(context);
-                  showDialog(
-                      context: context,
-                      builder: (context) {
-                        return const AlertDialog(
-                            shape: RoundedRectangleBorder(
-                                borderRadius:
-                                    BorderRadius.all(Radius.circular(15))),
-                            scrollable: true,
-                            title:
-                                Text("Мэдээлэл", textAlign: TextAlign.center),
-                            contentPadding: EdgeInsets.only(
-                                right: 20, left: 20, bottom: 20, top: 20),
-                            content: Column(children: [
-                              Text("Амжилттай шилжлээ"),
-                              SizedBox(height: 20)
-                            ]));
-                      });
-                  Future.delayed(const Duration(seconds: 1), () {
-                    Navigator.pop(context);
-                  });
-                  Navigator.pushAndRemoveUntil(
-                      context,
-                      CupertinoPageRoute(
-                        builder: (context) => NavigatorScreen(),
-                      ),
-                      (route) => false);
+                  await showSuccessPopDialog(
+                          "Мэдээлэл", true, true, "Амжилттай солигдлоо")
+                      .then((value) => Navigator.pushAndRemoveUntil(
+                          context,
+                          CupertinoPageRoute(
+                            builder: (context) => const NavigatorScreen(),
+                          ),
+                          (route) => false));
                 }
               })
         ],
@@ -197,10 +235,11 @@ class _ChangeUserBottomState extends State<ChangeUserBottom> {
                         }
                         if (phoneNumber == "") {
                         } else {
-                          _changeUser(storeid, phoneNumber);
+                          // _changeUser(storeid, phoneNumber);
+                          _changePhoneNumber();
                         }
                       },
-                      child: const Text("Шилжих",
+                      child: const Text("Дугаар солих",
                           style: TextStyle(color: kWhite))))
             ])));
   }

@@ -21,11 +21,13 @@ class CreateShareEvent extends ShareEvent {
 
 // бараа шилжүүлэгийн түүх
 class ShareHistoryEvent extends ShareEvent {
-  final int page;
+  final DateTime beginDate, endDate;
+  final String storeId;
   final bool searchAgian;
-  final String chosenType, searchValue;
+  final int page;
+  final String sourceId;
   const ShareHistoryEvent(
-      this.page, this.chosenType, this.searchAgian, this.searchValue);
+      this.beginDate, this.endDate, this.searchAgian, this.storeId, this.page,this.sourceId);
   @override
   List<Object> get props => [];
 }

@@ -4,9 +4,12 @@ import 'package:black_book/bloc/category/bloc.dart';
 import 'package:black_book/bloc/category/event.dart';
 import 'package:black_book/bloc/category/state.dart';
 import 'package:black_book/constant.dart';
+import 'package:black_book/screen/home/navigator.dart';
 import 'package:black_book/util/utils.dart';
+import 'package:black_book/widget/alert/mixin_dialog.dart';
 import 'package:black_book/widget/dynamic.dart';
 import 'package:black_book/widget/alert/error.dart';
+import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 
@@ -18,7 +21,8 @@ class AddTypeSecondScreen extends StatefulWidget {
   String itemType;
 }
 
-class _AddTypeSecondScreenState extends State<AddTypeSecondScreen> {
+class _AddTypeSecondScreenState extends State<AddTypeSecondScreen>
+    with BaseStateMixin {
   List<DynamicWidget> dynamicList = [];
   final _bloc = CategoryBloc();
   final TextEditingController name = TextEditingController();
@@ -79,27 +83,14 @@ class _AddTypeSecondScreenState extends State<AddTypeSecondScreen> {
                 }
                 if (state is CategorySuccess) {
                   Utils.cancelLoader(context);
-                  showDialog(
-                      context: context,
-                      builder: (context) {
-                        return const AlertDialog(
-                            shape: RoundedRectangleBorder(
-                                borderRadius:
-                                    BorderRadius.all(Radius.circular(15))),
-                            scrollable: true,
-                            title:
-                                Text("Мэдээлэл", textAlign: TextAlign.center),
-                            contentPadding: EdgeInsets.only(
-                                right: 20, left: 20, bottom: 20, top: 20),
-                            content: Column(children: [
-                              Text("Ангилал амжилттай хадгалагдлаа"),
-                              SizedBox(height: 20)
-                            ]));
-                      });
+                  showSuccessDialog(
+                      "Мэдээлэл", false, "Ангилал амжилттай хадгалагдлаа");
                   Future.delayed(const Duration(seconds: 1), () {
-                    Navigator.pop(context);
-                    Navigator.pop(context);
-                    Navigator.pop(context);
+                    Navigator.pushAndRemoveUntil(
+                        context,
+                        CupertinoPageRoute(
+                            builder: (context) => const NavigatorScreen()),
+                        (route) => false);
                   });
                 }
               })

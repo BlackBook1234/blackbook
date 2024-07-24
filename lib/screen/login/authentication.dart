@@ -6,12 +6,15 @@ import 'package:black_book/bloc/authentication/state.dart';
 import 'package:black_book/constant.dart';
 import 'package:black_book/screen/home/navigator.dart';
 import 'package:black_book/util/utils.dart';
+import 'package:black_book/widget/alert/component/buttons.dart';
 import 'package:black_book/widget/alert/error.dart';
-import 'package:black_book/widget/alert/show_dilaog.dart';
+import 'package:black_book/widget/alert/mixin_dialog.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
-import 'package:flutter/services.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
+import 'package:pinput/pinput.dart';
+// import 'package:pinput/pinput.dart';
+import 'component/pin_code_text.dart';
 import 'packages.dart';
 
 class AuthenticationScreen extends StatefulWidget {
@@ -27,23 +30,22 @@ class AuthenticationScreen extends StatefulWidget {
   final String phoneNumber;
 }
 
-class _LoginScreenState extends State<AuthenticationScreen> {
+class _LoginScreenState extends State<AuthenticationScreen>
+    with BaseStateMixin {
   int timer = 120;
   String showTimer = '02:00';
   late Timer _timer;
   Timer? loadingTimer;
   final _bloc = AuthenticationBloc();
-
-  final List<TextEditingController> controllers =
-      List.generate(6, (index) => TextEditingController());
+  bool _isInputValid = false;
+  final _otpTxtCtrl = TextEditingController();
 
   void onLogin() {
-    List<String> otpStrings =
-        controllers.map((controller) => controller.text).toList();
-    String resultString = otpStrings.join();
+    if (!_isInputValid) return;
+    String resultString = _otpTxtCtrl.text;
     if (resultString.length == 6) {
       _bloc.add(UserAuthenticationEvent(widget.deviceType, widget.deviceToken,
-          int.tryParse(widget.phoneNumber) ?? 0, resultString.toString()));
+          int.tryParse(widget.phoneNumber) ?? 0, _otpTxtCtrl.text));
     } else {
       ErrorMessage.attentionMessage(context, "6 оронтой тоо оруулна уу!");
     }
@@ -51,6 +53,7 @@ class _LoginScreenState extends State<AuthenticationScreen> {
 
   @override
   void initState() {
+    _otpTxtCtrl.addListener(_tanInputListener);
     startTimer();
     super.initState();
   }
@@ -58,7 +61,16 @@ class _LoginScreenState extends State<AuthenticationScreen> {
   @override
   void dispose() {
     _timer.cancel();
+    _otpTxtCtrl.removeListener(_tanInputListener);
+    _otpTxtCtrl.dispose();
     super.dispose();
+  }
+
+  void _tanInputListener() {
+    setState(() {
+      var otp = _otpTxtCtrl.text;
+      _isInputValid = RegExp(r'\d{4}').hasMatch(otp);
+    });
   }
 
   String formatTime(int seconds) {
@@ -91,140 +103,149 @@ class _LoginScreenState extends State<AuthenticationScreen> {
   @override
   Widget build(BuildContext context) {
     return MultiBlocListener(
-        listeners: [
-          BlocListener<AuthenticationBloc, UserState>(
-              bloc: _bloc,
-              listener: (context, state) {
-                if (state is UserAuthenticationLoading) {
-                  Utils.startLoader(context);
+      listeners: [
+        BlocListener<AuthenticationBloc, UserState>(
+            bloc: _bloc,
+            listener: (context, state) {
+              if (state is UserAuthenticationLoading) {
+                Utils.startLoader(context);
+              }
+              if (state is UserAuthenticationFailure) {
+                Utils.cancelLoader(context);
+                ErrorMessage.attentionMessage(context, state.message);
+              }
+              if (state is UserAuthenticationSuccess) {
+                Utils.cancelLoader(context);
+                if (state.data.type == "WORKER") {
+                  Navigator.of(context).push(CupertinoPageRoute(
+                      builder: (context) => const NavigatorScreen()));
+                } else if (state.data.isPaid == 1) {
+                  Navigator.of(context).push(CupertinoPageRoute(
+                      builder: (context) => const NavigatorScreen()));
+                } else {
+                  Navigator.of(context).push(CupertinoPageRoute(
+                      builder: (context) => const Packages()));
                 }
-                if (state is UserAuthenticationFailure) {
-                  Utils.cancelLoader(context);
-                  ErrorMessage.attentionMessage(context, state.message);
-                }
-                if (state is UserAuthenticationSuccess) {
-                  Utils.cancelLoader(context);
-                  if (state.data.type == "WORKER") {
-                    Navigator.of(context).push(CupertinoPageRoute(
-                        builder: (context) => NavigatorScreen()));
-                  } else if (state.data.isPaid == 1) {
-                    Navigator.of(context).push(CupertinoPageRoute(
-                        builder: (context) => NavigatorScreen()));
+              }
+            })
+      ],
+      child: Scaffold(
+        // resizeToAvoidBottomInset: false,
+        appBar: AppBar(
+            elevation: 0,
+            backgroundColor: kBackgroundColor,
+            leading: IconButton(
+                onPressed: () {
+                  Navigator.pop(context);
+                },
+                icon: const Icon(Icons.keyboard_arrow_left, size: 30))),
+        body: Column(
+          children: [
+            Padding(
+                padding: const EdgeInsets.symmetric(horizontal: 32),
+                child: Column(children: [
+                  SizedBox(
+                      height: 80, child: Image.asset('assets/images/logo.png')),
+                  const SizedBox(height: 10),
+                  const Text(
+                      "Таны утсан дээр ирсэн 6 оронтой баталгаажуулах тоог оруулна уу.",
+                      style: TextStyle(
+                          fontSize: 12,
+                          color: Colors.black38,
+                          fontWeight: FontWeight.bold)),
+                  // const SizedBox(height: 18),
+                  // Container(
+                  //     decoration: BoxDecoration(
+                  //         color: kBackgroundColor,
+                  //         borderRadius: BorderRadius.circular(12)),
+                  //     child: Column(children: [
+                  //       Row(
+                  //           mainAxisAlignment:
+                  //               MainAxisAlignment.spaceBetween,
+                  //           children: [
+                  //             numberInputArea(first: true, index: 0),
+                  //             numberInputArea(first: false, index: 1),
+                  //             numberInputArea(first: false, index: 2),
+                  //             numberInputArea(first: false, index: 3),
+                  //             numberInputArea(first: false, index: 4),
+                  //             numberInputArea(first: false, index: 5)
+                  //           ])
+                  //     ])),
+                ])),
+            _buildBody(),
+            const Spacer(),
+            Text(showTimer,
+                style: const TextStyle(
+                    fontSize: 14,
+                    color: Colors.black38,
+                    fontWeight: FontWeight.bold)),
+            Padding(
+              padding: EdgeInsets.only(
+                  right: 10,
+                  left: 10,
+                  bottom: MediaQuery.of(context).padding.bottom),
+              child: BlackBookButton(
+                width: double.infinity,
+                onPressed: () {
+                  if (showTimer == "0:00") {
+                    showWarningDialog(
+                        "Хугацаа дуусхаас өмнө баталгаажуулах тоог оруулна уу");
                   } else {
-                    Navigator.of(context).push(CupertinoPageRoute(
-                        builder: (context) => const Packages()));
-                  }
-                }
-              })
-        ],
-        child: Scaffold(
-            appBar: AppBar(
-                elevation: 0,
-                backgroundColor: kBackgroundColor,
-                leading: IconButton(
-                    onPressed: () {
-                      Navigator.pop(context);
-                    },
-                    icon: const Icon(Icons.keyboard_arrow_left, size: 30))),
-            body: Column(children: [
-              Expanded(
-                  child: SingleChildScrollView(
-                      child: Padding(
-                          padding: const EdgeInsets.symmetric(horizontal: 32),
-                          child: Column(children: [
-                            SizedBox(
-                                height: 80,
-                                child: Image.asset('assets/images/logo.png')),
-                            const SizedBox(height: 10),
-                            const Text(
-                                "Таны утсан дээр ирсэн 6 оронтой баталгаажуулах тоог оруулна уу.",
-                                style: TextStyle(
-                                    fontSize: 12,
-                                    color: Colors.black38,
-                                    fontWeight: FontWeight.bold)),
-                            const SizedBox(height: 18),
-                            Container(
-                                decoration: BoxDecoration(
-                                    color: kBackgroundColor,
-                                    borderRadius: BorderRadius.circular(12)),
-                                child: Column(children: [
-                                  Row(
-                                      mainAxisAlignment:
-                                          MainAxisAlignment.spaceBetween,
-                                      children: [
-                                        numberInputArea(first: true, index: 0),
-                                        numberInputArea(first: false, index: 1),
-                                        numberInputArea(first: false, index: 2),
-                                        numberInputArea(first: false, index: 3),
-                                        numberInputArea(first: false, index: 4),
-                                        numberInputArea(first: false, index: 5)
-                                      ])
-                                ])),
-                            Text(showTimer,
-                                style: const TextStyle(
-                                    fontSize: 14,
-                                    color: Colors.black38,
-                                    fontWeight: FontWeight.bold))
-                          ])))),
-              Padding(
-                  padding: const EdgeInsets.all(10),
-                  child: Container(
-                      width: double.infinity,
-                      height: 45,
-                      decoration: BoxDecoration(
-                          gradient: LinearGradient(colors: [
-                            kPrimaryColor,
-                            Colors.orange.shade300,
-                            kPrimaryColor
-                          ]),
-                          borderRadius: BorderRadius.circular(20)),
-                      child: TextButton(
-                          style:
-                              ElevatedButton.styleFrom(foregroundColor: kWhite),
-                          onPressed: () {
-                            if (showTimer == "0:00") {
-                              AlertMessage.alertMessage(context, "Амжилтгүй !",
-                                  "Хугацаа дуусхаас өмнө баталгаажуулах тоог оруулна уу");
-                            } else {
-                              onLogin();
-                            }
-                          },
-                          child: const Text("Баталгаажуулах",
-                              style: TextStyle(fontSize: 14)))))
-            ])));
-  }
-
-  numberInputArea({required bool first, required int index}) {
-    return SizedBox(
-        height: 85,
-        child: AspectRatio(
-            aspectRatio: 0.5,
-            child: TextField(
-                inputFormatters: [FilteringTextInputFormatter.digitsOnly],
-                controller: controllers[index],
-                onChanged: (value) {
-                  if (value.length == 1) {
-                    FocusScope.of(context).nextFocus();
-                  }
-                  if (value.isEmpty) {
-                    FocusScope.of(context).previousFocus();
+                    onLogin();
                   }
                 },
-                style: Theme.of(context).textTheme.titleLarge,
-                showCursor: false,
-                readOnly: false,
-                textAlign: TextAlign.center,
-                keyboardType: TextInputType.number,
-                maxLength: 1,
-                decoration: InputDecoration(
-                    counter: const Offstage(),
-                    enabledBorder: OutlineInputBorder(
-                        borderSide:
-                            const BorderSide(width: 2, color: Colors.black12),
-                        borderRadius: BorderRadius.circular(12)),
-                    focusedBorder: OutlineInputBorder(
-                        borderSide:
-                            const BorderSide(width: 2, color: kPrimaryColor),
-                        borderRadius: BorderRadius.circular(12))))));
+                child: const Text("Баталгаажуулах"),
+              ),
+            ),
+          ],
+        ),
+      ),
+    );
+  }
+
+  // numberInputArea({required bool first, required int index}) {
+  //   return SizedBox(
+  //       height: 85,
+  //       child: AspectRatio(
+  //           aspectRatio: 0.5,
+  //           child: TextField(
+  //               inputFormatters: [FilteringTextInputFormatter.digitsOnly],
+  //               controller: controllers[index],
+  //               onChanged: (value) {
+  //                 if (value.length == 1) {
+  //                   FocusScope.of(context).nextFocus();
+  //                 }
+  //                 if (value.isEmpty) {
+  //                   FocusScope.of(context).previousFocus();
+  //                 }
+  //               },
+  //               style: Theme.of(context).textTheme.bodyLarge,
+  //               showCursor: false,
+  //               readOnly: false,
+  //               textAlign: TextAlign.center,
+  //               keyboardType: TextInputType.number,
+  //               maxLength: 1,
+  //               decoration:const InputDecoration(
+  //                 counter:  Offstage(),
+  //               ))));
+  // }
+
+  Widget _buildBody() {
+    return Padding(
+      padding: const EdgeInsets.all(24.0),
+      child: Column(
+        children: [
+          Padding(
+            padding: const EdgeInsets.only(top: 32.0),
+            child: PinTextField(
+              autofocus: true,
+              controller: _otpTxtCtrl,
+              androidSmsAutofillMethod:
+                  AndroidSmsAutofillMethod.smsUserConsentApi,
+            ),
+          ),
+        ],
+      ),
+    );
   }
 }

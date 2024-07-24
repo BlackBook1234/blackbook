@@ -16,12 +16,14 @@ SaleProductResponseModel _$SaleProductResponseModelFromJson(
           ? null
           : SaleProductDetialModel.fromJson(
               json['data'] as Map<String, dynamic>),
+      total: json['total'] as int?,
     );
 
 Map<String, dynamic> _$SaleProductResponseModelToJson(
         SaleProductResponseModel instance) =>
     <String, dynamic>{
       'message': instance.message,
+      'total': instance.total,
       'status': instance.status,
       'data': instance.data,
     };

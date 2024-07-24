@@ -15,6 +15,7 @@ import 'package:black_book/widget/component/search.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart' hide Badge;
 import 'package:flutter_bloc/flutter_bloc.dart';
+import 'package:lottie/lottie.dart';
 import 'package:provider/provider.dart';
 import 'draft.dart';
 
@@ -153,7 +154,7 @@ class _ShareProductScreenState extends State<ShareProductScreen> {
                 TypeBuilder(
                   chosenValue: chosenValue,
                   chosenType: "",
-                  userRole: Utils.getUserRole(),
+                  userRole: "WORKER",
                   chooseType: (String value) {
                     setState(() {
                       chosenValue = value;
@@ -173,37 +174,42 @@ class _ShareProductScreenState extends State<ShareProductScreen> {
                     });
                   },
                 ),
-                ListBuilder(
-                  screenType: "sale",
-                  list: list,
-                  showWarningCallback: (int? ind) {
-                    setState(() {
-                      index = ind;
-                    });
-                  },
-                  showDilaog: () {
-                    for(ProductInDetialModel data in list[index!].sizes!){
-                      setState(() {
-                        data.ware_stock = 0;
-                      });
-                    }
-                    showModalBottomSheet(
-                        context: context,
-                        isScrollControlled: true,
-                        builder: (context) {
-                          return FractionallySizedBox(
-                              heightFactor: 0.7,
-                              child: ProductBottomSheetsWidget(
-                                  title: "Сагс", data: list[index!]));
-                        });
-                  },
-                  controller: _controller,
-                  userRole: "ADMIN",
-                  isExpanded: _isExpanded,
-                  typeTrailling: true,
-                  icon: Icons.add_shopping_cart_rounded,
-                  trailingText: "Сагс",
-                )
+                list.isEmpty
+                    ? Center(
+                        child: Lottie.asset('assets/json/empty-page.json'),
+                      )
+                    : ListBuilder(
+                        screenType: "sale",
+                        list: list,
+                        showWarningCallback: (int? ind) {
+                          setState(() {
+                            index = ind;
+                          });
+                        },
+                        showDilaog: () {
+                          for (ProductInDetialModel data
+                              in list[index!].sizes!) {
+                            setState(() {
+                              data.ware_stock = 0;
+                            });
+                          }
+                          showModalBottomSheet(
+                              context: context,
+                              isScrollControlled: true,
+                              builder: (context) {
+                                return FractionallySizedBox(
+                                    heightFactor: 0.7,
+                                    child: ProductBottomSheetsWidget(
+                                        title: "Сагс", data: list[index!]));
+                              });
+                        },
+                        controller: _controller,
+                        userRole: "ADMIN",
+                        isExpanded: _isExpanded,
+                        typeTrailling: true,
+                        icon: Icons.add_shopping_cart_rounded,
+                        trailingText: "Сагс",
+                      )
               ]));
         }));
   }

@@ -1,12 +1,18 @@
 import 'package:black_book/constant.dart';
+import 'package:black_book/widget/alert/component/buttons.dart';
 import 'package:flutter/material.dart';
 
 // ignore: must_be_immutable
 class SearchBuilder extends StatelessWidget {
   Function? searchAgian;
   Function? searchValue;
+  String? searchText;
 
-  SearchBuilder({super.key, this.searchAgian, this.searchValue});
+  SearchBuilder(
+      {super.key,
+      this.searchAgian,
+      this.searchValue,
+      this.searchText = "Барааны код"});
 
   @override
   Widget build(BuildContext context) {
@@ -18,7 +24,7 @@ class SearchBuilder extends StatelessWidget {
                   height: 35,
                   child: TextField(
                       onChanged: (value) {
-                       searchValue?.call(value);
+                        searchValue?.call(value);
                       },
                       decoration: InputDecoration(
                           enabledBorder: OutlineInputBorder(
@@ -32,7 +38,7 @@ class SearchBuilder extends StatelessWidget {
                               borderSide: const BorderSide(
                                   color: Colors.black26, width: 1)),
                           fillColor: kWhite,
-                          hintText: "Барааны код",
+                          hintText: searchText,
                           filled: true,
                           contentPadding: const EdgeInsets.all(10),
                           prefixIcon:
@@ -43,28 +49,18 @@ class SearchBuilder extends StatelessWidget {
                           hintStyle: const TextStyle(
                               fontSize: 13, color: Colors.grey))))),
           const SizedBox(width: 10),
-          InkWell(
-              onTap: () {
-                // setState(() {
-                //   searchAgian = true;
-                //   _agianSearch();
-                // });
-                searchAgian?.call(true);
-              },
-              child: Container(
-                  width: 80,
-                  height: 38,
-                  decoration: BoxDecoration(
-                      color: kPrimaryColor,
-                      boxShadow: [
-                        BoxShadow(
-                            color: Colors.grey.shade300,
-                            blurRadius: 3,
-                            offset: const Offset(2, 2))
-                      ],
-                      borderRadius: BorderRadius.circular(10)),
-                  child: const Center(
-                      child: Text("Хайх", style: TextStyle(color: kWhite)))))
+          BlackBookButton(
+            height: 38,
+            width: 80,
+            borderRadius: 14,
+            onPressed: () {
+              searchAgian?.call(true);
+            },
+            color: kPrimaryColor,
+            child: const Center(
+              child: Text("Хайх"),
+            ),
+          ),
         ]));
   }
 }

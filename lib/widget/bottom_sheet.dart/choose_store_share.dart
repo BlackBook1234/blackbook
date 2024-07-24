@@ -11,7 +11,7 @@ import "package:black_book/models/product/product_inlist.dart";
 import "package:black_book/models/store/store_detial.dart";
 import "package:black_book/provider/product_share_provider.dart";
 import "package:black_book/util/utils.dart";
-import "package:black_book/widget/alert/show_dilaog.dart";
+import "package:black_book/widget/alert/mixin_dialog.dart";
 import "package:flutter/material.dart";
 import "package:flutter_bloc/flutter_bloc.dart";
 import "package:flutter_svg/svg.dart";
@@ -28,7 +28,7 @@ class ChooseStoreBottomSheetsWidget extends StatefulWidget {
 }
 
 class _ChooseStoreBottomSheetsWidgetState
-    extends State<ChooseStoreBottomSheetsWidget> {
+    extends State<ChooseStoreBottomSheetsWidget> with BaseStateMixin {
   List<StoreDetialModel> lst = [];
   final _bloc = StoreBloc();
   final _shareBloc = ShareBloc();
@@ -68,7 +68,8 @@ class _ChooseStoreBottomSheetsWidgetState
       }
     }
     if (storeId == null) {
-      AlertMessage.statusMessage(context, "Анхаар!", "Дэлгүүр сонгон уу", true);
+      showWarningDialog("Дэлгүүр сонгон уу");
+      // AlertMessage.statusMessage(context, "Анхаар!", "Дэлгүүр сонгон уу", true);
     } else {
       _shareBloc.add(CreateShareEvent(storeId!, sendData));
     }
@@ -90,8 +91,9 @@ class _ChooseStoreBottomSheetsWidgetState
                       _bloc.add(const GetStoreEvent());
                     } else {
                       Utils.cancelLoader(context);
-                      AlertMessage.statusMessage(
-                          context, "Анхаар!", state.message, true);
+                      showWarningDialog(state.message);
+                      // AlertMessage.statusMessage(
+                      //     context, "Анхаар!", state.message, true);
                     }
                   }
                   if (state is GetStoreSuccess) {
@@ -115,14 +117,16 @@ class _ChooseStoreBottomSheetsWidgetState
                       _shareBloc.add(CreateShareEvent(storeId!, sendData));
                     } else {
                       Utils.cancelLoader(context);
-                      AlertMessage.statusMessage(
-                          context, "Анхаар!", state.message, true);
+                      showWarningDialog(state.message);
+                      // AlertMessage.statusMessage(
+                      //     context, "Анхаар!", state.message, true);
                     }
                   }
                   if (state is ShareSuccess) {
                     Utils.cancelLoader(context);
-                    AlertMessage.statusMessage(
-                        context, "Амжилттай", "Бараа шилжлээ", false);
+                    showSuccessDialog("Амжилттай", false, "Бараа шилжлээ");
+                    // AlertMessage.statusMessage(
+                    //     context, "Амжилттай", "Бараа шилжлээ", false);
                     provider.removeAllItem();
                     Future.delayed(const Duration(seconds: 1), () {
                       Navigator.pop(context);

@@ -71,36 +71,40 @@ class ShareBloc extends Bloc<ShareEvent, ShareState> {
     on<ShareHistoryEvent>((event, emit) async {
       emit(ShareHistoryLoading());
       try {
+        print("rinui");
         String accessToken = Utils.getToken();
         final apiService = ApiTokenService(accessToken);
-        print(accessToken);
         String path = "";
-        if (Utils.getUserRole() == "BOSS") {
-          if (event.searchAgian) {
-            if (event.chosenType == "") {
-              path =
-                  "/v1/product/transfer/list?page=${event.page}&sort=desc&limit=40&q=${event.searchValue}&is_warehouse=1";
+        if (event.sourceId == '') {
+          if (Utils.getUserRole() == "BOSS") {
+            if (event.searchAgian) {
+              if (event.storeId == "") {
+                path = "/v1/product/transfer/list?sort=desc&page=1&limit=20";
+              } else {
+                // path =
+                // "/v1/product/transfer/list?page=${event.page}&sort=desc&limit=40&q=${event.searchValue}";
+              }
             } else {
               path =
-                  "/v1/product/transfer/list?page=${event.page}&sort=desc&limit=40&q=${event.searchValue}&store_id=${event.chosenType}";
+                  '/v1/product/transfer/list?page=${event.page}&is_warehouse=1&limit=40&sort=desc';
             }
           } else {
-            path =
-                '/v1/product/transfer/list?page=${event.page}&is_warehouse=1&limit=40&sort=desc';
+            if (event.searchAgian) {
+              // path =
+              //     '/v1/product/transfer/list?limit=40&store_id=${Utils.getStoreId()}&page=${event.page}&sort=desc&q=${event.searchValue}';
+            } else {
+              path =
+                  '/v1/product/transfer/list?limit=40&store_id=${Utils.getStoreId()}&page=${event.page}&sort=desc';
+            }
           }
         } else {
-          if (event.searchAgian) {
-            path =
-                '/v1/product/transfer/list?limit=40&store_id=${Utils.getStoreId()}&page=${event.page}&sort=desc&q=${event.searchValue}';
-          } else {
-            path =
-                '/v1/product/transfer/list?limit=40&store_id=${Utils.getStoreId()}&page=${event.page}&sort=desc';
-          }
+          path =
+              '/v1/product/transfer/list?limit=40&page=${event.page}&sort=desc&tid=${event.sourceId}';
         }
+
         Response response = await apiService.getRequest(path);
-        TransferResponse dataResponse =
-            TransferResponse.fromJson(response.data);
-        print(response.data);
+        TransferDataResponse dataResponse =
+            TransferDataResponse.fromJson(response.data);
         if (response.statusCode == 200 && dataResponse.status == "success") {
           bool hasMoreOrder = true;
           if (dataResponse.data!.length < 40) {
@@ -119,6 +123,7 @@ class ShareBloc extends Bloc<ShareEvent, ShareState> {
           emit(ShareHistoryFailure("Серверийн алдаа"));
         }
       } catch (ex) {
+        print(ex);
         emit(ShareHistoryFailure("Серверийн алдаа"));
       }
     });

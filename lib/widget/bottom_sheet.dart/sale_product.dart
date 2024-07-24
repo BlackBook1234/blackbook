@@ -5,7 +5,7 @@ import "package:black_book/constant.dart";
 import "package:black_book/models/product/product_detial.dart";
 import "package:black_book/models/product/product_inlist.dart";
 import "package:black_book/util/utils.dart";
-import "package:black_book/widget/alert/show_dilaog.dart";
+import "package:black_book/widget/alert/mixin_dialog.dart";
 import "package:flutter/material.dart";
 import "package:flutter/services.dart";
 import "package:flutter_bloc/flutter_bloc.dart";
@@ -23,7 +23,8 @@ class SellProductBottomSheetsWidget extends StatefulWidget {
   final ProductDetialModel data;
 }
 
-class _BottomSheetsWidgetState extends State<SellProductBottomSheetsWidget> {
+class _BottomSheetsWidgetState extends State<SellProductBottomSheetsWidget>
+    with BaseStateMixin {
   final _bloc = SaleBloc();
   bool isChecked1 = false;
   bool isChecked2 = false;
@@ -45,16 +46,19 @@ class _BottomSheetsWidgetState extends State<SellProductBottomSheetsWidget> {
         }
       }
       if (otpData.isEmpty) {
-        AlertMessage.attentionMessage(context, "Бараа оруулна уу");
+        showWarningDialog("Бараа оруулна уу");
+        // AlertMessage.attentionMessage(context, "Бараа оруулна уу");
       } else {
         print(otpData.length);
         _bloc.add(CreateSaleEvent(otpData, cashType));
       }
+    } else {
+      showWarningDialog("Төлбөрийн хэрэгсэл сонгоно уу!");
     }
   }
 
   void changeOrderQty(ProductInDetialModel data, int type) {
-    if (type == 1 && data.ware_stock < data.warehouse_stock!) {
+    if (type == 1 && data.ware_stock < data.stock!) {
       setState(() {
         data.ware_stock++;
       });
@@ -68,13 +72,13 @@ class _BottomSheetsWidgetState extends State<SellProductBottomSheetsWidget> {
   }
 
   void changeCount(ProductInDetialModel data, int value) {
-    if (data.warehouse_stock! >= value) {
+    if (data.stock! >= value) {
       setState(() {
         data.ware_stock = value;
       });
     } else {
       setState(() {
-        data.ware_stock = data.warehouse_stock!;
+        data.ware_stock = data.stock!;
       });
     }
   }
@@ -99,13 +103,16 @@ class _BottomSheetsWidgetState extends State<SellProductBottomSheetsWidget> {
                             .add(CreateSaleEvent(widget.data.sizes!, cashType));
                       } else {
                         Utils.cancelLoader(context);
-                        AlertMessage.attentionMessage(context, state.message);
+                        showWarningDialog(state.message);
+                        // AlertMessage.attentionMessage(context, state.message);
                       }
                     }
                     if (state is SaleSuccess) {
                       Utils.cancelLoader(context);
-                      AlertMessage.statusMessage(
-                          context, "Амжилттай", "Бараа борлуулагдлаа", false);
+                      showSuccessDialog(
+                          "Амжилттай", false, "Бараа борлуулагдлаа");
+                      // AlertMessage.statusMessage(
+                      //     context, "Амжилттай", "Бараа борлуулагдлаа", false);
                       Future.delayed(const Duration(seconds: 1), () {
                         Navigator.pop(context);
                         Navigator.pop(context);
@@ -150,11 +157,13 @@ class _BottomSheetsWidgetState extends State<SellProductBottomSheetsWidget> {
                                   style: const TextStyle(
                                       fontSize: 12.0,
                                       fontWeight: FontWeight.normal)),
-                              Text(
-                                  'Анхны үнэ: ${widget.data.sizes!.first.cost}₮',
-                                  style: const TextStyle(
-                                      fontSize: 11.0,
-                                      fontWeight: FontWeight.normal)),
+                              Utils.getUserRole() == "BOSS"
+                                  ? Text(
+                                      'Авсан үнэ: ${widget.data.sizes!.first.cost}₮',
+                                      style: const TextStyle(
+                                          fontSize: 11.0,
+                                          fontWeight: FontWeight.normal))
+                                  : const SizedBox.shrink(),
                               Text(
                                   'Зарах үнэ: ${widget.data.sizes!.first.price}₮',
                                   style: const TextStyle(
@@ -175,7 +184,7 @@ class _BottomSheetsWidgetState extends State<SellProductBottomSheetsWidget> {
                                           CrossAxisAlignment.start,
                                       children: [
                                         Text(
-                                            'Үлдэгдэл: ${widget.data.sizes![index].warehouse_stock}ш',
+                                            'Үлдэгдэл: ${widget.data.sizes![index].stock}ш',
                                             style: const TextStyle(
                                                 fontSize: 11.0,
                                                 fontWeight: FontWeight.normal)),
@@ -225,6 +234,7 @@ class _BottomSheetsWidgetState extends State<SellProductBottomSheetsWidget> {
                                             textInputAction:
                                                 TextInputAction.done,
                                             decoration: const InputDecoration(
+                                                fillColor: kBackgroundColor,
                                                 border: InputBorder.none,
                                                 focusedBorder: InputBorder.none,
                                                 enabledBorder: InputBorder.none,
@@ -252,115 +262,126 @@ class _BottomSheetsWidgetState extends State<SellProductBottomSheetsWidget> {
                   Row(
                       mainAxisAlignment: MainAxisAlignment.spaceBetween,
                       children: [
-                        Container(
-                            width: 100,
-                            height: 40,
-                            decoration: BoxDecoration(
-                                color: isChecked1 ? Colors.grey : kWhite,
-                                boxShadow: [
-                                  BoxShadow(
-                                      color: Colors.grey.shade300,
-                                      blurRadius: 3,
-                                      offset: const Offset(2, 2))
-                                ],
-                                borderRadius: BorderRadius.circular(20)),
-                            child: InkWell(
-                                child: const Center(
-                                    child: Text("Бэлэн",
-                                        style: TextStyle(
-                                            fontSize: 14.0,
-                                            fontWeight: FontWeight.bold))),
-                                onTap: () {
-                                  setState(() {
-                                    if (isChecked3) {
-                                      isChecked3 = false;
-                                      isChecked1 = !isChecked1;
-                                      cashType = "CASH";
-                                    } else if (isChecked2) {
-                                      isChecked2 = false;
-                                      isChecked1 = !isChecked1;
-                                      cashType = "CASH";
-                                    } else {
-                                      isChecked1 = !isChecked1;
-                                      cashType = "CASH";
-                                    }
-                                  });
-                                })),
-                        Container(
-                            width: 80,
-                            height: 40,
-                            decoration: BoxDecoration(
-                                color: isChecked2 ? Colors.grey : kWhite,
-                                boxShadow: [
-                                  BoxShadow(
-                                      color: Colors.grey.shade300,
-                                      blurRadius: 3,
-                                      offset: const Offset(2, 2))
-                                ],
-                                borderRadius: BorderRadius.circular(20)),
-                            child: InkWell(
-                                child: const Center(
-                                    child: Text("Карт",
-                                        style: TextStyle(
-                                            fontSize: 14.0,
-                                            fontWeight: FontWeight.bold))),
-                                onTap: () {
-                                  setState(() {
-                                    if (isChecked1) {
-                                      isChecked1 = false;
-                                      isChecked2 = !isChecked2;
-                                      cashType = "CARD";
-                                    } else if (isChecked3) {
-                                      isChecked3 = false;
-                                      isChecked2 = !isChecked2;
-                                      cashType = "CARD";
-                                    } else {
-                                      isChecked2 = !isChecked2;
-                                      cashType = "CARD";
-                                    }
-                                  });
-                                })),
-                        Container(
-                            width: 100,
-                            height: 40,
-                            decoration: BoxDecoration(
-                                color: isChecked3 ? Colors.grey : kWhite,
-                                boxShadow: [
-                                  BoxShadow(
-                                      color: Colors.grey.shade300,
-                                      blurRadius: 3,
-                                      offset: const Offset(2, 2))
-                                ],
-                                borderRadius: BorderRadius.circular(20)),
-                            child: InkWell(
-                                child: const Center(
-                                    child: Text("Шилжүүлэг",
-                                        style: TextStyle(
-                                            fontSize: 14.0,
-                                            fontWeight: FontWeight.bold))),
-                                onTap: () {
-                                  setState(() {
-                                    if (isChecked2) {
-                                      isChecked2 = false;
-                                      isChecked3 = !isChecked3;
-                                      cashType = "ACC";
-                                    } else if (isChecked1) {
-                                      isChecked1 = false;
-                                      isChecked3 = !isChecked3;
-                                      cashType = "ACC";
-                                    } else {
-                                      isChecked3 = !isChecked3;
-                                      cashType = "ACC";
-                                    }
-                                  });
-                                }))
+                        Expanded(
+                          child: Container(
+                              // width: 100,
+                              height: 40,
+                              decoration: BoxDecoration(
+                                  color: isChecked1 ? Colors.grey : kWhite,
+                                  boxShadow: [
+                                    BoxShadow(
+                                        color: Colors.grey.shade300,
+                                        blurRadius: 3,
+                                        offset: const Offset(2, 2))
+                                  ],
+                                  borderRadius: BorderRadius.circular(10)),
+                              child: InkWell(
+                                  child: const Center(
+                                      child: Text("Бэлэн",
+                                          style: TextStyle(
+                                              fontSize: 14.0,
+                                              fontWeight: FontWeight.bold))),
+                                  onTap: () {
+                                    setState(() {
+                                      if (isChecked3) {
+                                        isChecked3 = false;
+                                        isChecked1 = !isChecked1;
+                                        cashType = "CASH";
+                                      } else if (isChecked2) {
+                                        isChecked2 = false;
+                                        isChecked1 = !isChecked1;
+                                        cashType = "CASH";
+                                      } else {
+                                        isChecked1 = !isChecked1;
+                                        cashType = "CASH";
+                                      }
+                                    });
+                                  })),
+                        ),
+                        const SizedBox(
+                          width: 10,
+                        ),
+                        Expanded(
+                          child: Container(
+                              // width: 80,
+                              height: 40,
+                              decoration: BoxDecoration(
+                                  color: isChecked2 ? Colors.grey : kWhite,
+                                  boxShadow: [
+                                    BoxShadow(
+                                        color: Colors.grey.shade300,
+                                        blurRadius: 3,
+                                        offset: const Offset(2, 2))
+                                  ],
+                                  borderRadius: BorderRadius.circular(10)),
+                              child: InkWell(
+                                  child: const Center(
+                                      child: Text("Карт",
+                                          style: TextStyle(
+                                              fontSize: 14.0,
+                                              fontWeight: FontWeight.bold))),
+                                  onTap: () {
+                                    setState(() {
+                                      if (isChecked1) {
+                                        isChecked1 = false;
+                                        isChecked2 = !isChecked2;
+                                        cashType = "CARD";
+                                      } else if (isChecked3) {
+                                        isChecked3 = false;
+                                        isChecked2 = !isChecked2;
+                                        cashType = "CARD";
+                                      } else {
+                                        isChecked2 = !isChecked2;
+                                        cashType = "CARD";
+                                      }
+                                    });
+                                  })),
+                        ),
+                        const SizedBox(
+                          width: 10,
+                        ),
+                        Expanded(
+                            child: Container(
+                                // width: 100,
+                                height: 40,
+                                decoration: BoxDecoration(
+                                    color: isChecked3 ? Colors.grey : kWhite,
+                                    boxShadow: [
+                                      BoxShadow(
+                                          color: Colors.grey.shade300,
+                                          blurRadius: 3,
+                                          offset: const Offset(2, 2))
+                                    ],
+                                    borderRadius: BorderRadius.circular(10)),
+                                child: InkWell(
+                                    child: const Center(
+                                        child: Text("Шилжүүлэг",
+                                            style: TextStyle(
+                                                fontSize: 14.0,
+                                                fontWeight: FontWeight.bold))),
+                                    onTap: () {
+                                      setState(() {
+                                        if (isChecked2) {
+                                          isChecked2 = false;
+                                          isChecked3 = !isChecked3;
+                                          cashType = "ACC";
+                                        } else if (isChecked1) {
+                                          isChecked1 = false;
+                                          isChecked3 = !isChecked3;
+                                          cashType = "ACC";
+                                        } else {
+                                          isChecked3 = !isChecked3;
+                                          cashType = "ACC";
+                                        }
+                                      });
+                                    }))),
                       ]),
                   Row(children: [
                     Expanded(
                         child: ElevatedButton(
                             style: OutlinedButton.styleFrom(
                                 shape: RoundedRectangleBorder(
-                                    borderRadius: BorderRadius.circular(20)),
+                                    borderRadius: BorderRadius.circular(10)),
                                 backgroundColor: kPrimaryColor),
                             onPressed: () {
                               Navigator.pop(context);
@@ -372,7 +393,7 @@ class _BottomSheetsWidgetState extends State<SellProductBottomSheetsWidget> {
                         child: ElevatedButton(
                             style: OutlinedButton.styleFrom(
                                 shape: RoundedRectangleBorder(
-                                    borderRadius: BorderRadius.circular(20)),
+                                    borderRadius: BorderRadius.circular(10)),
                                 backgroundColor: kPrimaryColor),
                             onPressed: () {
                               bool otpCheck = false;
@@ -387,8 +408,9 @@ class _BottomSheetsWidgetState extends State<SellProductBottomSheetsWidget> {
                               if (otpCheck) {
                                 saleProduct();
                               } else {
-                                AlertMessage.alertMessage(
-                                    context, "Анхаар!", "Бараа оруулна уу!");
+                                showWarningDialog("Бараа оруулна уу");
+                                // AlertMessage.alertMessage(
+                                //     context, "Анхаар!", "Бараа оруулна уу!");
                               }
                             },
                             child: const Text("Борлуулах",

@@ -5,15 +5,16 @@ part 'category_detial.g.dart';
 
 @JsonSerializable()
 class CategoryDetialModel {
-  String? name, sort_order, parent, created_at, parent_name;
-  int? id;
+  String? name, parent, created_at, parent_name, iconUrl;
+  int? id, sort_order;
 
   CategoryDetialModel(
       {this.name,
+      this.iconUrl,
       this.sort_order,
+      this.parent,
       this.id,
       this.created_at,
-      this.parent,
       this.parent_name});
   factory CategoryDetialModel.fromJson(Map<String, dynamic> json) =>
       _$CategoryDetialModelFromJson(json);

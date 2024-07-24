@@ -3,6 +3,7 @@ import 'package:black_book/models/product/product_store.dart';
 import 'package:json_annotation/json_annotation.dart';
 import 'product_detial.dart';
 import 'store_amount.dart';
+import 'total.dart';
 part 'response.g.dart';
 
 @JsonSerializable()
@@ -12,9 +13,15 @@ class ProductResponseModel {
   List<ProductDetialModel>? data;
   List<ProductStoreModel>? stores;
   StoreAmountModel? amount;
+  TotalProductModel? total;
 
   ProductResponseModel(
-      {required this.status, required this.message, this.data, this.stores,this.amount});
+      {required this.status,
+      required this.message,
+      this.data,
+      this.stores,
+      this.amount,
+      this.total});
   factory ProductResponseModel.fromJson(Map<String, dynamic> json) =>
       _$ProductResponseModelFromJson(json);
   Map<String, dynamic> toJson() => _$ProductResponseModelToJson(this);

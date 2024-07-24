@@ -21,7 +21,6 @@ class CommonProvider extends ChangeNotifier {
     }
   }
 
-  bool get isLogged => userInfo != null;
   void setUserInfo(UserDataModel value) {
     userInfo = value;
     notifyListeners();

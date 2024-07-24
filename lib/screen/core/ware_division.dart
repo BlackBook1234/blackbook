@@ -25,9 +25,9 @@ class _WareDivisionScreenState extends State<WareDivisionScreen> {
   bool show = false;
   final _bloc = StoreBloc();
   String chosenValue = "Бүх төрөл";
-  String chosenType = "Бүх дэлгүүр";
+  String chosenType = "Агуулах";
   List<String> typeValue = ["Бүх төрөл", "Өвөл", "Хавар", "Намар", "Зун"];
-  List<String> typeStore = ["Бүх дэлгүүр"];
+  List<String> typeStore = ["Бүх дэлгүүр", "Агуулах"];
   String searchValue = "";
   List<ProductDetialModel> list = [];
   List<ProductDetialModel> listSearch = [];
@@ -42,6 +42,12 @@ class _WareDivisionScreenState extends State<WareDivisionScreen> {
   bool _hasMoreOrder = false;
   bool _loadingOrder = false;
   late ScrollController _controller;
+  ProductStoreModel defaultStoreModel = ProductStoreModel(
+      name: "Агуулах",
+      phone_number: "",
+      created_at: DateTime.now().toString(),
+      is_main: 1,
+      id: -1);
 
   @override
   void initState() {
@@ -133,8 +139,16 @@ class _WareDivisionScreenState extends State<WareDivisionScreen> {
                     _hasMoreOrder = state.hasMoreOrder;
                     list.sort((b, a) => a.created_at!.compareTo(b.created_at!));
                     storeList = state.stores!;
+                    storeList.add(defaultStoreModel);
                     for (ProductStoreModel data in storeList) {
                       typeStore.add(data.name ?? "");
+                    }
+                    if (Utils.getUserRole() == "BOSS") {
+                      chosenType = "Агуулах";
+                    } else {
+                      if (list != []) {
+                        chosenType = Utils.getstoreName();
+                      }
                     }
                     typeStore = typeStore.toSet().toList();
                   });

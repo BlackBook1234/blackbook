@@ -1,4 +1,5 @@
 import 'package:black_book/models/default/product.dart';
+import 'package:black_book/models/default/product_add.dart';
 import 'package:equatable/equatable.dart';
 
 abstract class ProductEvent extends Equatable {
@@ -54,4 +55,13 @@ class GetProductSearchEvent extends ProductEvent {
   @override
   List<Object> get props =>
       [page, searchAgian, chosenType, chosenType, searchValue];
+}
+
+// бараа нэмэх
+class PurchaseProduct extends ProductEvent {
+  final List<ProductDefaultAddModel> sizes;
+
+  const PurchaseProduct(this.sizes);
+  @override
+  List<Object> get props => [sizes];
 }

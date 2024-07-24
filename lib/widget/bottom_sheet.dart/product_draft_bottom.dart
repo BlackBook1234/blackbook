@@ -3,7 +3,9 @@ import "package:black_book/global_keys.dart";
 import "package:black_book/models/product/product_detial.dart";
 import "package:black_book/models/product/product_inlist.dart";
 import "package:black_book/provider/product_share_provider.dart";
-import "package:black_book/widget/alert/show_dilaog.dart";
+import "package:black_book/util/utils.dart";
+import "package:black_book/widget/alert/component/buttons.dart";
+import "package:black_book/widget/alert/mixin_dialog.dart";
 import "package:flutter/material.dart";
 import "package:flutter/services.dart";
 import "package:provider/provider.dart";
@@ -21,9 +23,9 @@ class ProductBottomSheetsWidget extends StatefulWidget {
   ProductDetialModel data;
 }
 
-class _BottomSheetsWidgetState extends State<ProductBottomSheetsWidget> {
+class _BottomSheetsWidgetState extends State<ProductBottomSheetsWidget>
+    with BaseStateMixin {
   void changeOrderQty(ProductInDetialModel data, int type) {
-    print(data.stock);
     if (type == 1 && data.ware_stock < data.stock!) {
       setState(() {
         data.ware_stock++;
@@ -37,8 +39,9 @@ class _BottomSheetsWidgetState extends State<ProductBottomSheetsWidget> {
     }
   }
 
-  addDataInDraft(List<ProductInDetialModel> data) {
+  _addDataInDraft(List<ProductInDetialModel> data) {
     List<ProductInDetialModel> listData = [];
+    ProductInDetialModel inNullData = ProductInDetialModel();
     for (ProductInDetialModel otpList in data) {
       if (otpList.ware_stock != 0) {
         ProductInDetialModel inData = ProductInDetialModel(
@@ -47,12 +50,16 @@ class _BottomSheetsWidgetState extends State<ProductBottomSheetsWidget> {
             stock: otpList.ware_stock,
             id: otpList.id,
             type: otpList.type);
-        listData.add(inData);
+        setState(() {
+          listData.add(inData);
+          inData = inNullData;
+        });
       }
     }
     if (listData.isEmpty) {
-      AlertMessage.statusMessage(context, "Анхаар!", "Бараа оруулна уу", true);
+      showWarningDialog("Бараа оруулна уу");
     } else {
+      ProductDetialModel draftDataNull = ProductDetialModel();
       ProductDetialModel draftData = ProductDetialModel(
           name: widget.data.name,
           code: widget.data.code,
@@ -61,11 +68,16 @@ class _BottomSheetsWidgetState extends State<ProductBottomSheetsWidget> {
           parent_category: widget.data.parent_category,
           parent_name: widget.data.parent_name,
           good_id: widget.data.good_id,
+          photo: widget.data.photo,
           sizes: listData,
           category_name: widget.data.category_name);
       Provider.of<ProductProvider>(GlobalKeys.navigatorKey.currentContext!,
               listen: false)
           .setProductItemsData(draftData);
+      setState(() {
+        draftData = draftDataNull;
+        listData = [];
+      });
       Navigator.pop(context);
     }
   }
@@ -104,9 +116,12 @@ class _BottomSheetsWidgetState extends State<ProductBottomSheetsWidget> {
                       Text("Барааны код: ${widget.data.code}",
                           style: const TextStyle(
                               fontSize: 12.0, fontWeight: FontWeight.normal)),
-                      Text('Анхны үнэ: ${widget.data.sizes!.first.cost}₮',
-                          style: const TextStyle(
-                              fontSize: 11.0, fontWeight: FontWeight.normal)),
+                      Utils.getUserRole() == "BOSS"
+                          ? Text('Авсан үнэ: ${widget.data.sizes!.first.cost}₮',
+                              style: const TextStyle(
+                                  fontSize: 11.0,
+                                  fontWeight: FontWeight.normal))
+                          : const SizedBox.shrink(),
                       Text('Зарах үнэ: ${widget.data.sizes!.first.price}₮',
                           style: const TextStyle(
                               fontSize: 11.0, fontWeight: FontWeight.normal))
@@ -169,6 +184,7 @@ class _BottomSheetsWidgetState extends State<ProductBottomSheetsWidget> {
                                     keyboardType: TextInputType.number,
                                     textInputAction: TextInputAction.done,
                                     decoration: const InputDecoration(
+                                        fillColor: kBackgroundColor,
                                         border: InputBorder.none,
                                         focusedBorder: InputBorder.none,
                                         enabledBorder: InputBorder.none,
@@ -191,42 +207,42 @@ class _BottomSheetsWidgetState extends State<ProductBottomSheetsWidget> {
                           ])
                         ]);
                   })),
-          Row(children: [
-            Expanded(
-                child: ElevatedButton(
-                    style: OutlinedButton.styleFrom(
-                        shape: RoundedRectangleBorder(
-                            borderRadius: BorderRadius.circular(10)),
-                        backgroundColor: kPrimaryColor),
+          Padding(
+            padding:
+                EdgeInsets.only(bottom: MediaQuery.of(context).padding.bottom),
+            child: Row(
+              children: [
+                Expanded(
+                  child: BlackBookButton(
                     onPressed: () {
                       Navigator.pop(context);
                     },
-                    child:
-                        const Text("Буцах", style: TextStyle(color: kWhite)))),
-            const SizedBox(width: 10),
-            Expanded(
-                child: ElevatedButton(
-                    style: OutlinedButton.styleFrom(
-                        shape: RoundedRectangleBorder(
-                            borderRadius: BorderRadius.circular(10)),
-                        backgroundColor: kPrimaryColor),
+                    child: const Text("Буцах"),
+                  ),
+                ),
+                const SizedBox(width: 10),
+                Expanded(
+                  child: BlackBookButton(
                     onPressed: () {
-                      addDataInDraft(widget.data.sizes!);
+                      _addDataInDraft(widget.data.sizes!);
                     },
-                    child: const Text("Сагсанд хийх",
-                        style: TextStyle(color: kWhite))))
-          ])
+                    child: const Text("Сагсанд хийх"),
+                  ),
+                ),
+              ],
+            ),
+          ),
         ]));
   }
 
   void changeCount(ProductInDetialModel data, int value) {
-    if (data.warehouse_stock! >= value) {
+    if (data.stock! >= value) {
       setState(() {
         data.ware_stock = value;
       });
     } else {
       setState(() {
-        data.ware_stock = data.warehouse_stock!;
+        data.ware_stock = data.stock!;
       });
     }
   }

@@ -6,7 +6,6 @@ part 'product_in_detial.g.dart';
 
 @JsonSerializable()
 class SaleProductInDetialModel {
-  
   String? product_name,
       product_code,
       good_id,
@@ -14,6 +13,7 @@ class SaleProductInDetialModel {
       store_name,
       store_color,
       money_type,
+      product_photo,
       created_at;
   int? sale_id,
       product_id,
@@ -32,6 +32,7 @@ class SaleProductInDetialModel {
       this.money_type,
       this.created_at,
       this.price,
+      this.product_photo,
       this.product_code,
       this.good_id,
       this.product_id,

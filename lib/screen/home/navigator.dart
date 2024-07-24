@@ -1,161 +1,217 @@
-import 'package:awesome_bottom_bar/awesome_bottom_bar.dart';
-import 'package:awesome_bottom_bar/widgets/inspired/inspired.dart';
+import 'package:black_book/api/component/api_error.dart';
 import 'package:black_book/constant.dart';
-import 'package:black_book/provider/user_provider.dart';
-import 'package:black_book/screen/home/navigator_controller.dart';
-import 'package:black_book/screen/login/login.dart';
+import 'package:black_book/models/notification/detial.dart';
+import 'package:black_book/screen/home/search.dart';
+import 'package:black_book/screen/home/widget/banners_carousel.dart';
+import 'package:black_book/screen/notification/notification.dart';
 import 'package:black_book/screen/sale_product/sale_main.dart';
-import 'package:black_book/util/utils.dart';
+import 'package:black_book/widget/alert/mixin_dialog.dart';
+import 'package:black_book/widget/bottom_navigation_bar/bottom_navigation_bar.dart';
 import 'package:black_book/widget/drawer.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_svg/flutter_svg.dart';
-import 'package:get/get.dart';
-import 'package:provider/provider.dart';
 import 'add_item.dart';
 import 'home.dart';
-import 'search.dart';
 import 'ware_house_user_admin.dart';
 
 const Color inActiveIconColor = Colors.grey;
 
-// ignore: must_be_immutable
-class NavigatorScreen extends StatelessWidget {
-  NavigatorScreen({super.key});
-  NavigatorController ctrl = Get.put(NavigatorController());
-  // List<Widget> pages = Get.find<NavigatorController>().userRole == "BOSS"
-  //     ? [
-  //         const HomeScreen(),
-  //         const WareHouseAdminScreen(),
-  //         const AddIemScreen(),
-  //         const MainSellProductScreen(),
-  //         const SearchScreen()
-  //       ]
-  //     : [
-  //         const HomeScreen(),
-  //         const WareHouseAdminScreen(),
-  //         const MainSellProductScreen(),
-  //         const SearchScreen()
-  //       ];
+class NavigatorScreen extends StatefulWidget {
+  const NavigatorScreen({super.key});
+
+  @override
+  State<NavigatorScreen> createState() => _NavigatorScreenState();
+}
+
+class _NavigatorScreenState extends State<NavigatorScreen> with BaseStateMixin {
+  int screenIndex = 0;
+  int notificationCount = 0;
+  int _page = 1;
+  List<NotificationDetail> notficationdata = [];
+
+  @override
+  void initState() {
+    refreshPage();
+    super.initState();
+  }
+
+  Future<void> refreshPage() async {
+    await _getNotification();
+  }
+
+  void onBottomIconPressed(int index) {
+    refreshPage();
+    setState(() {
+      screenIndex = index;
+    });
+  }
+
+  Future<void> _getNotification() async {
+    try {
+      var res = await api.getNotification(_page);
+      setState(() {
+        notificationCount = res.unseen!;
+      });
+    } on APIError catch (e) {
+      showErrorDialog(e.message);
+    }
+  }
 
   _showLogOutWarning(BuildContext context) async {
-    Widget continueButton = TextButton(
-        child: const Text("Тийм", style: TextStyle(color: kBlack)),
-        onPressed: () {
-          Provider.of<CommonProvider>(context, listen: false).logout();
-          Navigator.of(context).pop();
-          Navigator.pushAndRemoveUntil(
-              context,
-              CupertinoPageRoute(builder: (context) => LoginScreen()),
-              (route) => false);
-        });
-    Widget cancelButton = TextButton(
-        child: const Text("Үгүй", style: TextStyle(color: kBlack)),
-        onPressed: () {
-          Navigator.of(context).pop();
-        });
-    AlertDialog alert = AlertDialog(
-        title: const Column(children: [
-          Center(
-              child: Text("Анхаар!",
-                  style: TextStyle(
-                      fontSize: 16,
-                      fontWeight: FontWeight.bold,
-                      color: kPrimaryColor))),
-          Divider()
-        ]),
-        content: const Text("Та програмаас гарахдаа итгэлтэй байна уу",
-            textAlign: TextAlign.center),
-        actions: [
-          Row(
-              mainAxisAlignment: MainAxisAlignment.spaceBetween,
-              children: [cancelButton, continueButton])
-        ]);
-    showDialog(
-        context: context,
-        builder: (BuildContext context) {
-          return alert;
-        });
+    if (screenIndex != 0) {
+      setState(() {
+        screenIndex = 0;
+      });
+    }
   }
 
   @override
   Widget build(BuildContext context) {
-    List<TabItem> items = Utils.getUserRole() == "BOSS"
-        ? const [
-            TabItem(icon: Icons.home_outlined, title: 'Нүүр'),
-            TabItem(icon: Icons.favorite_border_outlined, title: 'Миний бараа'),
-            TabItem(icon: Icons.add_outlined, title: 'Бараа нэмэх'),
-            TabItem(icon: Icons.shopping_cart_outlined, title: 'Борлуулах'),
-            TabItem(icon: Icons.search_outlined, title: 'Хайх')
-          ]
-        : const [
-            TabItem(icon: Icons.home_outlined, title: 'Нүүр'),
-            TabItem(icon: Icons.favorite_border_outlined, title: 'Миний бараа'),
-            TabItem(icon: Icons.shopping_cart_outlined, title: 'Борлуулах'),
-            TabItem(icon: Icons.search_outlined, title: 'Хайх')
-          ];
-    List<Widget> pages = Utils.getUserRole() == "BOSS"
-        ? [
-            const HomeScreen(),
-            const WareHouseAdminScreen(),
-            const AddIemScreen(),
-            const MainSellProductScreen(),
-            const SearchScreen()
-          ]
-        : [
-            const HomeScreen(),
-            const WareHouseAdminScreen(),
-            const MainSellProductScreen(),
-            const SearchScreen()
-          ];
-    return Obx(() => Scaffold(
-        resizeToAvoidBottomInset: false,
-        extendBody: true,
-        drawer: const NavBar(),
-        appBar: AppBar(
-            titleSpacing: 0,
-            automaticallyImplyLeading: false,
-            title: Row(mainAxisAlignment: MainAxisAlignment.start, children: [
-              Builder(
-                  builder: (context) => InkWell(
+    return Scaffold(
+      resizeToAvoidBottomInset: false,
+      extendBody: true,
+      drawer: const NavBar(),
+      appBar: AppBar(
+        titleSpacing: 0,
+        automaticallyImplyLeading: false,
+        title: Row(
+          mainAxisAlignment: MainAxisAlignment.start,
+          children: [
+            Builder(
+                builder: (context) => InkWell(
                       onTap: () {
                         Scaffold.of(context).openDrawer();
                       },
                       child: Container(
                           height: 30,
-                          width: 60,
+                          width: 50,
                           decoration: const BoxDecoration(
                               color: kWhite,
                               borderRadius: BorderRadius.only(
                                   bottomRight: Radius.circular(15),
                                   topRight: Radius.circular(15))),
-                          child: Row(
-                              mainAxisAlignment: MainAxisAlignment.center,
-                              children: [
-                                const Icon(Icons.arrow_back_ios,
-                                    color: kPrimaryColor, size: 20),
-                                SvgPicture.asset("assets/icons/Camera Icon.svg",
-                                    colorFilter: const ColorFilter.mode(
-                                        kPrimaryColor, BlendMode.srcIn))
-                              ])))),
-              const SizedBox(width: 10),
-              Image.asset('assets/images/logoSecond.png', width: 160)
-            ])),
-        backgroundColor: kWhite,
-        body: WillPopScope(
-            onWillPop: () => _showLogOutWarning(context),
-            child: pages[ctrl.currentIndex.value]),
-        bottomNavigationBar: BottomBarInspiredInside(
-            titleStyle: const TextStyle(fontSize: 10),
-            items: items,
-            backgroundColor: kWhite,
-            color: inActiveIconColor,
-            colorSelected: kWhite,
-            indexSelected: ctrl.currentIndex.value,
-            onTap: (int index) => ctrl.updatePage(index),
-            padbottom: 5,
-            chipStyle:
-                const ChipStyle(convexBridge: true, background: kPrimaryColor),
-            itemStyle: ItemStyle.circle)));
+                          child: Center(
+                              child: SvgPicture.asset(
+                                  "assets/icons/Camera Icon.svg",
+                                  colorFilter: const ColorFilter.mode(
+                                    kPrimaryColor,
+                                    BlendMode.srcIn,
+                                  )))),
+                    )),
+            const SizedBox(width: 10),
+            Image.asset('assets/images/logoSecond.png', width: 160),
+            const Expanded(child: SizedBox.shrink()),
+            Stack(
+              children: [
+                Container(
+                  margin: const EdgeInsets.only(right: 10),
+                  width: 30,
+                  height: 30,
+                  decoration: BoxDecoration(
+                      border: Border.all(width: 1, color: kPrimaryColor),
+                      color: Colors.transparent,
+                      borderRadius: BorderRadius.circular(10)),
+                  child: Center(
+                    child: InkWell(
+                      onTap: () {
+                        Navigator.of(context)
+                            .push(CupertinoPageRoute(
+                                builder: (context) =>
+                                    const NotficationScreen()))
+                            .then(
+                              (value) => refreshPage(),
+                            );
+                      },
+                      child: const Icon(
+                        Icons.notifications_none,
+                        color: kPrimaryColor,
+                        size: 20,
+                      ),
+                    ),
+                  ),
+                ),
+                notificationCount != 0
+                    ? Positioned(
+                        top: 0,
+                        right: 8,
+                        child: Container(
+                          padding: const EdgeInsets.all(4),
+                          decoration: const BoxDecoration(
+                            shape: BoxShape.circle,
+                            color: Colors.red,
+                          ),
+                          constraints: const BoxConstraints(
+                            minWidth: 14,
+                            minHeight: 14,
+                          ),
+                          child: Text(
+                            '$notificationCount',
+                            style: const TextStyle(
+                                color: Colors.white, fontSize: 8),
+                            textAlign: TextAlign.center,
+                          ),
+                        ),
+                      )
+                    : const SizedBox.shrink(),
+              ],
+            ),
+          ],
+        ),
+      ),
+      backgroundColor: kBackgroundColor,
+      body: WillPopScope(
+        onWillPop: () async {
+          _showLogOutWarning(context);
+          return false;
+        },
+        child: Stack(
+          fit: StackFit.expand,
+          children: <Widget>[
+            Column(
+              crossAxisAlignment: CrossAxisAlignment.start,
+              children: <Widget>[
+                Expanded(
+                  child: AnimatedSwitcher(
+                    duration: const Duration(milliseconds: 300),
+                    switchInCurve: Curves.easeInToLinear,
+                    switchOutCurve: Curves.easeOutBack,
+                    child: screenIndex == 0
+                        ? const HomeScreen()
+                        : screenIndex == 1
+                            ? const WareHouseAdminScreen()
+                            : screenIndex == 2
+                                ? const AddIemScreen()
+                                : screenIndex == 3
+                                    ? const MainSellProductScreen()
+                                    : const SearchScreen(),
+                  ),
+                ),
+                const SizedBox(
+                  height: 50,
+                ),
+              ],
+            ),
+            Positioned(
+              bottom: 20,
+              right: 0,
+              child: CustomBottomNavigationBar(
+                onIconPresedCallback: onBottomIconPressed,
+                index: screenIndex,
+              ),
+            ),
+            Positioned(
+              bottom: 0,
+              right: 0,
+              child: Container(
+                height: 20,
+                width: size.width,
+                color: kWhite
+              ),
+            ),
+          ],
+        ),
+      ),
+    );
   }
 }

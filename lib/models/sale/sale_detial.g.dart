@@ -19,6 +19,10 @@ DetialSaleProductModel _$DetialSaleProductModelFromJson(
       stores: (json['stores'] as List<dynamic>?)
           ?.map((e) => StoreDetialModel.fromJson(e as Map<String, dynamic>))
           .toList(),
+      warehouse: json['warehouse'] == null
+          ? null
+          : SaleListWarehouseModel.fromJson(
+              json['warehouse'] as Map<String, dynamic>),
     );
 
 Map<String, dynamic> _$DetialSaleProductModelToJson(
@@ -28,4 +32,5 @@ Map<String, dynamic> _$DetialSaleProductModelToJson(
       'list': instance.list,
       'total': instance.total,
       'stores': instance.stores,
+      'warehouse': instance.warehouse,
     };

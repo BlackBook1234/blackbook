@@ -1,9 +1,6 @@
 import 'dart:convert';
 
-import 'package:black_book/bloc/refresh_token/bloc.dart';
-import 'package:black_book/bloc/refresh_token/event.dart';
-import 'package:black_book/bloc/refresh_token/state.dart';
-import 'package:black_book/constant.dart';
+import 'package:black_book/api/component/api_error.dart';
 import 'package:black_book/global_keys.dart';
 import 'package:black_book/models/user_data/user_data.dart';
 import 'package:black_book/provider/loader.dart';
@@ -11,14 +8,12 @@ import 'package:black_book/provider/user_provider.dart';
 import 'package:black_book/screen/home/navigator.dart';
 import 'package:black_book/theme.dart';
 import 'package:black_book/util/utils.dart';
-import 'package:flutter/cupertino.dart';
+import 'package:black_book/widget/alert/mixin_dialog.dart';
 import 'package:flutter/material.dart';
-import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:provider/provider.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 import 'provider/product_share_provider.dart';
 import 'screen/login/login.dart';
-import 'package:get/get.dart';
 
 void main() {
   WidgetsFlutterBinding.ensureInitialized();
@@ -31,16 +26,32 @@ class MyApp extends StatefulWidget {
   State<MyApp> createState() => MyAppState();
 }
 
-class MyAppState extends State<MyApp> {
+class MyAppState extends State<MyApp> with BaseStateMixin {
   String? user;
-  final _bloc = RefreshBloc();
+
   @override
   void initState() {
     super.initState();
     initUserInfo();
   }
 
-  void initUserInfo() async {
+  Future<void> _getUserData(context) async {
+    try {
+      await api.refreshToken();
+    } on APIError catch (e) {
+      if (e.message != "Интернэт холболтоо шалгана уу.") {
+        setState(() {
+          user = null;
+        });
+      } else if (e.message == "token_expired") {
+        setState(() {
+          user = null;
+        });
+      }
+    }
+  }
+
+  Future<void> initUserInfo() async {
     final prefs = await SharedPreferences.getInstance();
     setState(() {
       user = prefs.getString("userInfo");
@@ -48,7 +59,8 @@ class MyAppState extends State<MyApp> {
     if (user != null) {
       final Map<String, dynamic> data = json.decode(user!);
       Utils.getCommonProvider().setUserInfo(UserDataModel.fromJson(data));
-      _bloc.add(const RefreshTokenEvent());
+      // ignore: use_build_context_synchronously
+      await _getUserData(context);
     }
   }
 
@@ -60,70 +72,75 @@ class MyAppState extends State<MyApp> {
         ChangeNotifierProvider(create: (_) => ProductProvider()),
         ChangeNotifierProvider(create: (_) => LoaderProvider())
       ],
-      child: GetMaterialApp(
-        debugShowCheckedModeBanner: false,
-        title: 'Flutter Demo',
-        navigatorKey: GlobalKeys.navigatorKey,
-        theme: AppTheme.lightTheme(context),
-        home: user == null
-            ? LoginScreen()
-            : MultiBlocListener(
-                listeners: [
-                  BlocListener<RefreshBloc, RefreshTokenState>(
-                    bloc: _bloc,
-                    listener: (context, state) {
-                      if (state is RefreshLoading) {}
-                      if (state is RefreshFailure) {
-                        Navigator.pushAndRemoveUntil(
-                            context,
-                            CupertinoPageRoute(
-                                builder: (context) => LoginScreen()),
-                            (route) => false);
-                      }
-                      if (state is RefreshSuccess) {
-                        Utils.cancelLoader(context);
-                        if (Utils.getUserRole() == "WORKER") {
-                          Navigator.pushAndRemoveUntil(
-                              context,
-                              CupertinoPageRoute(
-                                builder: (context) => NavigatorScreen(),
-                              ),
-                              (route) => false);
-                        } else if (Utils.getIpaid() == 1) {
-                          Navigator.pushAndRemoveUntil(
-                              context,
-                              CupertinoPageRoute(
-                                builder: (context) => NavigatorScreen(),
-                              ),
-                              (route) => false);
-                        } else {
-                          Provider.of<CommonProvider>(context, listen: false)
-                              .logout();
-                          Navigator.pushAndRemoveUntil(
-                              context,
-                              CupertinoPageRoute(
-                                builder: (context) => LoginScreen(),
-                              ),
-                              (route) => false);
-                        }
-                      }
-                    },
-                  )
-                ],
-                child: Scaffold(
-                  body: Container(
-                    color: Colors.transparent,
-                    child: const Center(
-                      child: SizedBox(
-                        height: 30,
-                        width: 30,
-                        child: CircularProgressIndicator(color: kPrimaryColor),
-                      ),
-                    ),
-                  ),
-                ),
-              ),
-      ),
+      child: MaterialApp(
+          debugShowCheckedModeBanner: false,
+          title: 'Flutter Demo',
+          navigatorKey: GlobalKeys.navigatorKey,
+          theme: AppTheme.lightTheme(context),
+          home: user == null
+              ? const LoginScreen()
+              : Utils.getUserRole() == "WORKER" || Utils.getIpaid() == 1
+                  ? const NavigatorScreen()
+                  : const LoginScreen()
+
+          // Provider.of<CommonProvider>(context, listen: false).logout()
+          // : MultiBlocListener(
+          //     listeners: [
+          //       BlocListener<RefreshBloc, RefreshTokenState>(
+          //         bloc: _bloc,
+          //         listener: (context, state) {
+          //           if (state is RefreshLoading) {}
+          //           if (state is RefreshFailure) {
+          //             Navigator.pushAndRemoveUntil(
+          //                 context,
+          //                 CupertinoPageRoute(
+          //                     builder: (context) => const LoginScreen()),
+          //                 (route) => false);
+          //           }
+          //           if (state is RefreshSuccess) {
+          //             Utils.cancelLoader(context);
+          //             if (Utils.getUserRole() == "WORKER") {
+          //               Navigator.pushAndRemoveUntil(
+          //                   context,
+          //                   CupertinoPageRoute(
+          //                     builder: (context) => const NavigatorScreen(),
+          //                   ),
+          //                   (route) => false);
+          //             } else if (Utils.getIpaid() == 1) {
+          //               Navigator.pushAndRemoveUntil(
+          //                   context,
+          //                   CupertinoPageRoute(
+          //                     builder: (context) => const NavigatorScreen(),
+          //                   ),
+          //                   (route) => false);
+          //             } else {
+          //               Provider.of<CommonProvider>(context, listen: false)
+          //                   .logout();
+          //               Navigator.pushAndRemoveUntil(
+          //                   context,
+          //                   CupertinoPageRoute(
+          //                     builder: (context) => const LoginScreen(),
+          //                   ),
+          //                   (route) => false);
+          //             }
+          //           }
+          //         },
+          //       )
+          //     ],
+          //     child: Scaffold(
+          //       body: Container(
+          //         color: Colors.transparent,
+          //         child: const Center(
+          //           child: SizedBox(
+          //             height: 30,
+          //             width: 30,
+          //             child: CircularProgressIndicator(color: kPrimaryColor,),
+          //           ),
+          //         ),
+          //       ),
+          //     ),
+          //   ),
+          ),
     );
   }
 }

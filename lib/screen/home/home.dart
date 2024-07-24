@@ -1,20 +1,17 @@
-import 'package:black_book/bloc/banner/bloc.dart';
-import 'package:black_book/bloc/banner/event.dart';
-import 'package:black_book/bloc/banner/state.dart';
+import 'package:black_book/api/component/api_error.dart';
 import 'package:black_book/constant.dart';
 import 'package:black_book/models/banner/detial.dart';
 import 'package:black_book/screen/core/add_division.dart';
-import 'package:black_book/screen/core/add_type.dart';
+import 'package:black_book/screen/home/widget/banners_carousel.dart';
 import 'package:black_book/screen/sale_product/sold.dart';
-import 'package:black_book/screen/core/ware_division.dart';
 import 'package:black_book/screen/share/share_product.dart';
 import 'package:black_book/screen/store/store.dart';
+import 'package:black_book/screen/transfer/share_list.dart';
 import 'package:black_book/util/utils.dart';
+import 'package:black_book/widget/alert/mixin_dialog.dart';
 import 'package:black_book/widget/banner.dart';
-import 'package:black_book/widget/alert/error.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
-import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:flutter_svg/svg.dart';
 
 class HomeScreen extends StatefulWidget {
@@ -23,291 +20,171 @@ class HomeScreen extends StatefulWidget {
   State<HomeScreen> createState() => _HomeScreenState();
 }
 
-class _HomeScreenState extends State<HomeScreen> {
-  final _bloc = BannerBloc();
+class _HomeScreenState extends State<HomeScreen> with BaseStateMixin {
   List<BannerDetial> url = [];
   String userRole = "BOSS";
 
   @override
   void initState() {
-    _bloc.add(const GetBannerEvent());
     super.initState();
+    _getBanner();
     userRole = Utils.getUserRole();
+  }
+
+  Future<void> _getBanner() async {
+    try {
+      if (url.isEmpty) {
+        List<BannerDetial> res = await api.getBanner();
+        setState(() {
+          url = res;
+        });
+      }
+    } on APIError catch (e) {
+      showErrorDialog(e.message);
+    }
   }
 
   @override
   Widget build(BuildContext context) {
-    return MultiBlocListener(
-        listeners: [
-          BlocListener<BannerBloc, BannerState>(
-              bloc: _bloc,
-              listener: (context, state) {
-                if (state is BannerLoading) {
-                  // Utils.startLoader(context);
-                }
-                if (state is BannerFailure) {
-                  if (state.message == "Token") {
-                    _bloc.add(const GetBannerEvent());
-                  } else {
-                    // Utils.cancelLoader(context);
-                    ErrorMessage.attentionMessage(context, state.message);
-                  }
-                }
-                if (state is BannerSuccess) {
-                  // Utils.cancelLoader(context);
-                  setState(() {
-                    url = state.data;
-                  });
-                }
-              })
+    return Padding(
+      padding: const EdgeInsets.symmetric(horizontal: 20),
+      child: Column(
+        children: [
+          SizedBox(
+            height: getSize(10),
+          ),
+          HeadphoneBanner(urls: url),
+          SingleChildScrollView(
+            child: Column(
+              children: [
+                SizedBox(
+                  height: getSize(20),
+                ),
+                homeContainer(
+                    context, "Салбар дэлгүүр нээх", "assets/svg/5.svg", () {
+                  Navigator.of(context).push(CupertinoPageRoute(
+                      builder: (context) => const AddDivision()));
+                }, userRole),
+                homeContainer(context, "Бараа шилжүүлэг", "assets/svg/home_share.svg",
+                    () {
+                  Navigator.of(context).push(CupertinoPageRoute(
+                      builder: (context) => const ShareProductScreen()));
+                }, "BOSS"),
+                homeContainer(context, "Зарагдсан бараа", "assets/svg/home-sold.svg",
+                    () {
+                  Navigator.of(context).push(CupertinoPageRoute(
+                      builder: (context) => const SoldItemMainScreen()));
+                }, "BOSS"),
+                homeContainer(context, "Миний дэлгүүрүүд", "assets/svg/home_all_store.svg",
+                    () {
+                  Navigator.of(context).push(CupertinoPageRoute(
+                      builder: (context) => const DivisionScreen()));
+                }, userRole),
+                homeContainer(
+                    context, "Бараа шилжүүлсэн түүх", "assets/svg/home_history.svg", () {
+                  Navigator.of(context).push(
+                    CupertinoPageRoute(
+                      builder: (context) => const ShareListHistoryScreen(
+                        inComeOutCome: false,
+                        sourceId: '',
+                      ),
+                    ),
+                  );
+                }, "BOSS"),
+                homeContainer(
+                    context, "Шилжиж ирсэн бараа", "assets/svg/warehouse.svg",
+                    () {
+                  Navigator.of(context).push(
+                    CupertinoPageRoute(
+                      builder: (context) => const ShareListHistoryScreen(
+                        inComeOutCome: true,
+                        sourceId: '',
+                      ),
+                    ),
+                  );
+                }, "BOSS"),
+              ],
+            ),
+          ),
         ],
-        child: SingleChildScrollView(
-            child: Padding(
-                padding: const EdgeInsets.symmetric(horizontal: 20),
-                child: Column(children: [
-                  HeadphoneBanner(urls: url),
-                  userRole == "BOSS"
-                      ? Padding(
-                          padding: const EdgeInsets.only(top: 10, bottom: 4),
-                          child: Container(
-                              decoration: BoxDecoration(
-                                  color: kWhite,
-                                  border: Border.all(
-                                      width: 1, color: kPrimaryColor),
-                                  boxShadow: [
-                                    BoxShadow(
-                                        color: Colors.grey.shade300,
-                                        blurRadius: 3,
-                                        offset: const Offset(2, 2))
-                                  ],
-                                  borderRadius: BorderRadius.circular(20)),
-                              child: ListTile(
-                                  trailing: SvgPicture.asset(
-                                      "assets/svg/right_arrow.svg",
-                                      width: 7,
-                                      colorFilter: const ColorFilter.mode(
-                                          kPrimaryColor, BlendMode.srcIn)),
-                                  leading: SvgPicture.asset(
-                                      "assets/svg/add_store.svg",
-                                      width: 28,
-                                      colorFilter: const ColorFilter.mode(
-                                          kPrimaryColor, BlendMode.srcIn)),
-                                  title: const Text("Салбар дэлгүүр нээх",
-                                      style: TextStyle(
-                                          fontSize: 13.0,
-                                          fontWeight: FontWeight.bold)),
-                                  onTap: () {
-                                    Navigator.of(context).push(
-                                        CupertinoPageRoute(
-                                            builder: (context) =>
-                                                AddDivision()));
-                                  })))
-                      : const SizedBox(height: 0),
-                  // Padding(
-                  //     padding: const EdgeInsets.symmetric(vertical: 4),
-                  //     child: Container(
-                  //         decoration: BoxDecoration(
-                  //             color: kWhite,
-                  //             boxShadow: [
-                  //               BoxShadow(
-                  //                   color: Colors.grey.shade300,
-                  //                   blurRadius: 3,
-                  //                   offset: const Offset(2, 2))
-                  //             ],
-                  //             borderRadius: BorderRadius.circular(20)),
-                  //         child: ListTile(
-                  //             trailing: SvgPicture.asset(
-                  //                 "assets/svg/right_arrow.svg",
-                  //                 width: 7,
-                  //                 colorFilter: const ColorFilter.mode(
-                  //                     kPrimaryColor, BlendMode.srcIn)),
-                  //             leading: SvgPicture.asset(
-                  //                 "assets/svg/warehouse.svg",
-                  //                 width: 28,
-                  //                 colorFilter: const ColorFilter.mode(
-                  //                     kPrimaryColor, BlendMode.srcIn)),
-                  //             title: const Text("Агуулахын бараа",
-                  //                 style: TextStyle(
-                  //                     fontSize: 13.0,
-                  //                     fontWeight: FontWeight.bold)),
-                  //             onTap: () {
-                  //               Navigator.of(context).push(
-                  //                   CupertinoPageRoute(
-                  //                       builder: (context) =>
-                  //                           const WareHouseScreen()));
-                  //             }))),
-                  Padding(
-                      padding: const EdgeInsets.symmetric(vertical: 4),
-                      child: Container(
-                          decoration: BoxDecoration(
-                              color: kWhite,
-                              border:
-                                  Border.all(width: 1, color: kPrimaryColor),
-                              boxShadow: [
-                                BoxShadow(
-                                    color: Colors.grey.shade300,
-                                    blurRadius: 3,
-                                    offset: const Offset(2, 2))
-                              ],
-                              borderRadius: BorderRadius.circular(20)),
-                          child: ListTile(
-                              trailing: SvgPicture.asset(
-                                  "assets/svg/right_arrow.svg",
-                                  width: 7,
-                                  colorFilter: const ColorFilter.mode(
-                                      kPrimaryColor, BlendMode.srcIn)),
-                              leading: SvgPicture.asset(
-                                  "assets/icons/store.svg",
-                                  width: 28,
-                                  colorFilter: const ColorFilter.mode(
-                                      kPrimaryColor, BlendMode.srcIn)),
-                              title: const Text("Дэлгүүрийн бараа",
-                                  style: TextStyle(
-                                      fontSize: 13.0,
-                                      fontWeight: FontWeight.bold)),
-                              onTap: () {
-                                Navigator.of(context).push(CupertinoPageRoute(
-                                    builder: (context) =>
-                                        const WareDivisionScreen()));
-                              }))),
-                  Padding(
-                      padding: const EdgeInsets.symmetric(vertical: 4),
-                      child: Container(
-                          decoration: BoxDecoration(
-                              color: kWhite,
-                              border:
-                                  Border.all(width: 1, color: kPrimaryColor),
-                              boxShadow: [
-                                BoxShadow(
-                                    color: Colors.grey.shade300,
-                                    blurRadius: 3,
-                                    offset: const Offset(2, 2))
-                              ],
-                              borderRadius: BorderRadius.circular(20)),
-                          child: ListTile(
-                              trailing: SvgPicture.asset(
-                                  "assets/svg/right_arrow.svg",
-                                  width: 7,
-                                  colorFilter: const ColorFilter.mode(
-                                      kPrimaryColor, BlendMode.srcIn)),
-                              leading: SvgPicture.asset("assets/svg/share.svg",
-                                  width: 28,
-                                  colorFilter: const ColorFilter.mode(
-                                      kPrimaryColor, BlendMode.srcIn)),
-                              title: const Text("Бараа шилжүүлэг",
-                                  style: TextStyle(
-                                      fontSize: 13.0,
-                                      fontWeight: FontWeight.bold)),
-                              onTap: () {
-                                Navigator.of(context).push(CupertinoPageRoute(
-                                    builder: (context) =>
-                                        const ShareProductScreen()));
-                              }))),
-                  Padding(
-                      padding: const EdgeInsets.symmetric(vertical: 4),
-                      child: Container(
-                          decoration: BoxDecoration(
-                              color: kWhite,
-                              border:
-                                  Border.all(width: 1, color: kPrimaryColor),
-                              boxShadow: [
-                                BoxShadow(
-                                    color: Colors.grey.shade300,
-                                    blurRadius: 3,
-                                    offset: const Offset(2, 2))
-                              ],
-                              borderRadius: BorderRadius.circular(20)),
-                          child: ListTile(
-                              trailing: SvgPicture.asset(
-                                  "assets/svg/right_arrow.svg",
-                                  width: 7,
-                                  colorFilter: const ColorFilter.mode(
-                                      kPrimaryColor, BlendMode.srcIn)),
-                              leading: SvgPicture.asset(
-                                  "assets/svg/sold_item.svg",
-                                  height: 28,
-                                  colorFilter: const ColorFilter.mode(
-                                      kPrimaryColor, BlendMode.srcIn)),
-                              title: const Text("Зарсан бараанууд",
-                                  style: TextStyle(
-                                      fontSize: 13.0,
-                                      fontWeight: FontWeight.bold)),
-                              onTap: () {
-                                Navigator.of(context).push(CupertinoPageRoute(
-                                    builder: (context) =>
-                                        const SoldItemMainScreen()));
-                              }))),
-                  userRole == "BOSS"
-                      ? Padding(
-                          padding: const EdgeInsets.symmetric(vertical: 4),
-                          child: Container(
-                              decoration: BoxDecoration(
-                                  color: kWhite,
-                                  border: Border.all(
-                                      width: 1, color: kPrimaryColor),
-                                  boxShadow: [
-                                    BoxShadow(
-                                        color: Colors.grey.shade300,
-                                        blurRadius: 3,
-                                        offset: const Offset(2, 2))
-                                  ],
-                                  borderRadius: BorderRadius.circular(20)),
-                              child: ListTile(
-                                  trailing: SvgPicture.asset(
-                                      "assets/svg/right_arrow.svg",
-                                      width: 7,
-                                      colorFilter: const ColorFilter.mode(
-                                          kPrimaryColor, BlendMode.srcIn)),
-                                  leading: SvgPicture.asset(
-                                      "assets/svg/my_store.svg",
-                                      width: 28,
-                                      colorFilter: const ColorFilter.mode(
-                                          kPrimaryColor, BlendMode.srcIn)),
-                                  title: const Text("Миний дэлгүүрүүд",
-                                      style: TextStyle(
-                                          fontSize: 13.0,
-                                          fontWeight: FontWeight.bold)),
-                                  onTap: () {
-                                    Navigator.of(context).push(
-                                        CupertinoPageRoute(
-                                            builder: (context) =>
-                                                const DivisionScreen()));
-                                  })))
-                      : const SizedBox(height: 0),
-                  Padding(
-                      padding: const EdgeInsets.symmetric(vertical: 4),
-                      child: Container(
-                          decoration: BoxDecoration(
-                              color: kWhite,
-                              border:
-                                  Border.all(width: 1, color: kPrimaryColor),
-                              boxShadow: [
-                                BoxShadow(
-                                    color: Colors.grey.shade300,
-                                    blurRadius: 3,
-                                    offset: const Offset(2, 2))
-                              ],
-                              borderRadius: BorderRadius.circular(20)),
-                          child: ListTile(
-                              trailing: SvgPicture.asset(
-                                  "assets/svg/right_arrow.svg",
-                                  width: 7,
-                                  colorFilter: const ColorFilter.mode(
-                                      kPrimaryColor, BlendMode.srcIn)),
-                              leading: SvgPicture.asset(
-                                  "assets/svg/add_type.svg",
-                                  width: 28,
-                                  colorFilter: const ColorFilter.mode(
-                                      kPrimaryColor, BlendMode.srcIn)),
-                              title: const Text("Барааны ангилал нэмэх",
-                                  style: TextStyle(
-                                      fontSize: 13.0,
-                                      fontWeight: FontWeight.bold)),
-                              onTap: () {
-                                Navigator.of(context).push(CupertinoPageRoute(
-                                    builder: (context) =>
-                                        const AddTypeScreen()));
-                              })))
-                ]))));
+      ),
+    );
   }
+}
+
+Widget homeContainer(BuildContext context, String title, String iconUrl,
+    Function onTap, String userRole) {
+  return userRole == "BOSS"
+      ? Padding(
+          padding:
+              const EdgeInsets.only(top: 7, bottom: 5, right: 10, left: 10),
+          child: Container(
+            height: 50,
+            decoration: BoxDecoration(
+              color: kWhite,
+              // border: Border.all(width: 1, color: kPrimaryColor),
+              boxShadow: [
+                BoxShadow(
+                  color: Colors.grey.shade400,
+                  blurRadius: 8,
+                  offset: const Offset(2, 2),
+                ),
+              ],
+              borderRadius: BorderRadius.circular(20),
+            ),
+            child: Stack(
+              children: [
+                Positioned(
+                  left: 30,
+                  top: 0,
+                  bottom: 0,
+                  child:  SvgPicture.asset(
+                      iconUrl,
+                      width: 20,
+                      height: 20,
+                      fit: BoxFit.scaleDown,
+                      colorFilter:
+                          const ColorFilter.mode(kPrimaryColor, BlendMode.srcIn),
+                    
+                  ),
+                ),
+                Positioned(
+                  left: 70,
+                  top: 0,
+                  bottom: 0,
+                  child: Center(
+                    child: Text(
+                      title,
+                      style: const TextStyle(
+                          fontSize: 14.0, fontWeight: FontWeight.bold),
+                    ),
+                  ),
+                ),
+                // Positioned(
+                //   right: 10,
+                //   top: 0,
+                //   bottom: 0,
+                //   child: SvgPicture.asset(
+                //     "assets/svg/right_arrow.svg",
+                //     width: 7,
+                //     colorFilter:
+                //         const ColorFilter.mode(kPrimaryColor, BlendMode.srcIn),
+                //   ),
+                // ),
+                Positioned.fill(
+                  child: Material(
+                    color: Colors.transparent,
+                    child: InkWell(
+                      borderRadius: BorderRadius.circular(20),
+                      onTap: () {
+                        onTap.call();
+                      },
+                    ),
+                  ),
+                ),
+              ],
+            ),
+          ),
+        )
+      : const SizedBox.shrink();
 }

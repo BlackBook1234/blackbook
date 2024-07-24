@@ -71,6 +71,7 @@ class AuthenticationBloc extends Bloc<UserEvent, UserState> {
           emit(UserAuthenticationFailure(""));
         }
       } catch (ex) {
+        print(ex.toString());
         emit(UserAuthenticationFailure("Серверийн алдаа"));
       }
     });
@@ -90,9 +91,6 @@ class AuthenticationBloc extends Bloc<UserEvent, UserState> {
         UserDataResponseModel dataResponse =
             UserDataResponseModel.fromJson(response.data);
         if (response.statusCode == 200 && dataResponse.status == "success") {
-          final prefs = await SharedPreferences.getInstance();
-          prefs.setString("userInfo", jsonEncode(dataResponse.data));
-          Utils.getCommonProvider().setUserInfo(dataResponse.data!);
           emit(ChangeUserSuccess());
         } else if (dataResponse.status == "error" &&
             dataResponse.message.reason == "auth_token_error") {

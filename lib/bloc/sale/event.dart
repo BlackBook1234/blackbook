@@ -23,8 +23,9 @@ class GetSaleEvent extends SaleEvent {
   final int storeId, page;
   final String searchValue;
   final bool searchAgian;
-  const GetSaleEvent(
-      this.storeId, this.searchAgian, this.searchValue, this.page);
+  final DateTime begindate, endDate;
+  const GetSaleEvent(this.storeId, this.searchAgian, this.searchValue,
+      this.page, this.begindate, this.endDate);
   @override
   List<Object> get props => [storeId, searchAgian, searchValue];
 }

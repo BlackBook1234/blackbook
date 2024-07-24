@@ -6,11 +6,12 @@ part 'product_response.g.dart';
 @JsonSerializable()
 class SaleProductResponseModel {
   MessageDefaultModel message;
+  int? total;
   String status;
   SaleProductDetialModel? data;
 
   SaleProductResponseModel(
-      {required this.status, required this.message, this.data});
+      {required this.status, required this.message, this.data, this.total});
   factory SaleProductResponseModel.fromJson(Map<String, dynamic> json) =>
       _$SaleProductResponseModelFromJson(json);
   Map<String, dynamic> toJson() => _$SaleProductResponseModelToJson(this);

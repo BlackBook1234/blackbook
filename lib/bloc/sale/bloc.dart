@@ -66,15 +66,41 @@ class SaleBloc extends Bloc<SaleEvent, SaleState> {
       try {
         final apiService = ApiTokenService(Utils.getToken());
         String path = "";
-        if (event.searchAgian) {
-          path =
-              "/v1/product/sale/list/store/12?sort=desc&page=${event.page}&limit=40&store_id=${event.storeId}&q=${event.searchValue}";
+        if (Utils.getUserRole() == "BOSS") {
+          print(event.storeId);
+          if (event.searchAgian) {
+            if (event.storeId == -1) {
+              path =
+                  "/v1/product/sale/list/warehouse?sort=asc&page=${event.page}&limit=40&q=${event.searchValue}&from_date=${formatDateTime(event.begindate)}&to_date=${formatDateTime(event.endDate)}";
+            } else {
+              path =
+                  "/v1/product/sale/list/store/${event.storeId}?sort=asc&page=${event.page}&limit=40&store_id=${event.storeId}&q=${event.searchValue}&from_date=${formatDateTime(event.begindate)}&to_date=${formatDateTime(event.endDate)}";
+            }
+          } else {
+            if (event.storeId == -1) {
+              path =
+                  "/v1/product/sale/list/warehouse?sort=asc&page=${event.page}&limit=40&q=${event.searchValue}&from_date=${formatDateTime(event.begindate)}&to_date=${formatDateTime(event.endDate)}";
+            } else {
+              path =
+                  "/v1/product/sale/list/store/${event.storeId}?sort=asc&page=${event.page}&limit=40&store_id=${event.storeId}&q=${event.searchValue}&from_date=${formatDateTime(event.begindate)}&to_date=${formatDateTime(event.endDate)}";
+            }
+          }
         } else {
-          path =
-              "/v1/product/sale/list/store/12?sort=desc&page=${event.page}&limit=40&store_id=${event.storeId}";
+          if (event.searchAgian) {
+            if (event.storeId == -1) {
+              path =
+                  "/v1/product/sale/list/warehouse?sort=asc&page=${event.page}&limit=40&q=${event.searchValue}&from_date=${formatDateTime(event.begindate)}&to_date=${formatDateTime(event.endDate)}";
+            } else {
+              path =
+                  "/v1/product/sale/list/store/${event.storeId}?sort=asc&page=${event.page}&limit=40&store_id=${event.storeId}&q=${event.searchValue}&from_date=${formatDateTime(event.begindate)}&to_date=${formatDateTime(event.endDate)}";
+            }
+          } else {
+            path =
+                "/v1/product/sale/list/store/${event.storeId}?sort=asc&page=${event.page}&limit=40&store_id=${event.storeId}&from_date=${formatDateTime(event.begindate)}&to_date=${formatDateTime(event.endDate)}";
+          }
         }
+        print(path);
         Response response = await apiService.getRequest(path);
-        print(response.data);
         SaleProductResponseModel dataResponse =
             SaleProductResponseModel.fromJson(response.data);
         if (response.statusCode == 200 && dataResponse.status == "success") {
@@ -103,22 +129,25 @@ class SaleBloc extends Bloc<SaleEvent, SaleState> {
     on<GetMainSaleEvent>((event, emit) async {
       emit(GetMainSaleLoading());
       try {
-        String accessToken = Utils.getToken();
-        final apiService = ApiTokenService(accessToken);
-        print(accessToken);
+        final apiService = ApiTokenService(Utils.getToken());
         String path = "";
         if (Utils.getUserRole() == "BOSS") {
           if (event.searchAgian) {
-            if (event.storeId == "") {
+            if (event.storeId == "-1") {
               path =
-                  "/v1/product/sale/list?sort=desc&page=${event.page}&limit=40&from_date=${formatDateTime(event.beginDate)}&to_date=${formatDateTime(event.endDate)}";
+                  "/v1/product/sale/list?sort=desc&page=${event.page}&limit=40&from_date=${formatDateTime(event.beginDate)}&to_date=${formatDateTime(event.endDate)}&is_warehouse=1";
             } else {
-              path =
-                  "/v1/product/sale/list?sort=desc&page=${event.page}&limit=40&from_date=${formatDateTime(event.beginDate)}&to_date=${formatDateTime(event.endDate)}&store_id=${event.storeId}";
+              if (event.storeId == "") {
+                path =
+                    "/v1/product/sale/list?sort=desc&page=${event.page}&limit=40&from_date=${formatDateTime(event.beginDate)}&to_date=${formatDateTime(event.endDate)}";
+              } else {
+                path =
+                    "/v1/product/sale/list?sort=desc&page=${event.page}&limit=40&from_date=${formatDateTime(event.beginDate)}&to_date=${formatDateTime(event.endDate)}&store_id=${event.storeId}";
+              }
             }
           } else {
             path =
-                '/v1/product/sale/list?sort=desc&page=${event.page}&limit=40&is_warehouse=1';
+                '/v1/product/sale/list?sort=desc&page=${event.page}&limit=40';
           }
         } else {
           if (event.searchAgian) {
@@ -131,7 +160,6 @@ class SaleBloc extends Bloc<SaleEvent, SaleState> {
         }
         print(path);
         Response response = await apiService.getRequest(path);
-        print(response.data);
         MainSaleProductResponseModel dataResponse =
             MainSaleProductResponseModel.fromJson(response.data);
         if (response.statusCode == 200 && dataResponse.status == "success") {
@@ -139,6 +167,7 @@ class SaleBloc extends Bloc<SaleEvent, SaleState> {
           if (dataResponse.data!.list!.length < 40) {
             hasMoreOrder = false;
           }
+          print(dataResponse.data!.warehouse);
           emit(GetMainSaleSuccess(dataResponse.data!, hasMoreOrder));
         } else if (dataResponse.status == "error" &&
             dataResponse.message.reason == "auth_token_error") {
@@ -162,9 +191,13 @@ class SaleBloc extends Bloc<SaleEvent, SaleState> {
         String accessToken = Utils.getToken();
         final apiService = ApiTokenService(accessToken);
         print(accessToken);
-        var body = {"saleId": event.saleId, "stock": event.stock};
-        Response response;
-        response =
+        var body = {
+          "saleId": event.saleId,
+          "stock": event.stock,
+          "_amount": event.amount
+        };
+        print(body);
+        Response response =
             await apiService.postRequest('/v1/product/sale/return', body: body);
         AuthenticationResponseModel dataResponse =
             AuthenticationResponseModel.fromJson(response.data);

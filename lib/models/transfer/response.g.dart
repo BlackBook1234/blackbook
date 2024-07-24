@@ -6,19 +6,25 @@ part of 'response.dart';
 // JsonSerializableGenerator
 // **************************************************************************
 
-TransferResponse _$TransferResponseFromJson(Map<String, dynamic> json) =>
-    TransferResponse(
-      status: json['status'] as String,
+TransferDataResponse _$TransferDataResponseFromJson(
+        Map<String, dynamic> json) =>
+    TransferDataResponse(
+      data: (json['data'] as List<dynamic>?)
+          ?.map((e) => TransferItem.fromJson(e as Map<String, dynamic>))
+          .toList(),
       message:
           MessageDefaultModel.fromJson(json['message'] as Map<String, dynamic>),
-      data: (json['data'] as List<dynamic>?)
-          ?.map((e) => TransferDetial.fromJson(e as Map<String, dynamic>))
+      status: json['status'] as String,
+      stores: (json['stores'] as List<dynamic>?)
+          ?.map((e) => ProductStoreModel.fromJson(e as Map<String, dynamic>))
           .toList(),
     );
 
-Map<String, dynamic> _$TransferResponseToJson(TransferResponse instance) =>
+Map<String, dynamic> _$TransferDataResponseToJson(
+        TransferDataResponse instance) =>
     <String, dynamic>{
+      'data': instance.data,
       'message': instance.message,
       'status': instance.status,
-      'data': instance.data,
+      'stores': instance.stores,
     };

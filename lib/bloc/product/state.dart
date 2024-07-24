@@ -75,3 +75,26 @@ class GetStoreItemSuccess extends ProductState {
   @override
   List<Object?> get props => [list];
 }
+
+
+
+//дэлгүүрийн барааны мэдээлэл авах
+
+class PurchaseProductLoading extends ProductState {
+  @override
+  List<Object?> get props => [];
+}
+
+class PurchaseProductFailure extends ProductState {
+  final String message;
+
+  PurchaseProductFailure(this.message);
+  @override
+  List<Object?> get props => [message];
+}
+
+class PurchaseProductSuccess extends ProductState {
+  PurchaseProductSuccess();
+  @override
+  List<Object?> get props => [];
+}

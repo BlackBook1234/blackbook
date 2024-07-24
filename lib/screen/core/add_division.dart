@@ -4,12 +4,19 @@ import 'package:black_book/bloc/store/state.dart';
 import 'package:black_book/constant.dart';
 import 'package:black_book/util/utils.dart';
 import 'package:black_book/widget/alert/error.dart';
+import 'package:black_book/widget/alert/mixin_dialog.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 
-class AddDivision extends StatelessWidget {
-  AddDivision({super.key});
+class AddDivision extends StatefulWidget {
+  const AddDivision({super.key});
+
+  @override
+  State<AddDivision> createState() => _AddDivisionState();
+}
+
+class _AddDivisionState extends State<AddDivision> with BaseStateMixin {
   final _bloc = StoreBloc();
   final TextEditingController phoneNumber = TextEditingController();
   final TextEditingController storeName = TextEditingController();
@@ -39,9 +46,13 @@ class AddDivision extends StatelessWidget {
                 }
                 if (state is StoreSuccess) {
                   Utils.cancelLoader(context);
-                  // Navigator.of(context).push(CupertinoPageRoute(
-                  //     builder: (context) => const PayScreen()));
-                  Navigator.pop(context);
+                  showSuccessDialog("Мэдээлэл", false, "Амжилттай үүсгэлээ");
+                  // AlertMessage.statusMessage(
+                  //     context, "Мэдээлэл", "Амжилттай буцаагдлаа", false);
+                  Future.delayed(const Duration(seconds: 1), () {
+                    Navigator.pop(context);
+                    Navigator.pop(context);
+                  });
                 }
               })
         ],
@@ -185,7 +196,7 @@ class AddDivision extends StatelessWidget {
                               onCreate();
                             }
                           },
-                          child: const Text("Төлбөр төлөх",
+                          child: const Text("Хадгалах",
                               style: TextStyle(fontSize: 14)))))
             ])));
   }

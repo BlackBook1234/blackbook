@@ -6,40 +6,39 @@ part of 'detial.dart';
 // JsonSerializableGenerator
 // **************************************************************************
 
-TransferDetial _$TransferDetialFromJson(Map<String, dynamic> json) =>
-    TransferDetial(
-      transfer_id: json['transfer_id'] as int?,
-      price: json['price'] as int?,
-      product_photo: json['product_photo'] as String?,
-      product_code: json['product_code'] as String?,
-      product_id: json['product_id'] as int?,
-      product_name: json['product_name'] as String?,
-      cost: json['cost'] as int?,
-      created_at: json['created_at'] as String?,
-      good_id: json['good_id'] as String?,
-      stock: json['stock'] as int?,
-      store_id: json['store_id'] as int?,
-      store_name: json['store_name'] as String?,
-      transfer_keyword: json['transfer_keyword'] as String?,
+TransferItem _$TransferItemFromJson(Map<String, dynamic> json) => TransferItem(
+      tid: json['tid'] as String?,
+      description: json['description'] as String?,
+      status_text: json['status_text'] as String?,
       transfer_type: json['transfer_type'] as String?,
-      type: json['type'] as String?,
+      store_id: json['store_id'] as int?,
+      isShowConfirmation: json['isShowConfirmation'] as bool?,
+      store_name: json['store_name'] as String?,
+      status: json['status'] as String?,
+      created_at: json['created_at'] as String?,
+      transfer_keyword: json['transfer_keyword'] as String?,
+      total_count: json['total_count'] as int?,
+      total_cost: json['total_cost'] as int?,
+      total_price: json['total_price'] as int?,
+      products: (json['products'] as List<dynamic>?)
+          ?.map((e) => TransferProduct.fromJson(e as Map<String, dynamic>))
+          .toList(),
     );
 
-Map<String, dynamic> _$TransferDetialToJson(TransferDetial instance) =>
+Map<String, dynamic> _$TransferItemToJson(TransferItem instance) =>
     <String, dynamic>{
-      'transfer_id': instance.transfer_id,
-      'product_id': instance.product_id,
-      'cost': instance.cost,
-      'price': instance.price,
-      'stock': instance.stock,
-      'store_id': instance.store_id,
-      'product_name': instance.product_name,
-      'product_code': instance.product_code,
-      'good_id': instance.good_id,
-      'type': instance.type,
+      'tid': instance.tid,
+      'description': instance.description,
+      'status': instance.status,
+      'status_text': instance.status_text,
+      'transfer_keyword': instance.transfer_keyword,
       'store_name': instance.store_name,
       'created_at': instance.created_at,
       'transfer_type': instance.transfer_type,
-      'product_photo': instance.product_photo,
-      'transfer_keyword': instance.transfer_keyword,
+      'total_count': instance.total_count,
+      'total_cost': instance.total_cost,
+      'store_id': instance.store_id,
+      'total_price': instance.total_price,
+      'products': instance.products,
+      'isShowConfirmation': instance.isShowConfirmation,
     };
