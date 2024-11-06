@@ -49,7 +49,6 @@ class _BottomSheetsWidgetState extends State<SellProductBottomSheetsWidget>
         showWarningDialog("Бараа оруулна уу");
         // AlertMessage.attentionMessage(context, "Бараа оруулна уу");
       } else {
-        print(otpData.length);
         _bloc.add(CreateSaleEvent(otpData, cashType));
       }
     } else {
@@ -305,6 +304,7 @@ class _BottomSheetsWidgetState extends State<SellProductBottomSheetsWidget>
                           child: Container(
                               // width: 80,
                               height: 40,
+                              
                               decoration: BoxDecoration(
                                   color: isChecked2 ? Colors.grey : kWhite,
                                   boxShadow: [
@@ -376,6 +376,7 @@ class _BottomSheetsWidgetState extends State<SellProductBottomSheetsWidget>
                                       });
                                     }))),
                       ]),
+                      Padding(padding: EdgeInsets.only(bottom: MediaQuery.of(context).padding.bottom),child: 
                   Row(children: [
                     Expanded(
                         child: ElevatedButton(
@@ -415,7 +416,7 @@ class _BottomSheetsWidgetState extends State<SellProductBottomSheetsWidget>
                             },
                             child: const Text("Борлуулах",
                                 style: TextStyle(color: kWhite))))
-                  ])
+                  ]))
                 ]))));
   }
 }

@@ -12,3 +12,17 @@ class ProductDefaultAddModel {
     };
   }
 }
+
+class ProductAddSizeModel {
+  String? size;
+  int? stock;
+
+  ProductAddSizeModel({this.stock, this.size});
+
+  Map<String, dynamic> toJson() {
+    return {
+      'size': size,
+      'stock': stock,
+    };
+  }
+}

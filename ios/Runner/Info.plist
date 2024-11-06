@@ -2,10 +2,15 @@
 <!DOCTYPE plist PUBLIC "-//Apple//DTD PLIST 1.0//EN" "http://www.apple.com/DTDs/PropertyList-1.0.dtd">
 <plist version="1.0">
 <dict>
+	<!-- Disable Minimum Frame Duration to unlock higher FPS on phones -->
+	<key>CADisableMinimumFrameDurationOnPhone</key>
+	<true/>
+
+	<!-- Development and bundle information -->
 	<key>CFBundleDevelopmentRegion</key>
 	<string>$(DEVELOPMENT_LANGUAGE)</string>
 	<key>CFBundleDisplayName</key>
-	<string>Black Book</string>
+	<string>Хар Дэвтэр</string>
 	<key>CFBundleExecutable</key>
 	<string>$(EXECUTABLE_NAME)</string>
 	<key>CFBundleIdentifier</key>
@@ -22,28 +27,62 @@
 	<string>????</string>
 	<key>CFBundleVersion</key>
 	<string>$(FLUTTER_BUILD_NUMBER)</string>
+
+	<!-- Required for iPhone apps -->
 	<key>LSRequiresIPhoneOS</key>
 	<true/>
+
+	<!-- Privacy - Camera, Microphone, and Photo Library Usage Descriptions -->
+	<key>NSPhotoLibraryUsageDescription</key>
+	<string>This app requires access to the photo library.</string>
+	<key>NSMicrophoneUsageDescription</key>
+	<string>This app does not require access to the microphone.</string>
+	<key>NSCameraUsageDescription</key>
+	<string>This app requires access to the camera.</string>
+	
+
+	<!-- Support for indirect input events (iPad compatibility with mouse/trackpad) -->
+	<key>UIApplicationSupportsIndirectInputEvents</key>
+	<true/>
+
+	<!-- Launch Screen and Main Storyboard -->
 	<key>UILaunchStoryboardName</key>
 	<string>LaunchScreen</string>
 	<key>UIMainStoryboardFile</key>
 	<string>Main</string>
+
+	<!-- Supported Interface Orientations -->
 	<key>UISupportedInterfaceOrientations</key>
 	<array>
 		<string>UIInterfaceOrientationPortrait</string>
-		<string>UIInterfaceOrientationLandscapeLeft</string>
-		<string>UIInterfaceOrientationLandscapeRight</string>
+    	<string>UIInterfaceOrientationPortraitUpsideDown</string>
+    	<string>UIInterfaceOrientationLandscapeLeft</string>
+    	<string>UIInterfaceOrientationLandscapeRight</string>
 	</array>
-	<key>UISupportedInterfaceOrientations~ipad</key>
+
+	<key>LSApplicationQueriesSchemes</key> 
 	<array>
-		<string>UIInterfaceOrientationPortrait</string>
-		<string>UIInterfaceOrientationPortraitUpsideDown</string>
-		<string>UIInterfaceOrientationLandscapeLeft</string>
-		<string>UIInterfaceOrientationLandscapeRight</string>
+	    <string>socialpay-payment</string>
+		<string>monpay</string>
+		<string>capitronbank</string>
+		<string>xacbank</string>
+		<string>khanbank</string>
+		<string>ubcbank</string>
+		<string>statebank</string>
+		<string>tdbbank</string>
+		<string>ckbank</string>
+		<string>nibank</string>
+		<string>most</string>
+		<string>bogdbank</string>
+		<string>mbank</string>
+		<string>mba</string>
+		<string>mbaopen</string>
+		<string>mobicom</string>
+		<string>statebankmongolia</string>
+		<string>googlechrome</string>
+		<string>googlechromes</string>
+		<string>http</string>
+		<string>https</string>
 	</array>
-	<key>CADisableMinimumFrameDurationOnPhone</key>
-	<true/>
-	<key>UIApplicationSupportsIndirectInputEvents</key>
-	<true/>
 </dict>
 </plist>

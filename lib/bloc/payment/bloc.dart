@@ -15,10 +15,8 @@ class PaymentBloc extends Bloc<PaymentEvent, PaymentState> {
       emit(PackagesLoading());
       try {
         String accessToken = Utils.getToken();
-        print(accessToken);
         final apiService = ApiTokenService(accessToken);
         Response response = await apiService.getRequest('/v1/payment/packages');
-        print("this reponse  = ${response.data}");
         PackagesResponse responseData =
             PackagesResponse.fromJson(response.data);
         if (response.statusCode == 200 && responseData.status == "success") {
@@ -35,7 +33,6 @@ class PaymentBloc extends Bloc<PaymentEvent, PaymentState> {
           emit(PackagesFailure("Серверийн алдаа"));
         }
       } catch (ex) {
-        print(ex);
         emit(PackagesFailure("Серверийн алдаа"));
       }
     });
@@ -46,7 +43,6 @@ class PaymentBloc extends Bloc<PaymentEvent, PaymentState> {
         final apiService = ApiTokenService(Utils.getToken());
         Response response =
             await apiService.postRequest('/v1/payment/invoice', body: body);
-        print("this reponse  = ${response.data}");
         InvoiceResponse responseData = InvoiceResponse.fromJson(response.data);
         if (response.statusCode == 200 && responseData.status == "success") {
           emit(InvoiceSuccess(responseData.data!));
@@ -62,7 +58,6 @@ class PaymentBloc extends Bloc<PaymentEvent, PaymentState> {
           emit(InvoiceFailure("Серверийн алдаа"));
         }
       } catch (ex) {
-        print(ex);
         emit(InvoiceFailure("Серверийн алдаа"));
       }
     });
@@ -73,7 +68,6 @@ class PaymentBloc extends Bloc<PaymentEvent, PaymentState> {
         Map<String, int> body = {"orderId": event.orderId};
         Response response =
             await apiService.postRequest('/v1/payment/check', body: body);
-        print("this response  = ${response.data}");
         InvoiceResponse responseData = InvoiceResponse.fromJson(response.data);
         if (response.statusCode == 200 && responseData.status == "success") {
           emit(CheckInvoiceSuccess());
@@ -89,7 +83,6 @@ class PaymentBloc extends Bloc<PaymentEvent, PaymentState> {
           emit(CheckInvoiceFailure("Төлбөр төлөгдөөгүй"));
         }
       } catch (ex) {
-        print(ex);
         emit(CheckInvoiceFailure("Серверийн алдаа"));
       }
     });

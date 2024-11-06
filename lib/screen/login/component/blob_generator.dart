@@ -66,7 +66,6 @@ class BlobGenerator {
     return List.generate(count, (i) => i * deg).toList();
   }
 
-  //  https://stackoverflow.com/a/29450606/3096740
   double Function() _randomDoubleGenerator(int seedValue) {
     var mask = 0xffffffff;
     int mw = (123456789 + seedValue) & mask;
@@ -115,13 +114,13 @@ class BlobGenerator {
     List<Offset> originPoints = [];
     List<Offset> destPoints = [];
 
-    slices.forEach((degree) {
+    for (var degree in slices) {
       double O = _magicPoint(randVal(), innerRad, outerRad);
       Offset start = _point(center, innerRad, degree);
       Offset end = _point(center, O, degree);
       originPoints.add(start);
       destPoints.add(end);
-    });
+    }
     return BlobPoints(
       originPoints: originPoints,
       destPoints: destPoints,
@@ -140,10 +139,10 @@ class BlobGenerator {
 
     List<Offset> originPoints = [];
 
-    slices.forEach((degree) {
+    for (var degree in slices) {
       Offset start = _point(center, innerRad, degree);
       originPoints.add(start);
-    });
+    }
     return BlobPoints(
       originPoints: originPoints,
       destPoints: destPoints,
@@ -177,9 +176,9 @@ class BlobGenerator {
 Path connectPoints(BlobCurves curves) {
   var path = Path();
   path.moveTo(curves.start.dx, curves.start.dy);
-  curves.curves.forEach((curve) {
+  for (var curve in curves.curves) {
     path.quadraticBezierTo(curve[0], curve[1], curve[2], curve[3]);
-  });
+  }
   path.close();
 
   return path;

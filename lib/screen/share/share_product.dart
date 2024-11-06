@@ -3,9 +3,12 @@ import 'package:black_book/bloc/share/bloc.dart';
 import 'package:black_book/bloc/share/event.dart';
 import 'package:black_book/bloc/share/state.dart';
 import 'package:black_book/constant.dart';
+import 'package:black_book/global_keys.dart';
+import 'package:black_book/models/product/categories.dart';
 import 'package:black_book/models/product/product_detial.dart';
 import 'package:black_book/models/product/product_inlist.dart';
 import 'package:black_book/provider/product_share_provider.dart';
+import 'package:black_book/provider/type.dart';
 import 'package:black_book/util/utils.dart';
 import 'package:black_book/widget/bottom_sheet.dart/product_draft_bottom.dart';
 import 'package:black_book/widget/alert/error.dart';
@@ -32,7 +35,7 @@ class _ShareProductScreenState extends State<ShareProductScreen> {
   List<ProductDetialModel> listSearch = [];
   final bool _isExpanded = false;
   String chosenValue = "Бүх төрөл";
-  List<String> typeValue = ["Бүх төрөл", "Өвөл", "Хавар", "Намар", "Зун"];
+  List<String> typeValue = ["Бүх төрөл"];
   String searchValue = "";
   bool searchAgian = false;
   String storeId = "";
@@ -41,6 +44,7 @@ class _ShareProductScreenState extends State<ShareProductScreen> {
   bool _hasMoreOrder = false;
   bool _loadingOrder = false;
   late ScrollController _controller;
+  List<CategoriesModel> categories = [];
   int? index;
 
   @override
@@ -68,16 +72,12 @@ class _ShareProductScreenState extends State<ShareProductScreen> {
     if (chosenValue == "Бүх төрөл" && searchValue == "") {
       _bloc.add(ShareProductDataEvent(_page, false, productType, searchValue));
     } else {
-      if (chosenValue == "Өвөл") {
-        productType = "WINTER";
-      } else if (chosenValue == "Хавар") {
-        productType = "SPRING";
-      } else if (chosenValue == "Намар") {
-        productType = "AUTUMN";
-      } else if (chosenValue == "Зун") {
-        productType = "SUMMER";
-      } else {
-        productType = "";
+      for (CategoriesModel data in categories) {
+        if (chosenValue == data.name) {
+          productType = data.parent;
+        } else if (chosenValue == "Бүх төрөл") {
+          productType = "";
+        }
       }
       _bloc.add(
           ShareProductDataEvent(_page, searchAgian, productType, searchValue));
@@ -116,6 +116,12 @@ class _ShareProductScreenState extends State<ShareProductScreen> {
                     list = state.data;
                     _hasMoreOrder = state.hasMoreOrder;
                     listSearch = state.data;
+                    categories = state.categories;
+                    Provider.of<TypeProvider>(
+                            GlobalKeys.navigatorKey.currentContext!,
+                            listen: false)
+                        .setTypeList(
+                            state.categories.map((e) => e.name).toList());
                     list.sort((b, a) => a.created_at!.compareTo(b.created_at!));
                   });
                 }
@@ -123,7 +129,7 @@ class _ShareProductScreenState extends State<ShareProductScreen> {
         ],
         child: Consumer<ProductProvider>(builder: (context, provider, child) {
           return Scaffold(
-              appBar: AppBar(
+              appBar: AppBar( 
                   actions: <Widget>[
                     Badge(
                         position: BadgePosition.topEnd(top: 2, end: 2),
@@ -152,6 +158,7 @@ class _ShareProductScreenState extends State<ShareProductScreen> {
                   backgroundColor: kPrimarySecondColor),
               body: Column(children: [
                 TypeBuilder(
+                  // typeValue:typeValue,
                   chosenValue: chosenValue,
                   chosenType: "",
                   userRole: "WORKER",

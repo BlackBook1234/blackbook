@@ -19,7 +19,6 @@ class SaleBloc extends Bloc<SaleEvent, SaleState> {
       try {
         String accessToken = Utils.getToken();
         final apiService = ApiTokenService(accessToken);
-        print(accessToken);
         List<dynamic> otpList = [];
         for (ProductInDetialModel data in event.list) {
           var otpBody = {
@@ -37,10 +36,8 @@ class SaleBloc extends Bloc<SaleEvent, SaleState> {
         } else {
           body = {"storeId": Utils.getStoreId(), "products": otpList.toList()};
         }
-        print(body);
         Response response =
             await apiService.postRequest('/v1/product/sale', body: body);
-        print(response);
         AuthenticationResponseModel dataResponse =
             AuthenticationResponseModel.fromJson(response.data);
         if (response.statusCode == 200 && dataResponse.status == "success") {
@@ -57,7 +54,6 @@ class SaleBloc extends Bloc<SaleEvent, SaleState> {
           emit(SaleFailure("Серверийн алдаа"));
         }
       } catch (ex) {
-        print(ex);
         emit(SaleFailure("Серверийн алдаа"));
       }
     });
@@ -67,7 +63,6 @@ class SaleBloc extends Bloc<SaleEvent, SaleState> {
         final apiService = ApiTokenService(Utils.getToken());
         String path = "";
         if (Utils.getUserRole() == "BOSS") {
-          print(event.storeId);
           if (event.searchAgian) {
             if (event.storeId == -1) {
               path =
@@ -99,7 +94,6 @@ class SaleBloc extends Bloc<SaleEvent, SaleState> {
                 "/v1/product/sale/list/store/${event.storeId}?sort=asc&page=${event.page}&limit=40&store_id=${event.storeId}&from_date=${formatDateTime(event.begindate)}&to_date=${formatDateTime(event.endDate)}";
           }
         }
-        print(path);
         Response response = await apiService.getRequest(path);
         SaleProductResponseModel dataResponse =
             SaleProductResponseModel.fromJson(response.data);
@@ -122,7 +116,6 @@ class SaleBloc extends Bloc<SaleEvent, SaleState> {
           emit(GetSaleFailure("Серверийн алдаа"));
         }
       } catch (ex) {
-        print(ex);
         emit(GetSaleFailure("Серверийн алдаа"));
       }
     });
@@ -158,7 +151,6 @@ class SaleBloc extends Bloc<SaleEvent, SaleState> {
                 '/v1/product/sale/list?sort=desc&page=${event.page}&limit=40&store_id=${Utils.getStoreId()}';
           }
         }
-        print(path);
         Response response = await apiService.getRequest(path);
         MainSaleProductResponseModel dataResponse =
             MainSaleProductResponseModel.fromJson(response.data);
@@ -167,7 +159,6 @@ class SaleBloc extends Bloc<SaleEvent, SaleState> {
           if (dataResponse.data!.list!.length < 40) {
             hasMoreOrder = false;
           }
-          print(dataResponse.data!.warehouse);
           emit(GetMainSaleSuccess(dataResponse.data!, hasMoreOrder));
         } else if (dataResponse.status == "error" &&
             dataResponse.message.reason == "auth_token_error") {
@@ -181,7 +172,6 @@ class SaleBloc extends Bloc<SaleEvent, SaleState> {
           emit(GetMainSaleFailure("Серверийн алдаа"));
         }
       } catch (ex) {
-        print(ex);
         emit(GetMainSaleFailure("Серверийн алдаа"));
       }
     });
@@ -190,13 +180,11 @@ class SaleBloc extends Bloc<SaleEvent, SaleState> {
       try {
         String accessToken = Utils.getToken();
         final apiService = ApiTokenService(accessToken);
-        print(accessToken);
         var body = {
           "saleId": event.saleId,
           "stock": event.stock,
           "_amount": event.amount
         };
-        print(body);
         Response response =
             await apiService.postRequest('/v1/product/sale/return', body: body);
         AuthenticationResponseModel dataResponse =
@@ -215,7 +203,6 @@ class SaleBloc extends Bloc<SaleEvent, SaleState> {
           emit(SaleProductBackFailure("Серверийн алдаа"));
         }
       } catch (ex) {
-        print(ex);
         emit(SaleProductBackFailure("Серверийн алдаа"));
       }
     });

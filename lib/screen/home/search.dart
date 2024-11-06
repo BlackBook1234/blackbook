@@ -1,15 +1,20 @@
 import 'package:black_book/api/component/api_error.dart';
 import 'package:black_book/constant.dart';
+import 'package:black_book/global_keys.dart';
+import 'package:black_book/models/product/categories.dart';
 import 'package:black_book/models/product/product_detial.dart';
 import 'package:black_book/models/product/product_store.dart';
 import 'package:black_book/models/product/response.dart';
+import 'package:black_book/provider/type.dart';
 import 'package:black_book/util/utils.dart';
 import 'package:black_book/widget/alert/mixin_dialog.dart';
 import 'package:black_book/widget/component/choose_type.dart';
 import 'package:black_book/widget/component/list_builder.dart';
 import 'package:black_book/widget/component/search.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter_keyboard_visibility/flutter_keyboard_visibility.dart';
 import 'package:lottie/lottie.dart';
+import 'package:provider/provider.dart';
 
 class SearchScreen extends StatefulWidget {
   const SearchScreen({super.key});
@@ -23,12 +28,13 @@ class _SearchScreenState extends State<SearchScreen> with BaseStateMixin {
   List<ProductStoreModel> storeList = [];
   String chosenValue = "Бүх төрөл";
   String chosenType = "Бүх дэлгүүр";
-  List<String> typeValue = ["Бүх төрөл", "Өвөл", "Хавар", "Намар", "Зун"];
+  List<String> typeValue = ["Бүх төрөл"];
   List<String> typeStore = ["Бүх дэлгүүр"];
   String searchValue = "";
   bool searchAgian = false;
   String storeId = "";
   String productType = "";
+  List<CategoriesModel> categories = [];
   int _page = 1;
   bool _runApi = false;
   late ScrollController _scrollController;
@@ -87,6 +93,10 @@ class _SearchScreenState extends State<SearchScreen> with BaseStateMixin {
           typeStore.add(data.name ?? "");
         }
         typeStore = typeStore.toSet().toList();
+        categories = res.categories!;
+        Provider.of<TypeProvider>(GlobalKeys.navigatorKey.currentContext!,
+                listen: false)
+            .setTypeList(res.categories!.map((e) => e.name).toList());
         _runApi = false;
       });
     } on APIError catch (e) {
@@ -118,16 +128,12 @@ class _SearchScreenState extends State<SearchScreen> with BaseStateMixin {
           storeId = "";
         }
       }
-      if (chosenValue == "Өвөл") {
-        productType = "WINTER";
-      } else if (chosenValue == "Хавар") {
-        productType = "SPRING";
-      } else if (chosenValue == "Намар") {
-        productType = "AUTUMN";
-      } else if (chosenValue == "Зун") {
-        productType = "SUMMER";
-      } else {
-        productType = "";
+      for (CategoriesModel data in categories) {
+        if (chosenValue == data.name) {
+          productType = data.parent;
+        } else if (chosenValue == "Бүх төрөл") {
+          productType = "";
+        }
       }
       _getProductData();
     }
@@ -152,54 +158,58 @@ class _SearchScreenState extends State<SearchScreen> with BaseStateMixin {
       backgroundColor: kWhite,
       key: refresh,
       onRefresh: refreshList,
-      child: Column(
-        children: [
-          TypeBuilder(
-            chosenValue: chosenValue,
-            chosenType: chosenType,
-            userRole: "BOSS",
-            typeStore: typeStore,
-            chooseType: (String value) {
-              setState(() {
-                chosenValue = value;
-              });
-            },
-            chooseStore: (String value) {
-              setState(() {
-                chosenType = value;
-              });
-            },
-          ),
-          SearchBuilder(
-            searchAgian: (bool type) {
-              setState(() {
-                searchAgian = type;
-              });
-              _agianSearch();
-            },
-            searchValue: (String value) {
-              setState(
-                () {
-                  searchValue = value;
-                },
-              );
-            },
-          ),
-          list.isEmpty
-              ? Center(
-                  child: Lottie.asset('assets/json/empty-page.json'),
-                )
-              : ListBuilder(
-                  list: list,
-                  controller: _scrollController,
-                  userRole: "BOSS",
-                  isExpanded: _isExpanded,
-                  typeTrailling: false,
-                  icon: Icons.abc,
-                  trailingText: "",
-                  screenType: 'search',
-                ),
-        ],
+      child: KeyboardDismissOnTap(
+        dismissOnCapturedTaps: false,
+        child: Column(
+          children: [
+            TypeBuilder(
+              // typeValue: typeValue,
+              chosenValue: chosenValue,
+              chosenType: chosenType,
+              userRole: "BOSS",
+              typeStore: typeStore,
+              chooseType: (String value) {
+                setState(() {
+                  chosenValue = value;
+                });
+              },
+              chooseStore: (String value) {
+                setState(() {
+                  chosenType = value;
+                });
+              },
+            ),
+            SearchBuilder(
+              searchAgian: (bool type) {
+                setState(() {
+                  searchAgian = type;
+                });
+                _agianSearch();
+              },
+              searchValue: (String value) {
+                setState(
+                  () {
+                    searchValue = value;
+                  },
+                );
+              },
+            ),
+            list.isEmpty
+                ? Center(
+                    child: Lottie.asset('assets/json/empty-page.json'),
+                  )
+                : ListBuilder(
+                    list: list,
+                    controller: _scrollController,
+                    userRole: "BOSS",
+                    isExpanded: _isExpanded,
+                    typeTrailling: false,
+                    icon: Icons.abc,
+                    trailingText: "",
+                    screenType: 'search',
+                  ),
+          ],
+        ),
       ),
     );
   }

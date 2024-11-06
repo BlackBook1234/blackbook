@@ -2,10 +2,13 @@ import 'package:black_book/bloc/store/bloc.dart';
 import 'package:black_book/bloc/store/event.dart';
 import 'package:black_book/bloc/store/state.dart';
 import 'package:black_book/constant.dart';
+import 'package:black_book/global_keys.dart';
+import 'package:black_book/models/product/categories.dart';
 import 'package:black_book/models/product/product_detial.dart';
 import 'package:black_book/models/product/product_store.dart';
 import 'package:black_book/models/product/store_amount.dart';
 import 'package:black_book/models/sale/sale_detial.dart';
+import 'package:black_book/provider/type.dart';
 import 'package:black_book/util/utils.dart';
 import 'package:black_book/widget/bottom_sheet.dart/store_bottom.dart';
 import 'package:black_book/widget/component/choose_type.dart';
@@ -14,6 +17,7 @@ import 'package:black_book/widget/component/search.dart';
 import 'package:black_book/widget/alert/error.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
+import 'package:provider/provider.dart';
 
 class WareDivisionScreen extends StatefulWidget {
   const WareDivisionScreen({super.key});
@@ -26,7 +30,7 @@ class _WareDivisionScreenState extends State<WareDivisionScreen> {
   final _bloc = StoreBloc();
   String chosenValue = "Бүх төрөл";
   String chosenType = "Агуулах";
-  List<String> typeValue = ["Бүх төрөл", "Өвөл", "Хавар", "Намар", "Зун"];
+  List<String> typeValue = ["Бүх төрөл"];
   List<String> typeStore = ["Бүх дэлгүүр", "Агуулах"];
   String searchValue = "";
   List<ProductDetialModel> list = [];
@@ -35,6 +39,7 @@ class _WareDivisionScreenState extends State<WareDivisionScreen> {
   List<ProductStoreModel> storeList = [];
   DetialSaleProductModel listData = DetialSaleProductModel();
   StoreAmountModel? amount;
+  List<CategoriesModel> categories = [];
   bool searchAgian = false;
   String storeId = "";
   String productType = "";
@@ -88,16 +93,12 @@ class _WareDivisionScreenState extends State<WareDivisionScreen> {
           storeId = "";
         }
       }
-      if (chosenValue == "Өвөл") {
-        productType = "WINTER";
-      } else if (chosenValue == "Хавар") {
-        productType = "SPRING";
-      } else if (chosenValue == "Намар") {
-        productType = "AUTUMN";
-      } else if (chosenValue == "Зун") {
-        productType = "SUMMER";
-      } else {
-        productType = "";
+      for (CategoriesModel data in categories) {
+        if (chosenValue == data.name) {
+          productType = data.parent;
+        } else if (chosenValue == "Бүх төрөл") {
+          productType = "";
+        }
       }
       _bloc.add(GetStoreProductEvent(
           _page, searchAgian, storeId, productType, searchValue));
@@ -150,6 +151,12 @@ class _WareDivisionScreenState extends State<WareDivisionScreen> {
                         chosenType = Utils.getstoreName();
                       }
                     }
+                    categories = state.categories;
+                    Provider.of<TypeProvider>(
+                            GlobalKeys.navigatorKey.currentContext!,
+                            listen: false)
+                        .setTypeList(
+                            state.categories.map((e) => e.name).toList());
                     typeStore = typeStore.toSet().toList();
                   });
                 }
@@ -167,6 +174,7 @@ class _WareDivisionScreenState extends State<WareDivisionScreen> {
                 backgroundColor: kPrimarySecondColor),
             body: Column(children: [
               TypeBuilder(
+                // typeValue:typeValue,
                 chosenValue: chosenValue,
                 chosenType: chosenType,
                 userRole: "BOSS",

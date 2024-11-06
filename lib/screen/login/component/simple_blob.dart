@@ -10,7 +10,7 @@ class SimpleBlob extends StatelessWidget {
   final Widget? child;
   final BlobStyles? styles;
 
-  const SimpleBlob({
+  const SimpleBlob({super.key, 
     required this.blobData,
     this.size,
     this.debug = false,
@@ -20,17 +20,17 @@ class SimpleBlob extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    return Container(
+    return SizedBox(
       height: size,
       width: size,
       child: RepaintBoundary(
         child: CustomPaint(
-          child: child,
           painter: BlobPainter(
             blobData: blobData,
             debug: debug,
             styles: styles,
           ),
+          child: child,
         ),
       ),
     );
@@ -49,16 +49,16 @@ class BlobPainter extends CustomPainter {
   });
 
   @override
-  void paint(Canvas c, Size s) {
-    drawBlob(c, blobData.path!, styles);
+  void paint(Canvas canvas, Size size) {
+    drawBlob(canvas, blobData.path!, styles);
     if (debug) {
-      circle(c, s, (s.width / 2)); // outer circle
-      circle(c, s, blobData.points!.innerRad!); // inner circle
-      point(c, Offset(s.width / 2, s.height / 2)); // center point
+      circle(canvas, size, (size.width / 2)); // outer circle
+      circle(canvas, size, blobData.points!.innerRad!); // inner circle
+      point(canvas, Offset(size.width / 2, size.height / 2)); // center point
       List originPoints = blobData.points!.originPoints!;
       List? destPoints = blobData.points!.destPoints;
       originPoints.asMap().forEach(
-            (i, p) => drawLines(c, p, destPoints![i]),
+            (i, p) => drawLines(canvas, p, destPoints![i]),
           ); // line from  inner  circle to blob point
     }
   }

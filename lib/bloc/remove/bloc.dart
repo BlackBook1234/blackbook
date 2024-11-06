@@ -15,7 +15,6 @@ class RemoveBloc extends Bloc<RemoveEvent, RemoveState> {
       try {
         String accessToken = Utils.getToken();
         final apiService = ApiTokenService(accessToken);
-        print(accessToken);
         Response response = await apiService
             .deleteRequest('/v1/product/remove/good?good_id=${event.goodId}');
         AuthenticationResponseModel dataResponse =
@@ -34,7 +33,6 @@ class RemoveBloc extends Bloc<RemoveEvent, RemoveState> {
           emit(RemoveFailure("Серверийн алдаа"));
         }
       } catch (ex) {
-        print(ex);
         emit(RemoveFailure("Серверийн алдаа"));
       }
     });

@@ -4,12 +4,15 @@ import 'package:black_book/models/banner/response.dart';
 import 'package:black_book/models/category/category_detial.dart';
 import 'package:black_book/models/category/category_response.dart';
 import 'package:black_book/models/default/device_model.dart';
+import 'package:black_book/models/default/razmer.dart';
 import 'package:black_book/models/friend/detial.dart';
 import 'package:black_book/models/friend/response.dart';
+import 'package:black_book/models/invitaion/response.dart';
 import 'package:black_book/models/notification/response.dart';
 import 'package:black_book/models/product/response.dart';
 import 'package:black_book/models/sale/sale_detial.dart';
 import 'package:black_book/models/sale/sale_response.dart';
+import 'package:black_book/models/summery_detial/response.dart';
 import 'package:black_book/models/transfer/response.dart';
 import 'package:black_book/models/user_data/user_data_response.dart';
 import 'package:black_book/util/utils.dart';
@@ -36,14 +39,20 @@ class API {
     );
   }
 
-  Future<PhoneNumber> getFriendList(int page, bool morePage) async {
-    return await client
-        .get('/v1/invite/my/list?sort=desc&page=$page&limit=10')
-        .then((value) {
+  Future<PhoneNumber> getFriendList(int page, String status) async {
+    String path = "/v1/invite/my/list?sort=desc&page=$page&limit=40";
+    if (status == "Баталгаажсан") {
+      path = '/v1/invite/my/list?sort=desc&page=$page&limit=40&status=APPROVED';
+    } else if (status == "Хүлээгдэж байна") {
+      path = '/v1/invite/my/list?sort=desc&page=$page&limit=40&status=PENDING';
+    } else if (status == "Сонгох") {
+      path = '/v1/invite/my/list?sort=desc&page=$page&limit=40';
+    } else if (status == "Цуцалсан") {
+      path = '/v1/invite/my/list?sort=desc&page=$page&limit=40&status=DECLINED';
+    }
+    return await client.get(path).then((value) {
       PackagesResponse res = PackagesResponse.fromJson(value);
-
       return res.data!;
-      // return {res: morePage};
     });
   }
 
@@ -56,6 +65,36 @@ class API {
         return getNotification(page);
       } else {
         return NotficationResponse.fromJson(value);
+      }
+    });
+  }
+
+  Future<InvitationResponse> checkInvation() async {
+    return await client
+        .get(
+            '/v1/invite/invitation/list?country_code=976&phone_number=${Utils.getPhone()}&sort=asc')
+        .then((value) async {
+      if (value == "auth_token_error") {
+        await refreshToken();
+        return checkInvation();
+      } else {
+        return InvitationResponse.fromJson(value);
+      }
+    });
+  }
+
+  Future<void> approveInvation(int id) async {
+    var requestBody = <String, dynamic>{
+      "countryCode": "976",
+      "phoneNumber": Utils.getPhone(),
+      "id": id
+    };
+    return await client
+        .post('/v1/invite/approve', data: requestBody)
+        .then((value) async {
+      if (value == "auth_token_error") {
+        await refreshToken();
+        return approveInvation(id);
       }
     });
   }
@@ -124,6 +163,18 @@ class API {
     });
   }
 
+  Future<void> inviteApprove(int id) async {
+    var requestBody = <String, dynamic>{
+      "id": id,
+      "countryCode": "976",
+      "phoneNumber": Utils.getPhone()
+    };
+    await client.post('/v1/invite/approve', data: requestBody).then((value) {
+      UserDataResponseModel userData = UserDataResponseModel.fromJson(value);
+      Utils.getCommonProvider().setUserInfo(userData.data!);
+    });
+  }
+
   Future<ProductResponseModel> getProductData(int page, bool searchAgian,
       String storeId, String category, String searchValue) async {
     String path = "";
@@ -160,9 +211,6 @@ class API {
         await refreshToken();
         return getProductData(page, searchAgian, storeId, storeId, searchValue);
       } else {
-        // ProductResponseModel data = ProductResponseModel.fromJson(value);
-        print(path);
-        // print(value);
         return ProductResponseModel.fromJson(value);
       }
     });
@@ -193,9 +241,31 @@ class API {
         await refreshToken();
         return getProductData(page, searchAgian, storeId, storeId, searchValue);
       } else {
-        // ProductResponseModel data = ProductResponseModel.fromJson(value);
-        print("---$path");
-        // print(value);
+        return ProductResponseModel.fromJson(value);
+      }
+    });
+  }
+
+  Future<ProductResponseModel> getDateProductDataSearch(
+      int page,
+      bool searchAgian,
+      String begindate,
+      String endDate,
+      String searchValue) async {
+    String path = "";
+    if (searchAgian) {
+      path =
+          '/v1/product/my/list?page=$page&limit=$limit&q=$searchValue&sort=desc&created_at_from=$begindate&created_at_to=$endDate';
+    } else {
+      path =
+          '/v1/product/my/list?page=$page&limit=$limit&sort=desc&created_at_from=$begindate&created_at_to=$endDate';
+    }
+    return await client.get(path).then((value) async {
+      if (value == "auth_token_error") {
+        await refreshToken();
+        return getDateProductDataSearch(
+            page, searchAgian, begindate, endDate, searchValue);
+      } else {
         return ProductResponseModel.fromJson(value);
       }
     });
@@ -233,7 +303,6 @@ class API {
       path =
           '/v1/product/transfer/list?limit=$limit&page=$page&sort=desc&tid=$sourceId';
     }
-    print("---- $path");
     return await client.get(path).then((value) async {
       if (value == "auth_token_error") {
         await refreshToken();
@@ -270,14 +339,48 @@ class API {
             '/v1/product/sale/list?sort=desc&page=$page&limit=100&store_id=${Utils.getStoreId()}';
       }
     }
-    print(path);
     return await client.get(path).then((value) async {
-      print(value["data"]);
       if (value == "auth_token_error") {
         await refreshToken();
         return getSoldProduct(page, beginDate, endDate, storeId, searchAgian);
       } else {
         return MainSaleProductResponseModel.fromJson(value).data!;
+      }
+    });
+  }
+
+  Future<void> addProductSize({
+    required List<ProductRazmerModel> list,
+  }) async {
+    var requestBody = <String, List>{"products": list};
+    await client.post(
+      '/v1/product/add',
+      data: requestBody,
+    );
+  }
+
+  Future<SummeryDetial> getSummery() async {
+    return await client.get('/v1/product/balance/summary').then((value) async {
+      if (value == "auth_token_error") {
+        await refreshToken();
+        return getSummery();
+      } else {
+        return SummeryResponse.fromJson(value).data!;
+      }
+    });
+  }
+
+  Future<void> changeType(String type, int id) async {
+    var requestBody = <String, dynamic>{"name": type, "id": id};
+    await client
+        .put(
+      '/v1/category/update',
+      data: requestBody,
+    )
+        .then((value) async {
+      if (value == "auth_token_error") {
+        await refreshToken();
+        return setNotification(id);
       }
     });
   }

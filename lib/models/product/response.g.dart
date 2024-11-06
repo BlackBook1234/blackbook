@@ -21,8 +21,12 @@ ProductResponseModel _$ProductResponseModelFromJson(
       amount: json['amount'] == null
           ? null
           : StoreAmountModel.fromJson(json['amount'] as Map<String, dynamic>),
-    )..total =
-        TotalProductModel.fromJson(json['total'] as Map<String, dynamic>);
+      total: json['total'] == null
+          ? null
+          : TotalProductModel.fromJson(json['total'] as Map<String, dynamic>),
+    )..categories = (json['categories'] as List<dynamic>?)
+        ?.map((e) => CategoriesModel.fromJson(e as Map<String, dynamic>))
+        .toList();
 
 Map<String, dynamic> _$ProductResponseModelToJson(
         ProductResponseModel instance) =>
@@ -33,4 +37,5 @@ Map<String, dynamic> _$ProductResponseModelToJson(
       'stores': instance.stores,
       'amount': instance.amount,
       'total': instance.total,
+      'categories': instance.categories,
     };

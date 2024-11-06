@@ -1,12 +1,13 @@
 import 'package:dio/dio.dart';
 import 'interceptors.dart';
 
+String baseUrl = "https://khardevter.horshoo.com";
 class ApiService {
   final Dio dio;
 
   ApiService()
       : dio = Dio(BaseOptions(
-            baseUrl: "https://khardevter.horshoo.com",
+            baseUrl: baseUrl,
             receiveTimeout: const Duration(milliseconds: 9000),
             sendTimeout: const Duration(milliseconds: 9000),
             headers: {}))
@@ -24,7 +25,7 @@ class ApiTokenService {
   final Dio dio;
   ApiTokenService(String token)
       : dio = Dio(BaseOptions(
-            baseUrl: "https://khardevter.horshoo.com",
+            baseUrl: baseUrl,
             receiveTimeout: const Duration(milliseconds: 9000),
             sendTimeout: const Duration(milliseconds: 9000),
             headers: {"Authorization": "Bearer $token"}))
@@ -50,7 +51,7 @@ class ApiFormService {
   ApiFormService(String token)
       : dio = Dio(
           BaseOptions(
-            baseUrl: "https://khardevter.horshoo.com",
+            baseUrl: baseUrl,
             receiveTimeout: const Duration(milliseconds: 90000),
             sendTimeout: const Duration(milliseconds: 90000),
             headers: {

@@ -36,12 +36,6 @@ class _AddTypeSecondScreenState extends State<AddTypeSecondScreen>
     setState(() {});
   }
 
-  void submitData() {
-    dynamicList.forEach((element) {
-      print(element.description);
-    });
-  }
-
   void onSubmit() {
     if (widget.itemType == "Өвөл") {
       setState(() {
@@ -89,7 +83,7 @@ class _AddTypeSecondScreenState extends State<AddTypeSecondScreen>
                     Navigator.pushAndRemoveUntil(
                         context,
                         CupertinoPageRoute(
-                            builder: (context) => const NavigatorScreen()),
+                            builder: (context) => const NavigatorScreen(screenIndex: 0,)),
                         (route) => false);
                   });
                 }

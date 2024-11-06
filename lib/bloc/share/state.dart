@@ -1,3 +1,4 @@
+import 'package:black_book/models/product/categories.dart';
 import 'package:black_book/models/product/product_detial.dart';
 import 'package:black_book/models/transfer/detial.dart';
 import 'package:equatable/equatable.dart';
@@ -68,7 +69,8 @@ class ShareProductDataFailure extends ShareState {
 class ShareProductDataSuccess extends ShareState {
   final List<ProductDetialModel> data;
   final bool hasMoreOrder;
-  ShareProductDataSuccess(this.data, this.hasMoreOrder);
+  final List<CategoriesModel> categories;
+  ShareProductDataSuccess(this.data, this.hasMoreOrder,this.categories);
   @override
   List<Object?> get props => [data, hasMoreOrder];
 }

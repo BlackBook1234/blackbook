@@ -14,10 +14,8 @@ class BannerBloc extends Bloc<BannerEvent, BannerState> {
       emit(BannerLoading());
       try {
         String accessToken = Utils.getToken();
-        print(accessToken);
         final apiService = ApiTokenService(accessToken);
         Response response = await apiService.getRequest('/v1/misc/banner/main');
-        print("this reponse  = ${response.data}");
         BannerResponse dataResponse = BannerResponse.fromJson(response.data);
         if (response.statusCode == 200 && dataResponse.status == "success") {
           emit(BannerSuccess(dataResponse.data!));
@@ -33,7 +31,6 @@ class BannerBloc extends Bloc<BannerEvent, BannerState> {
           emit(BannerFailure("Серверийн алдаа"));
         }
       } catch (ex) {
-        print(ex);
         emit(BannerFailure("Серверийн алдаа"));
       }
     });

@@ -1,6 +1,11 @@
 import 'package:black_book/api/api.dart';
 import 'package:black_book/api/component/error_mapper.dart';
+import 'package:black_book/models/invitaion/response.dart';
+import 'package:black_book/util/utils.dart';
 import 'package:black_book/widget/alert/custom_dialog.dart';
+import 'package:black_book/widget/alert/inviation_dialog.dart';
+import 'package:black_book/widget/alert/new_dialog.dart';
+import 'package:black_book/widget/alert/update.dart';
 import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
 import 'error_dialog.dart';
@@ -36,7 +41,8 @@ mixin BaseStateMixin<T extends StatefulWidget> on State<T> {
     return Future.value(null);
   }
 
-Future<S?> showSuccessPopDialog<S>(String title, bool popup,bool close, String message) {
+  Future<S?> showSuccessPopDialog<S>(
+      String title, bool popup, bool close, String message) {
     if (mounted) {
       return showDialog<S>(
         useSafeArea: popup,
@@ -71,6 +77,43 @@ Future<S?> showSuccessPopDialog<S>(String title, bool popup,bool close, String m
         context: context,
         builder: (ctx) =>
             CustomDialog(title: 'Анхаар', desc: message, type: type),
+      );
+    }
+    return Future.value(null);
+  }
+
+  Future<S?> showNewDialog<S>(
+      BuildContext context, String message, List<String> typeStore) {
+    if (mounted) {
+      return showDialog<S>(
+        context: context,
+        builder: (ctx) => NewDialog(
+          typeStore: typeStore,
+          chosenStore: message,
+          userRole: Utils.getUserRole(),
+        ),
+      );
+    }
+    return Future.value(null);
+  }
+
+  Future<S?> updateDialog<S>(BuildContext context) {
+    if (mounted) {
+      return showDialog<S>(
+        barrierDismissible: false,
+        context: context,
+        builder: (ctx) => const UpdateDialog(),
+      );
+    }
+    return Future.value(null);
+  }
+
+  Future<S?> invitaionDialog<S>(InvitationResponse res) {
+    if (mounted) {
+      return showDialog<S>(
+        barrierDismissible: false,
+        context: context,
+        builder: (ctx) => InvitationDialog(res: res),
       );
     }
     return Future.value(null);

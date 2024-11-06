@@ -1,3 +1,4 @@
+import 'package:black_book/models/product/categories.dart';
 import 'package:black_book/models/product/product_detial.dart';
 import 'package:black_book/models/product/product_store.dart';
 import 'package:black_book/models/product/store_amount.dart';
@@ -73,8 +74,9 @@ class GetStoreProductSuccess extends StoreState {
   final StoreAmountModel? amount;
   final List<ProductStoreModel>? stores;
   final bool hasMoreOrder;
+  final List<CategoriesModel> categories;
   GetStoreProductSuccess(
-      this.list, this.amount, this.stores, this.hasMoreOrder);
+      this.list, this.amount, this.stores, this.hasMoreOrder,this.categories);
   @override
   List<Object?> get props => [list, amount, stores, hasMoreOrder];
 }

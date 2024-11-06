@@ -1,3 +1,5 @@
+import 'dart:io';
+
 import 'package:flutter/material.dart';
 
 // ignore: deprecated_member_use
@@ -28,4 +30,12 @@ double getHorizontalSize(double px) {
 
 double getVerticalSize(double px) {
   return size.height > 844 ? px + 1 : px * 1;
+}
+
+double isPhoneType() {
+  if (Platform.isIOS) {
+    return getSize(size.height / 24);
+  } else {
+    return getSize(30);
+  }
 }

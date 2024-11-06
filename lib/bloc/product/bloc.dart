@@ -22,7 +22,6 @@ class ProductBloc extends Bloc<ProductEvent, ProductState> {
           "photoUrl": event.url,
           "sizes": event.sizes.map((e) => e.toJson()).toList()
         };
-        print(body);
         Response response =
             await apiService.postRequest('/v1/product/create', body: body);
         AuthenticationResponseModel dataResponse =
@@ -73,7 +72,6 @@ class ProductBloc extends Bloc<ProductEvent, ProductState> {
                 '/v1/product/my/list?limit=40&store_id=${Utils.getStoreId()}&page=${event.page}&sort=desc';
           }
         }
-        print(" search value = $path");
         Response response = await apiService.getRequest(path);
         ProductResponseModel dataResponse =
             ProductResponseModel.fromJson(response.data);
@@ -96,7 +94,6 @@ class ProductBloc extends Bloc<ProductEvent, ProductState> {
           emit(GetProductFailure("Серверийн алдаа"));
         }
       } catch (ex) {
-        print(ex);
         emit(GetProductFailure("Серверийн алдаа"));
       }
     });
@@ -104,7 +101,6 @@ class ProductBloc extends Bloc<ProductEvent, ProductState> {
       emit(GetStoreItemLoading());
       try {
         String accessToken = Utils.getToken();
-        print(" this is product token = $accessToken");
         final apiService = ApiTokenService(accessToken);
         String path = "";
         if (event.searchAgian) {
@@ -115,7 +111,6 @@ class ProductBloc extends Bloc<ProductEvent, ProductState> {
               '/v1/product/store/list?page=${event.page}&limit=40&store_id=${event.id}&sort=desc';
         }
         Response response = await apiService.getRequest(path);
-        print(response);
         ProductResponseModel dataResponse =
             ProductResponseModel.fromJson(response.data);
         if (response.statusCode == 200 && dataResponse.status == "success") {
@@ -143,7 +138,6 @@ class ProductBloc extends Bloc<ProductEvent, ProductState> {
       emit(GetProductLoading());
       try {
         String accessToken = Utils.getToken();
-        print(" this is product token = $accessToken");
         final apiService = ApiTokenService(accessToken);
         String path = "";
         if (event.searchAgian) {
@@ -162,14 +156,12 @@ class ProductBloc extends Bloc<ProductEvent, ProductState> {
         } else {
           path = '/v1/product/my/list?page=${event.page}&limit=40&sort=desc';
         }
-        print(path);
         Response response = await apiService.getRequest(path);
         ProductResponseModel dataResponse =
             ProductResponseModel.fromJson(response.data);
         if (response.statusCode == 200 && dataResponse.status == "success") {
           bool hasMoreOrder = true;
           if (dataResponse.data!.length < 40) {
-            print("baga bna");
             hasMoreOrder = false;
           }
           emit(GetProductSuccess(
@@ -186,21 +178,24 @@ class ProductBloc extends Bloc<ProductEvent, ProductState> {
           emit(GetProductFailure("Серверийн алдаа"));
         }
       } catch (ex) {
-        print(ex);
         emit(GetProductFailure("Серверийн алдаа"));
       }
     });
+
     on<PurchaseProduct>((event, emit) async {
       emit(PurchaseProductLoading());
       try {
         final apiService = ApiTokenService(Utils.getToken());
-        var body = {"products": event.sizes.map((e) => e.toJson()).toList()};
-        // print(body);
-        print(body);
+        var body = {
+          "sizes": event.sizes.map((e) => e.toJson()).toList(),
+          "good_id": event.good_id
+        };
+        // print("----bod:   $body");
         Response response =
-            await apiService.postRequest('/v1/product/purchase', body: body);
+            await apiService.postRequest('/v1/product/add', body: body);
         AuthenticationResponseModel dataResponse =
             AuthenticationResponseModel.fromJson(response.data);
+        // print("---${response.data}");
         if (response.statusCode == 200 && dataResponse.status == "success") {
           emit(PurchaseProductSuccess());
         } else if (dataResponse.status == "error" &&

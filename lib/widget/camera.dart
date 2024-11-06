@@ -38,22 +38,32 @@ class CameraScreen extends StatefulWidget {
 
 class _CameraScreenState extends State<CameraScreen> with BaseStateMixin {
   late CameraController _cameraController;
-  List<CameraDescription> _cameras = <CameraDescription>[];
   bool _showCamera = true;
   File? imageFile;
   final _bloc = ProductBloc();
   final _blocUpload = UploadBloc();
   String? url;
-  bool _isCameraInitialized = false;
+  FlashMode flashMode = FlashMode.off;
 
   @override
   void initState() {
     super.initState();
-    WidgetsBinding.instance.addPostFrameCallback((_) {
-      setState(() {
-        _cameras = widget.cameras;
-      });
-      _initializeCamera();
+    _cameraController =
+        CameraController(widget.cameras[0], ResolutionPreset.high);
+    _cameraController.initialize().then((_) {
+      if (!mounted) {
+        return;
+      }
+      setState(() {});
+    }).catchError((Object e) {
+      if (e is CameraException) {
+        switch (e.code) {
+          case 'CameraAccessDenied':
+            break;
+          default:
+            break;
+        }
+      }
     });
   }
 
@@ -61,26 +71,6 @@ class _CameraScreenState extends State<CameraScreen> with BaseStateMixin {
   void dispose() {
     _cameraController.dispose();
     super.dispose();
-  }
-
-  Future<void> _initializeCamera() async {
-    try {
-      if (_cameras.isEmpty) {
-        setState(() {
-          _isCameraInitialized = false;
-        });
-        showErrorDialog("No cameras available");
-        return;
-      }
-      final firstCamera = _cameras.first;
-      _cameraController = CameraController(firstCamera, ResolutionPreset.high);
-      await _cameraController.initialize();
-      setState(() {
-        _isCameraInitialized = true;
-      });
-    } catch (e) {
-      print("----------$e");
-    }
   }
 
   Future<void> _takePicture() async {
@@ -114,9 +104,6 @@ class _CameraScreenState extends State<CameraScreen> with BaseStateMixin {
         _blocUpload.add(UploadPhotoEvent(imageFile!));
       }
     }
-    // print("${widget.productCode} ${widget.id}");
-    // _bloc.add(CreateProductEvent(
-    //     widget.productName, widget.productCode, widget.id, widget.list, url!));
   }
 
   @override
@@ -146,7 +133,7 @@ class _CameraScreenState extends State<CameraScreen> with BaseStateMixin {
                   Navigator.pushAndRemoveUntil(
                       context,
                       CupertinoPageRoute(
-                          builder: (context) => const NavigatorScreen()),
+                          builder: (context) => const NavigatorScreen(screenIndex: 0,)),
                       (route) => false);
                 });
               }
@@ -184,103 +171,90 @@ class _CameraScreenState extends State<CameraScreen> with BaseStateMixin {
                 icon: const Icon(Icons.keyboard_arrow_left, size: 30)),
             foregroundColor: kWhite,
             title: Image.asset('assets/images/logoSecond.png', width: 160)),
-        body: _isCameraInitialized
-            ? FutureBuilder(
-                future: _initializeCamera(),
-                builder: (_, AsyncSnapshot<void> snapshot) {
-                  if (snapshot.connectionState == ConnectionState.done) {
-                    return Stack(
-                      children: [
-                        _showCamera
-                            ? Positioned.fill(
-                                child: AspectRatio(
-                                  aspectRatio:
-                                      _cameraController.value.aspectRatio,
-                                  child: CameraPreview(_cameraController),
-                                ),
-                              )
-                            : Positioned.fill(
-                                child: Container(
-                                  alignment: Alignment.center,
-                                  decoration: BoxDecoration(
-                                    image: DecorationImage(
-                                      image: FileImage(imageFile!),
-                                      fit: BoxFit.cover,
-                                    ),
-                                    color: Colors.grey,
-                                    border: Border.all(
-                                        width: 8, color: Colors.black12),
-                                  ),
-                                ),
-                              ),
-                        Positioned(
-                          bottom: 0,
-                          left: 0,
-                          right: 0,
+        body: _cameraController.value.isInitialized
+            ? Stack(
+                children: [
+                  _showCamera
+                      ? Positioned.fill(
+                          child: AspectRatio(
+                            aspectRatio: _cameraController.value.aspectRatio,
+                            child: CameraPreview(_cameraController),
+                          ),
+                        )
+                      : Positioned.fill(
                           child: Container(
-                            padding:
-                                const EdgeInsets.symmetric(horizontal: 16.0),
-                            height: 80,
-                            color: Colors.transparent,
-                            child: Row(
-                              mainAxisAlignment: MainAxisAlignment.spaceEvenly,
-                              children: [
-                                Expanded(
-                                    child: Container(
-                                        height: 40,
-                                        decoration: BoxDecoration(
-                                            color: kWhite.withOpacity(0.7),
-                                            borderRadius:
-                                                BorderRadius.circular(10)),
-                                        child: TextButton(
-                                            style: ElevatedButton.styleFrom(
-                                                foregroundColor:
-                                                    kPrimarySecondColor),
-                                            onPressed: () => getImage(
-                                                source: ImageSource.gallery),
-                                            child: const Text("Цомог",
-                                                style:
-                                                    TextStyle(fontSize: 14))))),
-                                Expanded(
-                                    child: InkWell(
-                                        onTap: () =>
-                                            _showCamera ? _takePicture() : null,
-                                        child: CircleAvatar(
-                                            maxRadius: 30,
-                                            backgroundColor:
-                                                kWhite.withOpacity(0.7),
-                                            child: const Icon(Icons.circle,
-                                                color: kWhite, size: 60)))),
-                                Expanded(
-                                  child: Container(
-                                    height: 40,
-                                    decoration: BoxDecoration(
-                                        color: kWhite.withOpacity(0.7),
-                                        borderRadius:
-                                            BorderRadius.circular(10)),
-                                    child: TextButton(
-                                      style: ElevatedButton.styleFrom(
-                                          foregroundColor: kPrimarySecondColor),
-                                      onPressed: () => onCreate(),
-                                      child: const Text(
-                                        "Хадгалах",
-                                        style: TextStyle(fontSize: 14),
-                                      ),
-                                    ),
-                                  ),
-                                ),
-                              ],
+                            alignment: Alignment.center,
+                            decoration: BoxDecoration(
+                              image: DecorationImage(
+                                image: FileImage(imageFile!),
+                                fit: BoxFit.cover,
+                              ),
+                              color: Colors.grey,
+                              border:
+                                  Border.all(width: 8, color: Colors.black12),
                             ),
                           ),
                         ),
-                      ],
-                    );
-                  } else {
-                    return const Center(child: CircularProgressIndicator());
-                  }
-                })
+                  Positioned(
+                    bottom: 0,
+                    left: 0,
+                    right: 0,
+                    child: Container(
+                      padding: const EdgeInsets.symmetric(horizontal: 16.0),
+                      height: 80,
+                      color: Colors.transparent,
+                      child: Row(
+                        mainAxisAlignment: MainAxisAlignment.spaceEvenly,
+                        children: [
+                          Expanded(
+                              child: Container(
+                                  height: 40,
+                                  decoration: BoxDecoration(
+                                      color: kWhite.withOpacity(0.7),
+                                      borderRadius: BorderRadius.circular(10)),
+                                  child: TextButton(
+                                      style: ElevatedButton.styleFrom(
+                                          foregroundColor: kPrimarySecondColor),
+                                      onPressed: () =>
+                                          getImage(source: ImageSource.gallery),
+                                      child: const Text("Цомог",
+                                          style: TextStyle(fontSize: 14))))),
+                          Expanded(
+                              child: InkWell(
+                                  onTap: () =>
+                                      _showCamera ? _takePicture() : null,
+                                  child: CircleAvatar(
+                                      maxRadius: 30,
+                                      backgroundColor: kWhite.withOpacity(0.7),
+                                      child: const Icon(Icons.circle,
+                                          color: kWhite, size: 60)))),
+                          Expanded(
+                            child: Container(
+                              height: 40,
+                              decoration: BoxDecoration(
+                                  color: kWhite.withOpacity(0.7),
+                                  borderRadius: BorderRadius.circular(10)),
+                              child: TextButton(
+                                style: ElevatedButton.styleFrom(
+                                    foregroundColor: kPrimarySecondColor),
+                                onPressed: () => onCreate(),
+                                child: const Text(
+                                  "Хадгалах",
+                                  style: TextStyle(fontSize: 14),
+                                ),
+                              ),
+                            ),
+                          ),
+                        ],
+                      ),
+                    ),
+                  ),
+                ],
+              )
             : const Center(
-                child: CircularProgressIndicator(color: kPrimaryColor),
+                child: CircularProgressIndicator(
+                  color: kPrimaryColor,
+                ),
               ),
       ),
     );

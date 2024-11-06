@@ -4,12 +4,15 @@ import 'package:black_book/api/component/api_error.dart';
 import 'package:black_book/global_keys.dart';
 import 'package:black_book/models/user_data/user_data.dart';
 import 'package:black_book/provider/loader.dart';
+import 'package:black_book/provider/type.dart';
 import 'package:black_book/provider/user_provider.dart';
 import 'package:black_book/screen/home/navigator.dart';
 import 'package:black_book/theme.dart';
 import 'package:black_book/util/utils.dart';
 import 'package:black_book/widget/alert/mixin_dialog.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter_keyboard_visibility/flutter_keyboard_visibility.dart';
+import 'package:flutter_localizations/flutter_localizations.dart';
 import 'package:provider/provider.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 import 'provider/product_share_provider.dart';
@@ -70,77 +73,92 @@ class MyAppState extends State<MyApp> with BaseStateMixin {
       providers: [
         ChangeNotifierProvider(create: (_) => CommonProvider()),
         ChangeNotifierProvider(create: (_) => ProductProvider()),
-        ChangeNotifierProvider(create: (_) => LoaderProvider())
+        ChangeNotifierProvider(create: (_) => LoaderProvider()),
+        ChangeNotifierProvider(create: (_) => TypeProvider())
       ],
-      child: MaterialApp(
-          debugShowCheckedModeBanner: false,
-          title: 'Flutter Demo',
-          navigatorKey: GlobalKeys.navigatorKey,
-          theme: AppTheme.lightTheme(context),
-          home: user == null
-              ? const LoginScreen()
-              : Utils.getUserRole() == "WORKER" || Utils.getIpaid() == 1
-                  ? const NavigatorScreen()
-                  : const LoginScreen()
+      child: KeyboardVisibilityProvider(
+        child: MaterialApp(
+            localizationsDelegates: const [
+              GlobalMaterialLocalizations.delegate,
+              GlobalWidgetsLocalizations.delegate,
+              GlobalCupertinoLocalizations.delegate,
+            ],
+            supportedLocales: const [
+              // Locale('zh', ''),
+              Locale('mn', ''),
+            ],
+            locale: const Locale('mn', ''),
+            debugShowCheckedModeBanner: false,
+            title: 'Flutter Demo',
+            navigatorKey: GlobalKeys.navigatorKey,
+            theme: AppTheme.lightTheme(context),
+            home: user == null
+                ? const LoginScreen()
+                : Utils.getUserRole() == "WORKER" || Utils.getIpaid() == 1
+                    ? const NavigatorScreen(
+                        screenIndex: 0,
+                      )
+                    : const LoginScreen()
 
-          // Provider.of<CommonProvider>(context, listen: false).logout()
-          // : MultiBlocListener(
-          //     listeners: [
-          //       BlocListener<RefreshBloc, RefreshTokenState>(
-          //         bloc: _bloc,
-          //         listener: (context, state) {
-          //           if (state is RefreshLoading) {}
-          //           if (state is RefreshFailure) {
-          //             Navigator.pushAndRemoveUntil(
-          //                 context,
-          //                 CupertinoPageRoute(
-          //                     builder: (context) => const LoginScreen()),
-          //                 (route) => false);
-          //           }
-          //           if (state is RefreshSuccess) {
-          //             Utils.cancelLoader(context);
-          //             if (Utils.getUserRole() == "WORKER") {
-          //               Navigator.pushAndRemoveUntil(
-          //                   context,
-          //                   CupertinoPageRoute(
-          //                     builder: (context) => const NavigatorScreen(),
-          //                   ),
-          //                   (route) => false);
-          //             } else if (Utils.getIpaid() == 1) {
-          //               Navigator.pushAndRemoveUntil(
-          //                   context,
-          //                   CupertinoPageRoute(
-          //                     builder: (context) => const NavigatorScreen(),
-          //                   ),
-          //                   (route) => false);
-          //             } else {
-          //               Provider.of<CommonProvider>(context, listen: false)
-          //                   .logout();
-          //               Navigator.pushAndRemoveUntil(
-          //                   context,
-          //                   CupertinoPageRoute(
-          //                     builder: (context) => const LoginScreen(),
-          //                   ),
-          //                   (route) => false);
-          //             }
-          //           }
-          //         },
-          //       )
-          //     ],
-          //     child: Scaffold(
-          //       body: Container(
-          //         color: Colors.transparent,
-          //         child: const Center(
-          //           child: SizedBox(
-          //             height: 30,
-          //             width: 30,
-          //             child: CircularProgressIndicator(color: kPrimaryColor,),
-          //           ),
-          //         ),
-          //       ),
-          //     ),
-          //   ),
-          ),
+            // Provider.of<CommonProvider>(context, listen: false).logout()
+            // : MultiBlocListener(
+            //     listeners: [
+            //       BlocListener<RefreshBloc, RefreshTokenState>(
+            //         bloc: _bloc,
+            //         listener: (context, state) {
+            //           if (state is RefreshLoading) {}
+            //           if (state is RefreshFailure) {
+            //             Navigator.pushAndRemoveUntil(
+            //                 context,
+            //                 CupertinoPageRoute(
+            //                     builder: (context) => const LoginScreen()),
+            //                 (route) => false);
+            //           }
+            //           if (state is RefreshSuccess) {
+            //             Utils.cancelLoader(context);
+            //             if (Utils.getUserRole() == "WORKER") {
+            //               Navigator.pushAndRemoveUntil(
+            //                   context,
+            //                   CupertinoPageRoute(
+            //                     builder: (context) => const NavigatorScreen(),
+            //                   ),
+            //                   (route) => false);
+            //             } else if (Utils.getIpaid() == 1) {
+            //               Navigator.pushAndRemoveUntil(
+            //                   context,
+            //                   CupertinoPageRoute(
+            //                     builder: (context) => const NavigatorScreen(),
+            //                   ),
+            //                   (route) => false);
+            //             } else {
+            //               Provider.of<CommonProvider>(context, listen: false)
+            //                   .logout();
+            //               Navigator.pushAndRemoveUntil(
+            //                   context,
+            //                   CupertinoPageRoute(
+            //                     builder: (context) => const LoginScreen(),
+            //                   ),
+            //                   (route) => false);
+            //             }
+            //           }
+            //         },
+            //       )
+            //     ],
+            //     child: Scaffold(
+            //       body: Container(
+            //         color: Colors.transparent,
+            //         child: const Center(
+            //           child: SizedBox(
+            //             height: 30,
+            //             width: 30,
+            //             child: CircularProgressIndicator(color: kPrimaryColor,),
+            //           ),
+            //         ),
+            //       ),
+            //     ),
+            //   ),
+            ),
+      ),
     );
   }
 }

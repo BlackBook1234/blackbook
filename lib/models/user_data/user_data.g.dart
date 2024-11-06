@@ -15,6 +15,7 @@ UserDataModel _$UserDataModelFromJson(Map<String, dynamic> json) =>
       active: json['active'] as int?,
       avatar: json['avatar'] as String?,
       email: json['email'] as String?,
+      mustUpdate: json['mustUpdate'] as int?,
       isPaid: json['isPaid'] as int?,
       lastName: json['lastName'] as String?,
       phone: json['phone'] as String?,
@@ -27,7 +28,7 @@ UserDataModel _$UserDataModelFromJson(Map<String, dynamic> json) =>
       refreshToken: json['refreshToken'] as String?,
       tenantId: json['tenantId'] as int?,
       tenantName: json['tenantName'] as String?,
-    );
+    )..isWarehouse = json['isWarehouse'] as int?;
 
 Map<String, dynamic> _$UserDataModelToJson(UserDataModel instance) =>
     <String, dynamic>{
@@ -45,9 +46,11 @@ Map<String, dynamic> _$UserDataModelToJson(UserDataModel instance) =>
       'type': instance.type,
       'active': instance.active,
       'userId': instance.userId,
+      'isWarehouse': instance.isWarehouse,
       'tenantId': instance.tenantId,
       'countryCode': instance.countryCode,
       'isAdmin': instance.isAdmin,
+      'mustUpdate': instance.mustUpdate,
       'storeId': instance.storeId,
       'isPaid': instance.isPaid,
     };

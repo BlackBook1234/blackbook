@@ -3,16 +3,16 @@ import 'package:black_book/bloc/remove/bloc.dart';
 import 'package:black_book/bloc/remove/event.dart';
 import 'package:black_book/bloc/remove/state.dart';
 import 'package:black_book/constant.dart';
+import 'package:black_book/global_keys.dart';
+import 'package:black_book/models/product/categories.dart';
 import 'package:black_book/models/product/product_detial.dart';
 import 'package:black_book/models/product/product_store.dart';
 import 'package:black_book/models/product/response.dart';
+import 'package:black_book/provider/type.dart';
 import 'package:black_book/screen/core/add_razmer.dart';
-import 'package:black_book/screen/home/widget/banners_carousel.dart';
 import 'package:black_book/util/utils.dart';
 import 'package:black_book/widget/alert/component/buttons.dart';
 import 'package:black_book/widget/alert/mixin_dialog.dart';
-import 'package:black_book/widget/bottom_sheet.dart/product_draft_bottom.dart';
-import 'package:black_book/widget/bottom_sheet.dart/product_razmer_add.dart';
 import 'package:black_book/widget/bottom_sheet.dart/purchase_product.dart';
 import 'package:black_book/widget/component/choose_type.dart';
 import 'package:black_book/widget/component/list_builder.dart';
@@ -21,7 +21,9 @@ import 'package:black_book/widget/alert/error.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
+import 'package:flutter_keyboard_visibility/flutter_keyboard_visibility.dart';
 import 'package:lottie/lottie.dart';
+import 'package:provider/provider.dart';
 
 class WareHouseAdminScreen extends StatefulWidget {
   const WareHouseAdminScreen({super.key});
@@ -43,7 +45,6 @@ class _WareHouseAdminScreenState extends State<WareHouseAdminScreen>
   List<ProductStoreModel> storeList = [];
   String chosenValue = "Бүх төрөл";
   String chosenType = "Бүх дэлгүүр";
-  List<String> typeValue = ["Бүх төрөл", "Өвөл", "Хавар", "Намар", "Зун"];
   List<String> typeStore = ["Бүх дэлгүүр"];
   String searchValue = "";
   bool searchAgian = false;
@@ -52,6 +53,7 @@ class _WareHouseAdminScreenState extends State<WareHouseAdminScreen>
   int _page = 1;
   bool _runApi = false;
   late ScrollController _scrollController;
+  List<CategoriesModel> categories = [];
   ProductStoreModel defaultStoreModel = ProductStoreModel(
       name: "Агуулах",
       phone_number: "",
@@ -103,6 +105,10 @@ class _WareHouseAdminScreenState extends State<WareHouseAdminScreen>
           typeStore.add(data.name ?? "");
         }
         typeStore = typeStore.toSet().toList();
+        categories = res.categories!;
+        Provider.of<TypeProvider>(GlobalKeys.navigatorKey.currentContext!,
+                listen: false)
+            .setTypeList(res.categories!.map((e) => e.name).toList());
         _runApi = false;
         if (list != []) {
           chosenType = Utils.getstoreName();
@@ -130,7 +136,7 @@ class _WareHouseAdminScreenState extends State<WareHouseAdminScreen>
         isScrollControlled: true,
         builder: (context) {
           return FractionallySizedBox(
-              heightFactor: 0.6,
+              heightFactor: 0.9,
               child: PurchaseProductBottom(title: "Бараа нэмэх", data: datas));
         }).then((value) {
       setState(() {
@@ -163,16 +169,12 @@ class _WareHouseAdminScreenState extends State<WareHouseAdminScreen>
           storeId = "";
         }
       }
-      if (chosenValue == "Өвөл") {
-        productType = "WINTER";
-      } else if (chosenValue == "Хавар") {
-        productType = "SPRING";
-      } else if (chosenValue == "Намар") {
-        productType = "AUTUMN";
-      } else if (chosenValue == "Зун") {
-        productType = "SUMMER";
-      } else {
-        productType = "";
+      for (CategoriesModel data in categories) {
+        if (chosenValue == data.name) {
+          productType = data.parent;
+        } else if (chosenValue == "Бүх төрөл") {
+          productType = "";
+        }
       }
       _getProductData();
     }
@@ -227,19 +229,6 @@ class _WareHouseAdminScreenState extends State<WareHouseAdminScreen>
                       ),
                     ),
                   ],
-                ),
-                SizedBox(
-                  height: getSize(10),
-                ),
-                BlackBookButton(
-                  height: 40,
-                  borderRadius: 16,
-                  onPressed: () {
-                    Navigator.pop(context);
-                    addRazmer(purchase!);
-                  },
-                  color: kDisabledText,
-                  child: const Center(child: Text("Размер нэмэх")),
                 ),
               ]);
         }).then((value) {
@@ -298,84 +287,101 @@ class _WareHouseAdminScreenState extends State<WareHouseAdminScreen>
   @override
   Widget build(BuildContext context) {
     return MultiBlocListener(
-        listeners: [
-          BlocListener<RemoveBloc, RemoveState>(
-              bloc: removeBloc,
-              listener: (context, state) {
-                if (state is RemoveLoading) {
-                  Utils.startLoader(context);
-                }
-                if (state is RemoveFailure) {
-                  if (state.message == "Token") {
-                    removeBloc.add(RemoveProductEvent(goodId));
-                  } else {
-                    Utils.cancelLoader(context);
-                    ErrorMessage.attentionMessage(context, state.message);
-                  }
-                }
-                if (state is RemoveSuccess) {
+      listeners: [
+        BlocListener<RemoveBloc, RemoveState>(
+            bloc: removeBloc,
+            listener: (context, state) {
+              if (state is RemoveLoading) {
+                Utils.startLoader(context);
+              }
+              if (state is RemoveFailure) {
+                if (state.message == "Token") {
+                  removeBloc.add(RemoveProductEvent(goodId));
+                } else {
                   Utils.cancelLoader(context);
-                  showSuccessDialog("Мэдээлэл", false, "Амжилттай устгагдлаа");
-                  Future.delayed(const Duration(seconds: 2), () {
-                    Navigator.pop(context);
-                    Navigator.pop(context);
-                  }).then((value) => refreshPage());
+                  ErrorMessage.attentionMessage(context, state.message);
                 }
-              })
-        ],
-        child: Column(children: [
-          TypeBuilder(
-            chosenValue: chosenValue,
-            chosenType: chosenType,
-            userRole: userRole,
-            typeStore: typeStore,
-            chooseType: (String value) {
-              setState(() {
-                chosenValue = value;
-              });
-            },
-            chooseStore: (String value) {
-              setState(() {
-                chosenType = value;
-              });
-            },
+              }
+              if (state is RemoveSuccess) {
+                Utils.cancelLoader(context);
+                showSuccessDialog("Мэдээлэл", false, "Амжилттай устгагдлаа");
+                Future.delayed(const Duration(seconds: 2), () {
+                  Navigator.pop(context);
+                  Navigator.pop(context);
+                }).then((value) => refreshPage());
+              }
+            })
+      ],
+      child: KeyboardDismissOnTap(
+        dismissOnCapturedTaps: false,
+        child: Scaffold(
+          floatingActionButtonLocation:
+              FloatingActionButtonLocation.miniEndDocked,
+          floatingActionButton: FloatingActionButton(
+              mini: true,
+              backgroundColor: kDisable,
+              onPressed: () =>
+                  showNewDialog(context, Utils.getstoreName(), typeStore),
+              child: const Icon(Icons.remove_red_eye_outlined,
+                  color: kPrimaryColor)),
+          body: Column(
+            children: [
+              TypeBuilder(
+                chosenValue: chosenValue,
+                chosenType: chosenType,
+                userRole: userRole,
+                typeStore: typeStore,
+                chooseType: (String value) {
+                  setState(() {
+                    chosenValue = value;
+                  });
+                },
+                chooseStore: (String value) {
+                  setState(() {
+                    chosenType = value;
+                  });
+                },
+              ),
+              SearchBuilder(
+                searchAgian: (bool type) {
+                  setState(() {
+                    searchAgian = type;
+                  });
+                  _agianSearch();
+                },
+                searchValue: (String value) {
+                  setState(() {
+                    searchValue = value;
+                  });
+                },
+              ),
+              list.isEmpty
+                  ? Center(
+                      child: Lottie.asset('assets/json/empty-page.json'),
+                    )
+                  : ListBuilder(
+                      list: list,
+                      showWarningCallback: (ProductDetialModel? datas) {
+                        setState(() {
+                          goodId = datas!.good_id!;
+                          purchase = datas;
+                        });
+                      },
+                      showDilaog: () {
+                        _chooseAction();
+                      },
+                      controller: _scrollController,
+                      userRole: userRole,
+                      isExpanded: _isExpanded,
+                      typeTrailling: true,
+                      icon: Icons.info,
+                      trailingText: "",
+                      screenType: 'warepurchase',
+                    )
+            ],
           ),
-          SearchBuilder(
-            searchAgian: (bool type) {
-              setState(() {
-                searchAgian = type;
-              });
-              _agianSearch();
-            },
-            searchValue: (String value) {
-              setState(() {
-                searchValue = value;
-              });
-            },
-          ),
-          list.isEmpty
-              ? Center(
-                  child: Lottie.asset('assets/json/empty-page.json'),
-                )
-              : ListBuilder(
-                  list: list,
-                  showWarningCallback: (ProductDetialModel? datas) {
-                    setState(() {
-                      goodId = datas!.good_id!;
-                      purchase = datas;
-                    });
-                  },
-                  showDilaog: () {
-                    _chooseAction();
-                  },
-                  controller: _scrollController,
-                  userRole: userRole,
-                  isExpanded: _isExpanded,
-                  typeTrailling: true,
-                  icon: Icons.info,
-                  trailingText: "",
-                  screenType: 'warepurchase',
-                )
-        ]));
+        ),
+      ),
+    );
   }
 }

@@ -10,7 +10,7 @@ import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
-import 'package:url_launcher/url_launcher_string.dart';
+import 'package:url_launcher/url_launcher.dart';
 
 class PayScreen extends StatefulWidget {
   const PayScreen({super.key, required this.keys});
@@ -37,9 +37,9 @@ class _PayScreenState extends State<PayScreen> with BaseStateMixin {
   }
 
   _launchURL(String path) async {
-    String url = path;
-    if (await canLaunchUrlString(url)) {
-      await launchUrlString(url);
+    Uri uri = Uri.parse(path);
+    if (await canLaunchUrl(uri)) {
+      await launchUrl(uri);
     } else {
       showErrorDialog("Аппликейшн байхгүй байна!");
     }
@@ -82,7 +82,7 @@ class _PayScreenState extends State<PayScreen> with BaseStateMixin {
                   Navigator.pushAndRemoveUntil(
                       context,
                       CupertinoPageRoute(
-                          builder: (context) => const NavigatorScreen()),
+                          builder: (context) => const NavigatorScreen(screenIndex: 0,)),
                       (route) => false);
                   // Navigator.of(context).push(CupertinoPageRoute(
                   //     builder: (context) => const NavigatorScreen()));

@@ -59,9 +59,11 @@ class GetProductSearchEvent extends ProductEvent {
 
 // бараа нэмэх
 class PurchaseProduct extends ProductEvent {
-  final List<ProductDefaultAddModel> sizes;
+  final List<ProductAddSizeModel> sizes;
+  // ignore: non_constant_identifier_names
+  final String good_id;
 
-  const PurchaseProduct(this.sizes);
+  const PurchaseProduct(this.sizes,this.good_id);
   @override
-  List<Object> get props => [sizes];
+  List<Object> get props => [sizes,good_id];
 }

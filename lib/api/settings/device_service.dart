@@ -19,9 +19,9 @@ class UDevice {
       model = DeviceModel(deviceInfo: "android", deviceToken: info.model);
     } else if (Platform.isIOS) {
       IosDeviceInfo info = await deviceInfo.iosInfo;
-      deviceType = "iOS";
+      deviceType = "ios";
       deviceToken = info.name;
-      model = DeviceModel(deviceInfo: "iOS", deviceToken: info.model);
+      model = DeviceModel(deviceInfo: "ios", deviceToken: info.model);
     } else {
       deviceType = "huawei";
       deviceToken = "huawei";

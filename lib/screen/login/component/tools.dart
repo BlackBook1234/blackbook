@@ -20,7 +20,7 @@ circle(Canvas canvas, Size size, double radius) {
 label(Canvas canvas, String text, Offset offset) {
   final textSpan = TextSpan(
     text: text,
-    style: TextStyle(color: Colors.black, fontSize: 16),
+    style: const TextStyle(color: Colors.black, fontSize: 16),
   );
   final textPainter =
       TextPainter(text: textSpan, textDirection: TextDirection.ltr);
@@ -28,12 +28,12 @@ label(Canvas canvas, String text, Offset offset) {
     minWidth: 0,
     maxWidth: 100,
   );
-  textPainter.paint(canvas, offset + Offset(0, -20));
+  textPainter.paint(canvas, offset + const Offset(0, -20));
 }
 
 line(Canvas canvas, Offset start, Offset end) {
   var paint = Paint()
-    ..color = Color(0xff596275).withOpacity(0.5)
+    ..color = const Color(0xff596275).withOpacity(0.5)
     ..strokeWidth = 3
     ..style = PaintingStyle.stroke
     ..strokeCap = StrokeCap.round;
@@ -61,7 +61,7 @@ Paint createPaint(BlobStyles? styles) {
     BlobFillType.fill: PaintingStyle.fill,
     BlobFillType.stroke: PaintingStyle.stroke
   };
-  if (styles == null) styles = BlobStyles();
+  styles ??= BlobStyles();
 
   var paint = Paint();
   paint.color = styles.color ?? BlobConfig.color;
@@ -75,9 +75,9 @@ Paint createPaint(BlobStyles? styles) {
 Path connectPoints(BlobCurves curves) {
   var path = Path();
   path.moveTo(curves.start.dx, curves.start.dy);
-  curves.curves.forEach((curve) {
+  for (var curve in curves.curves) {
     path.quadraticBezierTo(curve[0], curve[1], curve[2], curve[3]);
-  });
+  }
   path.close();
 
   return path;

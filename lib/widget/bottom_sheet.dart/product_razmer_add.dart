@@ -1,14 +1,11 @@
 import "package:black_book/constant.dart";
-import "package:black_book/global_keys.dart";
 import "package:black_book/models/product/product_detial.dart";
 import "package:black_book/models/product/product_inlist.dart";
-import "package:black_book/provider/product_share_provider.dart";
 import "package:black_book/util/utils.dart";
 import "package:black_book/widget/alert/component/buttons.dart";
 import "package:black_book/widget/alert/mixin_dialog.dart";
 import "package:flutter/material.dart";
 import "package:flutter/services.dart";
-import "package:provider/provider.dart";
 
 class ProductAddSzieBottom extends StatefulWidget {
   const ProductAddSzieBottom({
@@ -35,49 +32,6 @@ class _BottomSheetsWidgetState extends State<ProductAddSzieBottom>
           data.ware_stock--;
         });
       }
-    }
-  }
-
-  _addDataInDraft(List<ProductInDetialModel> data) {
-    List<ProductInDetialModel> listData = [];
-    ProductInDetialModel inNullData = ProductInDetialModel();
-    for (ProductInDetialModel otpList in data) {
-      if (otpList.ware_stock != 0) {
-        ProductInDetialModel inData = ProductInDetialModel(
-            cost: data.first.cost,
-            price: otpList.price,
-            stock: otpList.ware_stock,
-            id: otpList.id,
-            type: otpList.type);
-        setState(() {
-          listData.add(inData);
-          inData = inNullData;
-        });
-      }
-    }
-    if (listData.isEmpty) {
-      showWarningDialog("Бараа оруулна уу");
-    } else {
-      ProductDetialModel draftDataNull = ProductDetialModel();
-      ProductDetialModel draftData = ProductDetialModel(
-          name: widget.data.name,
-          code: widget.data.code,
-          category_id: widget.data.category_id,
-          created_at: widget.data.created_at,
-          parent_category: widget.data.parent_category,
-          parent_name: widget.data.parent_name,
-          good_id: widget.data.good_id,
-          photo: widget.data.photo,
-          sizes: listData,
-          category_name: widget.data.category_name);
-      Provider.of<ProductProvider>(GlobalKeys.navigatorKey.currentContext!,
-              listen: false)
-          .setProductItemsData(draftData);
-      setState(() {
-        draftData = draftDataNull;
-        listData = [];
-      });
-      Navigator.pop(context);
     }
   }
 

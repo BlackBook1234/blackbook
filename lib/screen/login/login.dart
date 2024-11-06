@@ -171,7 +171,6 @@ class _LoginScreenState extends State<LoginScreen> with BaseStateMixin {
                                 fontWeight: FontWeight.bold),
                             textAlign: TextAlign.center),
                         const SizedBox(height: 28),
-                        
                         LockerBuilder(
                           locker: _loginButtonLocker,
                           onLocked: Padding(

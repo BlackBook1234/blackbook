@@ -26,24 +26,21 @@ class RefreshBloc extends Bloc<RefreshEvent, RefreshTokenState> {
           deviceToken = info.model;
         } else if (Platform.isIOS) {
           IosDeviceInfo info = await deviceInfo.iosInfo;
-          deviceType = "iOS";
+          deviceType = "ios";
           deviceToken = info.name;
         } else {
           deviceType = "huawei";
           deviceToken = "huawei";
         }
-        print(refreshToken);
         var body = {
           "deviceToken": deviceToken,
           "deviceType": deviceType,
           "refreshToken": refreshToken
         };
-        print(body);
         Response response =
             await apiService.postRequest('/v1/auth/refresh', body: body);
         UserDataResponseModel dataResponse =
             UserDataResponseModel.fromJson(response.data);
-        print("refresh reponse = ${response}");
         if (response.statusCode == 200 && dataResponse.status == "success") {
           Utils.getCommonProvider().setUserInfo(dataResponse.data!);
           final prefs = await SharedPreferences.getInstance();
@@ -56,7 +53,6 @@ class RefreshBloc extends Bloc<RefreshEvent, RefreshTokenState> {
           emit(RefreshFailure(""));
         }
       } catch (ex) {
-        print("object = $ex");
         emit(RefreshFailure(ex.toString()));
       }
     });

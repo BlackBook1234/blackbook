@@ -9,6 +9,7 @@ class StoreDetialModel {
   // ignore: non_constant_identifier_names
   int? is_main, id;
 
+  // ignore: deprecated_member_use
   @JsonKey(ignore: true)
   bool isChecked = false;
 

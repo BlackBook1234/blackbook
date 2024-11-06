@@ -1,6 +1,7 @@
 // ignore_for_file: deprecated_member_use
 
 import 'dart:async';
+import 'package:black_book/service/api.dart';
 import 'package:black_book/util/utils.dart';
 import 'package:dio/dio.dart';
 import 'package:dio_smart_retry/dio_smart_retry.dart';
@@ -14,7 +15,7 @@ class APIHttpClient {
 
   final _dio = Dio(
     BaseOptions(
-      baseUrl: 'https://khardevter.horshoo.com',
+      baseUrl: baseUrl,
       headers: {"Authorization": "Bearer ${Utils.getToken()}"},
       //  baseUrl: 'http://10.10.10.77:6979',
       contentType: 'application/json',

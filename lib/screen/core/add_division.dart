@@ -3,6 +3,7 @@ import 'package:black_book/bloc/store/event.dart';
 import 'package:black_book/bloc/store/state.dart';
 import 'package:black_book/constant.dart';
 import 'package:black_book/util/utils.dart';
+import 'package:black_book/widget/alert/component/buttons.dart';
 import 'package:black_book/widget/alert/error.dart';
 import 'package:black_book/widget/alert/mixin_dialog.dart';
 import 'package:flutter/material.dart';
@@ -171,33 +172,25 @@ class _AddDivisionState extends State<AddDivision> with BaseStateMixin {
                                                         FontWeight.bold))))))
                           ])))),
               Padding(
-                  padding: const EdgeInsets.all(10),
-                  child: Container(
-                      width: double.infinity,
-                      height: 50,
-                      decoration: BoxDecoration(
-                          gradient: LinearGradient(colors: [
-                            kPrimaryColor,
-                            Colors.orange.shade300,
-                            kPrimaryColor
-                          ]),
-                          borderRadius: BorderRadius.circular(20)),
-                      child: TextButton(
-                          style:
-                              ElevatedButton.styleFrom(foregroundColor: kWhite),
-                          onPressed: () {
-                            if (storeName.text.isEmpty) {
-                              ErrorMessage.attentionMessage(
-                                  context, "Нэр оруулна уу!");
-                            } else if (phoneNumber.text.length != 8) {
-                              ErrorMessage.attentionMessage(
-                                  context, "Дугаар оруулна уу!");
-                            } else {
-                              onCreate();
-                            }
-                          },
-                          child: const Text("Хадгалах",
-                              style: TextStyle(fontSize: 14)))))
+                padding: EdgeInsets.only(
+                  right: 10,left: 10,
+                    bottom: MediaQuery.of(context).padding.bottom),
+                child: BlackBookButton(
+                  width: double.infinity,
+                  onPressed: () {
+                    if (storeName.text.isEmpty) {
+                      ErrorMessage.attentionMessage(context, "Нэр оруулна уу!");
+                    } else if (phoneNumber.text.length != 8) {
+                      ErrorMessage.attentionMessage(
+                          context, "Дугаар оруулна уу!");
+                    } else {
+                      onCreate();
+                    }
+                  },
+                  // onPressed: () => _saveData(context, widget.model),
+                  child: const Text("Хадгалах"),
+                ),
+              ),
             ])));
   }
 }

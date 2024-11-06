@@ -8,6 +8,7 @@ import 'package:black_book/widget/dynamic_item.dart';
 import 'package:camera/camera.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
+import 'package:flutter_keyboard_visibility/flutter_keyboard_visibility.dart';
 
 class AddItemDetialScreen extends StatefulWidget {
   final int id;
@@ -26,30 +27,34 @@ class _AddItemDetialScreenState extends State<AddItemDetialScreen>
   final TextEditingController productCount = TextEditingController();
   List<DynamicItemWidget> dynamicList = [];
   List<ProductDefaultModel> list = [];
+  late List<CameraDescription> _cameras;
 
   Future<void> _navigateAndDisplaySelection(context) async {
-    await availableCameras().then((value) => Navigator.push(
+    _cameras = await availableCameras();
+    Navigator.push(
         context,
         MaterialPageRoute(
             builder: (_) => CameraScreen(
-                  cameras: value,
+                  cameras: _cameras,
                   productName: productName.text,
                   productCode: productCode.text,
                   id: widget.id,
                   list: list,
-                ))));
+                )));
   }
 
   void onCreate() => _navigateAndDisplaySelection(context);
 
   void addDynamic() {
-    if (dynamicList.length > 9) return;
+    if (dynamicList.length > 20) return;
     dynamicList.add(DynamicItemWidget(count: dynamicList.length + 1));
     setState(() {});
   }
 
   @override
   Widget build(BuildContext context) {
+    bool isKeyboardVisible =
+        KeyboardVisibilityProvider.isKeyboardVisible(context);
     return Stack(
       children: [
         Scaffold(
@@ -90,6 +95,9 @@ class _AddItemDetialScreenState extends State<AddItemDetialScreen>
               padding: const EdgeInsets.all(10),
               child: SafeArea(
                 child: SingleChildScrollView(
+                  // controller: _controller,
+                  // reverse: true,
+                  // physics: const NeverScrollableScrollPhysics(),
                   scrollDirection: Axis.vertical,
                   clipBehavior: Clip.hardEdge,
                   child: Column(
@@ -115,9 +123,29 @@ class _AddItemDetialScreenState extends State<AddItemDetialScreen>
                         itemCount: dynamicList.length,
                         itemBuilder: (_, index) => dynamicList[index],
                       ),
+                      const SizedBox(height: 10),
+                      isKeyboardVisible
+                          ? Row(
+                              children: [
+                                Expanded(
+                                  child: BlackBookButton(
+                                    onPressed: () => addDynamic(),
+                                    child: const Text("Размер нэмэх"),
+                                  ),
+                                ),
+                                const SizedBox(width: 10),
+                                Expanded(
+                                  child: BlackBookButton(
+                                    onPressed: () => _saveData(context),
+                                    child: const Text("Хадгалах"),
+                                  ),
+                                ),
+                              ],
+                            )
+                          : const SizedBox.shrink(),
                       const SizedBox(
-                        height: 50,
-                      )
+                        height: 400,
+                      ),
                     ],
                   ),
                 ),
@@ -125,19 +153,40 @@ class _AddItemDetialScreenState extends State<AddItemDetialScreen>
             ),
           ),
         ),
-        Positioned(
-          bottom: 0,
-          left: 10,
-          right: 10,
-          child: Padding(
-            padding:
-                EdgeInsets.only(bottom: MediaQuery.of(context).padding.bottom),
-            child: BlackBookButton(
-              onPressed: () => _saveData(context),
-              child: const Text("Хадгалах"),
-            ),
-          ),
-        ),
+        !isKeyboardVisible
+            ? Positioned(
+                bottom: 0,
+                left: 10,
+                right: 10,
+                child: Padding(
+                  padding: EdgeInsets.only(
+                      bottom: MediaQuery.of(context).padding.bottom),
+                  child: Row(
+                    children: [
+                      Expanded(
+                        child: BlackBookButton(
+                          onPressed: () => addDynamic(),
+                          child: const Text(
+                            "Размер нэмэх",
+                            style: TextStyle(inherit: false),
+                          ),
+                        ),
+                      ),
+                      const SizedBox(width: 10),
+                      Expanded(
+                        child: BlackBookButton(
+                          onPressed: () => _saveData(context),
+                          child: const Text(
+                            "Хадгалах",
+                            style: TextStyle(inherit: false),
+                          ),
+                        ),
+                      ),
+                    ],
+                  ),
+                ),
+              )
+            : const SizedBox.shrink()
       ],
     );
   }
@@ -199,7 +248,6 @@ class _AddItemDetialScreenState extends State<AddItemDetialScreen>
     );
   }
 
-//TODO baraa shineer uusgeh aldaatai bsn
   void _saveData(BuildContext context) {
     list.clear();
     if (_validateFields()) {
@@ -214,23 +262,33 @@ class _AddItemDetialScreenState extends State<AddItemDetialScreen>
           list.add(otpData);
           if (dynamicList.isNotEmpty) {
             for (var element in dynamicList) {
-              ProductDefaultModel otpDataSecond = ProductDefaultModel(
-                cost: int.parse(price.text),
-                price: int.parse(sellPrice.text),
-                stock: int.parse(element.countProduct.text),
-                type: element.razmer.text,
-              );
-              for (ProductDefaultModel data in list) {
-                if (data.price == null ||
-                    data.cost == null ||
-                    data.stock == null ||
-                    data.type == '' ||
-                    data.type == null) {
-                  showWarningDialog("Утга бүрэн оруулна уу!");
-                  return;
-                }
+              if (element.razmer.text != "" &&
+                  element.countProduct.text != "") {
+                ProductDefaultModel otpDataSecond = ProductDefaultModel(
+                  cost: int.parse(price.text),
+                  price: int.parse(sellPrice.text),
+                  stock: int.parse(element.countProduct.text),
+                  type: element.razmer.text,
+                );
+                list.add(otpDataSecond);
               }
-              list.add(otpDataSecond);
+              // ProductDefaultModel otpDataSecond = ProductDefaultModel(
+              //   cost: int.parse(price.text),
+              //   price: int.parse(sellPrice.text),
+              //   stock: int.parse(element.countProduct.text),
+              //   type: element.razmer.text,
+              // );
+              // for (ProductDefaultModel data in list) {
+              //   if (data.price == null ||
+              //       data.cost == null ||
+              //       data.stock == null ||
+              //       data.type == '' ||
+              //       data.type == null) {
+              //     showWarningDialog("Утга бүрэн оруулна уу!");
+              //     return;
+              //   }
+              // }
+              // list.add(otpDataSecond);
             }
           }
         });

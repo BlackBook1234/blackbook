@@ -17,7 +17,6 @@ class ShareBloc extends Bloc<ShareEvent, ShareState> {
       try {
         String accessToken = Utils.getToken();
         final apiService = ApiTokenService(accessToken);
-        print(accessToken);
         Map<String, Object> body;
         Response response;
         if (Utils.getUserRole() == "BOSS") {
@@ -45,11 +44,9 @@ class ShareBloc extends Bloc<ShareEvent, ShareState> {
                 .postRequest('/v1/product/transfer/return', body: body);
           }
         }
-        print(body);
 
         AuthenticationResponseModel dataResponse =
-            AuthenticationResponseModel.fromJson(
-                response.data); //TODO ene hesegt oor reponeod huleej avna
+            AuthenticationResponseModel.fromJson(response.data);
         if (response.statusCode == 200 && dataResponse.status == "success") {
           emit(ShareSuccess());
         } else if (dataResponse.status == "error" &&
@@ -64,14 +61,12 @@ class ShareBloc extends Bloc<ShareEvent, ShareState> {
           emit(ShareFailure("Серверийн алдаа"));
         }
       } catch (ex) {
-        print(ex);
         emit(ShareFailure("Серверийн алдаа"));
       }
     });
     on<ShareHistoryEvent>((event, emit) async {
       emit(ShareHistoryLoading());
       try {
-        print("rinui");
         String accessToken = Utils.getToken();
         final apiService = ApiTokenService(accessToken);
         String path = "";
@@ -123,7 +118,6 @@ class ShareBloc extends Bloc<ShareEvent, ShareState> {
           emit(ShareHistoryFailure("Серверийн алдаа"));
         }
       } catch (ex) {
-        print(ex);
         emit(ShareHistoryFailure("Серверийн алдаа"));
       }
     });
@@ -132,7 +126,6 @@ class ShareBloc extends Bloc<ShareEvent, ShareState> {
       try {
         String accessToken = Utils.getToken();
         final apiService = ApiTokenService(accessToken);
-        print(accessToken);
         String path = "";
         if (Utils.getUserRole() == "BOSS") {
           if (event.searchAgian) {
@@ -151,7 +144,6 @@ class ShareBloc extends Bloc<ShareEvent, ShareState> {
                 '/v1/product/my/list?limit=40&store_id=${Utils.getStoreId()}&page=${event.page}&sort=desc';
           }
         }
-        print(path);
         Response response = await apiService.getRequest(path);
         ProductResponseModel dataResponse =
             ProductResponseModel.fromJson(response.data);
@@ -160,7 +152,7 @@ class ShareBloc extends Bloc<ShareEvent, ShareState> {
           if (dataResponse.data!.length < 40) {
             hasMoreOrder = false;
           }
-          emit(ShareProductDataSuccess(dataResponse.data!, hasMoreOrder));
+          emit(ShareProductDataSuccess(dataResponse.data!, hasMoreOrder,dataResponse.categories!));
         } else if (dataResponse.status == "error" &&
             dataResponse.message.reason == "auth_token_error") {
           final bloc = RefreshBloc();

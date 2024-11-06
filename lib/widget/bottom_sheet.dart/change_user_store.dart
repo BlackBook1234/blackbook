@@ -8,6 +8,7 @@ import "package:black_book/constant.dart";
 import "package:black_book/models/store/store_detial.dart";
 import "package:black_book/screen/home/navigator.dart";
 import "package:black_book/util/utils.dart";
+import "package:black_book/widget/alert/component/buttons.dart";
 import "package:black_book/widget/alert/mixin_dialog.dart";
 import "package:flutter/cupertino.dart";
 import "package:flutter/material.dart";
@@ -39,6 +40,7 @@ class _ChangeUserBottomState extends State<ChangeUserBottom>
 
   void _changePhoneNumber() {
     var alert = AlertDialog(
+        backgroundColor: kWhite,
         content: TextFormField(
             textInputAction: TextInputAction.done,
             controller: _controller,
@@ -150,7 +152,9 @@ class _ChangeUserBottomState extends State<ChangeUserBottom>
                       .then((value) => Navigator.pushAndRemoveUntil(
                           context,
                           CupertinoPageRoute(
-                            builder: (context) => const NavigatorScreen(),
+                            builder: (context) => const NavigatorScreen(
+                              screenIndex: 0,
+                            ),
                           ),
                           (route) => false));
                 }
@@ -217,30 +221,29 @@ class _ChangeUserBottomState extends State<ChangeUserBottom>
                                       });
                                     })));
                       })),
-              SizedBox(
+              Padding(
+                padding: EdgeInsets.only(
+                    bottom: MediaQuery.of(context).padding.bottom),
+                child: BlackBookButton(
                   width: double.infinity,
-                  child: ElevatedButton(
-                      style: OutlinedButton.styleFrom(
-                          shape: RoundedRectangleBorder(
-                              borderRadius: BorderRadius.circular(20)),
-                          backgroundColor: kPrimaryColor),
-                      onPressed: () {
-                        for (StoreDetialModel data in lst) {
-                          if (data.isChecked) {
-                            setState(() {
-                              storeid = data.id!;
-                              phoneNumber = data.phone_number!;
-                            });
-                          }
-                        }
-                        if (phoneNumber == "") {
-                        } else {
-                          // _changeUser(storeid, phoneNumber);
-                          _changePhoneNumber();
-                        }
-                      },
-                      child: const Text("Дугаар солих",
-                          style: TextStyle(color: kWhite))))
+                  onPressed: () {
+                    for (StoreDetialModel data in lst) {
+                      if (data.isChecked) {
+                        setState(() {
+                          storeid = data.id!;
+                          phoneNumber = data.phone_number!;
+                        });
+                      }
+                    }
+                    if (phoneNumber == "") {
+                    } else {
+                      // _changeUser(storeid, phoneNumber);
+                      _changePhoneNumber();
+                    }
+                  },
+                  child: const Text("Дугаар солих"),
+                ),
+              ),
             ])));
   }
 }

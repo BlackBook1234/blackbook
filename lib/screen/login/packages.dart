@@ -95,7 +95,7 @@ class _LoginScreenState extends State<Packages> {
                                       ),
                                       Text(
                                         lst[index].title!,
-                                        style: TextStyle(
+                                        style: const TextStyle(
                                             fontSize: 12,
                                             fontWeight: FontWeight.bold),
                                       )

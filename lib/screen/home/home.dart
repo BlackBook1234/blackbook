@@ -2,6 +2,8 @@ import 'package:black_book/api/component/api_error.dart';
 import 'package:black_book/constant.dart';
 import 'package:black_book/models/banner/detial.dart';
 import 'package:black_book/screen/core/add_division.dart';
+import 'package:black_book/screen/core/change_type.dart';
+import 'package:black_book/screen/core/show_date_product.dart';
 import 'package:black_book/screen/home/widget/banners_carousel.dart';
 import 'package:black_book/screen/sale_product/sold.dart';
 import 'package:black_book/screen/share/share_product.dart';
@@ -61,27 +63,29 @@ class _HomeScreenState extends State<HomeScreen> with BaseStateMixin {
                   height: getSize(20),
                 ),
                 homeContainer(
-                    context, "Салбар дэлгүүр нээх", "assets/svg/5.svg", () {
+                    context, "Салбар дэлгүүр нээх", "assets/svg/add_store.svg",
+                    () {
                   Navigator.of(context).push(CupertinoPageRoute(
                       builder: (context) => const AddDivision()));
                 }, userRole),
-                homeContainer(context, "Бараа шилжүүлэг", "assets/svg/home_share.svg",
+                homeContainer(
+                    context, "Бараа шилжүүлэг", "assets/svg/home_share.svg",
                     () {
                   Navigator.of(context).push(CupertinoPageRoute(
                       builder: (context) => const ShareProductScreen()));
                 }, "BOSS"),
-                homeContainer(context, "Зарагдсан бараа", "assets/svg/home-sold.svg",
-                    () {
+                homeContainer(
+                    context, "Зарагдсан бараа", "assets/svg/home-sold.svg", () {
                   Navigator.of(context).push(CupertinoPageRoute(
                       builder: (context) => const SoldItemMainScreen()));
                 }, "BOSS"),
-                homeContainer(context, "Миний дэлгүүрүүд", "assets/svg/home_all_store.svg",
-                    () {
+                homeContainer(context, "Миний дэлгүүрүүд",
+                    "assets/svg/home_all_store.svg", () {
                   Navigator.of(context).push(CupertinoPageRoute(
                       builder: (context) => const DivisionScreen()));
                 }, userRole),
-                homeContainer(
-                    context, "Бараа шилжүүлсэн түүх", "assets/svg/home_history.svg", () {
+                homeContainer(context, "Бараа шилжүүлсэн түүх",
+                    "assets/svg/home_history.svg", () {
                   Navigator.of(context).push(
                     CupertinoPageRoute(
                       builder: (context) => const ShareListHistoryScreen(
@@ -103,6 +107,22 @@ class _HomeScreenState extends State<HomeScreen> with BaseStateMixin {
                     ),
                   );
                 }, "BOSS"),
+                homeContainer(
+                    context, "Орлуулсан бараа", "assets/svg/add_type.svg", () {
+                  Navigator.of(context).push(
+                    CupertinoPageRoute(
+                      builder: (context) => const DateProductSearch(),
+                    ),
+                  );
+                }, "BOSS"),
+                homeContainer(
+                    context, "Төрөл өөрчлөлт", "assets/svg/share.svg", () {
+                  Navigator.of(context).push(
+                    CupertinoPageRoute(
+                      builder: (context) => const ChangeCategoryScreen(),
+                    ),
+                  );
+                }, "BOSS"),
               ],
             ),
           ),
@@ -119,7 +139,7 @@ Widget homeContainer(BuildContext context, String title, String iconUrl,
           padding:
               const EdgeInsets.only(top: 7, bottom: 5, right: 10, left: 10),
           child: Container(
-            height: 50,
+            height: 45,
             decoration: BoxDecoration(
               color: kWhite,
               // border: Border.all(width: 1, color: kPrimaryColor),
@@ -138,14 +158,13 @@ Widget homeContainer(BuildContext context, String title, String iconUrl,
                   left: 30,
                   top: 0,
                   bottom: 0,
-                  child:  SvgPicture.asset(
-                      iconUrl,
-                      width: 20,
-                      height: 20,
-                      fit: BoxFit.scaleDown,
-                      colorFilter:
-                          const ColorFilter.mode(kPrimaryColor, BlendMode.srcIn),
-                    
+                  child: SvgPicture.asset(
+                    iconUrl,
+                    width: 20,
+                    height: 20,
+                    fit: BoxFit.scaleDown,
+                    colorFilter:
+                        const ColorFilter.mode(kPrimaryColor, BlendMode.srcIn),
                   ),
                 ),
                 Positioned(

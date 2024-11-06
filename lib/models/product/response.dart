@@ -1,4 +1,5 @@
 import 'package:black_book/models/default/message.dart';
+import 'package:black_book/models/product/categories.dart';
 import 'package:black_book/models/product/product_store.dart';
 import 'package:json_annotation/json_annotation.dart';
 import 'product_detial.dart';
@@ -14,6 +15,7 @@ class ProductResponseModel {
   List<ProductStoreModel>? stores;
   StoreAmountModel? amount;
   TotalProductModel? total;
+  List<CategoriesModel>? categories;
 
   ProductResponseModel(
       {required this.status,

@@ -3,6 +3,7 @@ import 'package:black_book/constant.dart';
 import 'package:black_book/provider/user_provider.dart';
 import 'package:black_book/screen/friend/friend_list.dart';
 import 'package:black_book/screen/home/navigator.dart';
+import 'package:black_book/screen/home/widget/banners_carousel.dart';
 import 'package:black_book/screen/sale_product/sold.dart';
 import 'package:black_book/screen/login/login.dart';
 import 'package:black_book/screen/transfer/share_list.dart';
@@ -35,7 +36,10 @@ class _NavBarState extends State<NavBar> with BaseStateMixin {
       await showSuccessPopDialog('Мэдээлэл', true, true, 'Амжилттай урилаа')
           .then((value) => Navigator.pushAndRemoveUntil(
               context,
-              CupertinoPageRoute(builder: (context) => const NavigatorScreen()),
+              CupertinoPageRoute(
+                  builder: (context) => const NavigatorScreen(
+                        screenIndex: 0,
+                      )),
               (route) => false));
     } on APIError catch (e) {
       showErrorDialog(e.message);
@@ -51,13 +55,19 @@ class _NavBarState extends State<NavBar> with BaseStateMixin {
           child: Column(mainAxisAlignment: MainAxisAlignment.start, children: [
             Container(color: kPrimaryColor, height: 30),
             Container(
-                height: 60,
+                height: isPhoneType() + 40,
                 width: double.infinity,
                 color: kPrimaryColor,
-                child: Align(
-                    alignment: Alignment.center,
-                    child: Image.asset('assets/images/logoSecond.png',
-                        height: 30))),
+                child: Row(
+                  mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                  children: [
+                    Padding(
+                      padding: const EdgeInsets.only(left: 20),
+                      child: Image.asset('assets/images/logoSecond.png',
+                          height: 30),
+                    ),
+                  ],
+                )),
             Stack(children: [
               Positioned(
                 child: Container(
@@ -67,7 +77,7 @@ class _NavBarState extends State<NavBar> with BaseStateMixin {
               ),
               Positioned(
                   child: Container(
-                      height: 280,
+                      height: 350,
                       width: double.infinity,
                       decoration: const BoxDecoration(
                           color: kPrimarySecondColor,
@@ -75,6 +85,7 @@ class _NavBarState extends State<NavBar> with BaseStateMixin {
                               bottomRight: Radius.circular(20),
                               topRight: Radius.circular(20))),
                       child: Column(children: [
+                        SizedBox(height: getSize(10)),
                         SizedBox(
                           child: Row(
                             children: [
@@ -108,6 +119,32 @@ class _NavBarState extends State<NavBar> with BaseStateMixin {
                           ),
                         ),
                         const Divider(),
+                        ListTile(
+                            trailing: SvgPicture.asset(
+                                "assets/svg/right_arrow.svg",
+                                width: 7,
+                                colorFilter: const ColorFilter.mode(
+                                    Colors.white60, BlendMode.srcIn)),
+                            leading: const Icon(
+                              Icons.home_outlined,
+                              color: Colors.white60,
+                              size: 30,
+                            ),
+                            title: const Text("Нүүр",
+                                style: TextStyle(
+                                    color: Colors.white60,
+                                    fontSize: 13.0,
+                                    fontWeight: FontWeight.bold)),
+                            onTap: () {
+                              Navigator.pushAndRemoveUntil(
+                                  context,
+                                  CupertinoPageRoute(
+                                      builder: (context) =>
+                                          const NavigatorScreen(
+                                            screenIndex: 0,
+                                          )),
+                                  (route) => false);
+                            }),
                         ListTile(
                             trailing: SvgPicture.asset(
                                 "assets/svg/right_arrow.svg",
@@ -237,7 +274,7 @@ class _NavBarState extends State<NavBar> with BaseStateMixin {
                       "Найзаа урих",
                       style: TextStyle(
                           fontWeight: FontWeight.bold,
-                          fontSize: 16,
+                          fontSize: 14,
                           color: kPrimarySecondColor),
                     )
                   ]),
@@ -255,7 +292,7 @@ class _NavBarState extends State<NavBar> with BaseStateMixin {
                       "Урисан найзаа харах",
                       style: TextStyle(
                           fontWeight: FontWeight.bold,
-                          fontSize: 16,
+                          fontSize: 14,
                           color: kPrimarySecondColor),
                     )
                   ]),
@@ -275,7 +312,7 @@ class _NavBarState extends State<NavBar> with BaseStateMixin {
                           "Дэлгүүрийн дугаар солих",
                           style: TextStyle(
                               fontWeight: FontWeight.bold,
-                              fontSize: 16,
+                              fontSize: 14,
                               color: kPrimarySecondColor),
                         )
                       ]),
@@ -294,7 +331,7 @@ class _NavBarState extends State<NavBar> with BaseStateMixin {
                     "Гарах",
                     style: TextStyle(
                         fontWeight: FontWeight.bold,
-                        fontSize: 16,
+                        fontSize: 14,
                         color: kPrimarySecondColor),
                   )
                 ]),

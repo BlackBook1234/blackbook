@@ -18,6 +18,7 @@ class AnimatedBlob extends StatefulWidget {
   final BlobData toBlobData;
 
   const AnimatedBlob({
+    super.key,
     this.size = 200,
     this.fromBlobData,
     required this.toBlobData,
@@ -30,7 +31,7 @@ class AnimatedBlob extends StatefulWidget {
   });
 
   @override
-  _AnimatedBlobState createState() => _AnimatedBlobState();
+  State<AnimatedBlob> createState() => _AnimatedBlobState();
 }
 
 class _AnimatedBlobState extends State<AnimatedBlob>

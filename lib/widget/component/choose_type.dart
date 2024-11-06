@@ -1,6 +1,9 @@
 // ignore: must_be_immutable
 import 'package:black_book/constant.dart';
+import 'package:black_book/global_keys.dart';
+import 'package:black_book/provider/type.dart';
 import 'package:flutter/material.dart';
+import 'package:provider/provider.dart';
 
 // ignore: must_be_immutable
 class TypeBuilder extends StatelessWidget {
@@ -10,6 +13,7 @@ class TypeBuilder extends StatelessWidget {
   final List<String>? typeStore;
   String chosenValue;
   String chosenType;
+  // List<String> typeValue;
 
   TypeBuilder(
       {super.key,
@@ -58,7 +62,7 @@ class TypeBuilder extends StatelessWidget {
                               underline: Container(
                                   height: 0, color: Colors.transparent),
                               onChanged: (value) {
-                               chooseStore?.call(value);
+                                chooseStore?.call(value);
                               }))))
               : const SizedBox(width: 0),
           const SizedBox(width: 10),
@@ -85,7 +89,10 @@ class TypeBuilder extends StatelessWidget {
                               color: kPrimarySecondColor,
                               fontSize: 12,
                               fontWeight: FontWeight.w500),
-                          items: typeValue
+                          items: Provider.of<TypeProvider>(
+                                  GlobalKeys.navigatorKey.currentContext!,
+                                  listen: false)
+                              .typeList
                               .map<DropdownMenuItem<String>>((String value) {
                             return DropdownMenuItem<String>(
                                 value: value, child: Text(value));

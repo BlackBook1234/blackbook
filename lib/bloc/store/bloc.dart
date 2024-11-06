@@ -17,7 +17,6 @@ class StoreBloc extends Bloc<StoreEvent, StoreState> {
       try {
         String accessToken = Utils.getToken();
         final apiService = ApiTokenService(accessToken);
-        print(accessToken);
         var body = {
           "name": event.storeName,
           "phoneNumber": event.phoneNumber,
@@ -27,7 +26,6 @@ class StoreBloc extends Bloc<StoreEvent, StoreState> {
             await apiService.postRequest('/v1/store/create', body: body);
         AuthenticationResponseModel dataResponse =
             AuthenticationResponseModel.fromJson(response.data);
-        print(response.data);
         if (response.statusCode == 200 && dataResponse.status == "success") {
           emit(StoreSuccess());
         } else if (dataResponse.status == "error" &&
@@ -49,10 +47,8 @@ class StoreBloc extends Bloc<StoreEvent, StoreState> {
       emit(GetStoreLoading());
       try {
         String accessToken = Utils.getToken();
-        print(" this is token = $accessToken");
         final apiService = ApiTokenService(accessToken);
         Response response = await apiService.getRequest('/v1/store/my/list');
-        print(response);
         StoreResponseModel dataResponse =
             StoreResponseModel.fromJson(response.data);
         if (response.statusCode == 200 && dataResponse.status == "success") {
@@ -90,9 +86,7 @@ class StoreBloc extends Bloc<StoreEvent, StoreState> {
           path =
               '/v1/product/store/list?page=${event.page}&limit=40&is_warehouse=1';
         }
-        print(path);
         Response response = await apiService.getRequest(path);
-        // print(response);
         ProductResponseModel dataResponse =
             ProductResponseModel.fromJson(response.data);
         if (response.statusCode == 200 && dataResponse.status == "success") {
@@ -101,7 +95,7 @@ class StoreBloc extends Bloc<StoreEvent, StoreState> {
             hasMoreOrder = false;
           }
           emit(GetStoreProductSuccess(dataResponse.data!, dataResponse.amount!,
-              dataResponse.stores!, hasMoreOrder));
+              dataResponse.stores!, hasMoreOrder,dataResponse.categories!));
         } else if (dataResponse.status == "error" &&
             dataResponse.message.reason == "auth_token_error") {
           final bloc = RefreshBloc();
@@ -114,7 +108,6 @@ class StoreBloc extends Bloc<StoreEvent, StoreState> {
           emit(GetStoreProductFailure("Серверийн алдаа"));
         }
       } catch (ex) {
-        print(ex.toString());
         emit(GetStoreProductFailure("Серверийн алдаа"));
       }
     });

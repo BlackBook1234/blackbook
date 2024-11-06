@@ -24,12 +24,10 @@ class AuthenticationBloc extends Bloc<UserEvent, UserState> {
           "deviceToken": event.deviceToken,
           "deviceType": event.deviceType
         };
-        print(body);
         Response response =
             await apiService.postRequest('/v1/auth/login', body: body);
         AuthenticationResponseModel dataResponse =
             AuthenticationResponseModel.fromJson(response.data);
-        print(" this is data = ${response.data}");
         if (response.statusCode == 200 && dataResponse.status == "success") {
           emit(UserSuccess());
         } else {
@@ -54,7 +52,6 @@ class AuthenticationBloc extends Bloc<UserEvent, UserState> {
           "deviceType": event.deviceType,
           "otpCode": event.otpCode
         };
-        print(body);
         Response response =
             await apiService.postRequest('/v1/auth/otp/check', body: body);
         UserDataResponseModel dataResponse =
@@ -71,7 +68,6 @@ class AuthenticationBloc extends Bloc<UserEvent, UserState> {
           emit(UserAuthenticationFailure(""));
         }
       } catch (ex) {
-        print(ex.toString());
         emit(UserAuthenticationFailure("Серверийн алдаа"));
       }
     });
@@ -84,10 +80,8 @@ class AuthenticationBloc extends Bloc<UserEvent, UserState> {
           "phoneNumber": event.phoneNumber,
           "countryCode": "976"
         };
-        print(body);
         Response response =
             await apiService.postRequest('/v1/store/change/phone', body: body);
-        print("this reponse  = ${response.data}");
         UserDataResponseModel dataResponse =
             UserDataResponseModel.fromJson(response.data);
         if (response.statusCode == 200 && dataResponse.status == "success") {
@@ -104,7 +98,6 @@ class AuthenticationBloc extends Bloc<UserEvent, UserState> {
           emit(ChangeUserFailure("Серверийн алдаа"));
         }
       } catch (ex) {
-        print(ex);
         emit(ChangeUserFailure("Серверийн алдаа"));
       }
     });

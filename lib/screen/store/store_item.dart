@@ -1,8 +1,11 @@
 import 'package:black_book/api/component/api_error.dart';
 import 'package:black_book/constant.dart';
+import 'package:black_book/global_keys.dart';
+import 'package:black_book/models/product/categories.dart';
 import 'package:black_book/models/product/product_detial.dart';
 import 'package:black_book/models/product/response.dart';
 import 'package:black_book/models/product/total.dart';
+import 'package:black_book/provider/type.dart';
 import 'package:black_book/util/utils.dart';
 import 'package:black_book/widget/alert/mixin_dialog.dart';
 import 'package:black_book/widget/bottom_sheet.dart/product_bottom.dart';
@@ -11,6 +14,7 @@ import 'package:black_book/widget/component/list_builder.dart';
 import 'package:black_book/widget/component/search.dart';
 import 'package:flutter/material.dart';
 import 'package:intl/intl.dart';
+import 'package:provider/provider.dart';
 
 class StoreItemScreen extends StatefulWidget {
   const StoreItemScreen({super.key, required this.id});
@@ -26,7 +30,7 @@ class _StoreItemScreenState extends State<StoreItemScreen> with BaseStateMixin {
   bool show = false;
   final bool _isExpanded = false;
   String chosenValue = "Бүх төрөл";
-  List<String> typeValue = ["Бүх төрөл", "Өвөл", "Хавар", "Намар", "Зун"];
+  List<String> typeValue = ["Бүх төрөл"];
   String searchValue = "";
   bool searchAgian = true;
   String productType = "";
@@ -36,6 +40,7 @@ class _StoreItemScreenState extends State<StoreItemScreen> with BaseStateMixin {
   late ScrollController _scrollController;
   TotalProductModel? total;
   final NumberFormat format = NumberFormat("#,###");
+  List<CategoriesModel> categories = [];
 
   @override
   void initState() {
@@ -73,6 +78,10 @@ class _StoreItemScreenState extends State<StoreItemScreen> with BaseStateMixin {
           list.addAll(res.data!);
         }
         total = res.total;
+        categories = res.categories!;
+        Provider.of<TypeProvider>(GlobalKeys.navigatorKey.currentContext!,
+                listen: false)
+            .setTypeList(res.categories!.map((e) => e.name).toList());
         _runApi = false;
       });
     } on APIError catch (e) {
@@ -91,16 +100,12 @@ class _StoreItemScreenState extends State<StoreItemScreen> with BaseStateMixin {
       });
       _getProductData();
     } else {
-      if (chosenValue == "Өвөл") {
-        productType = "WINTER";
-      } else if (chosenValue == "Хавар") {
-        productType = "SPRING";
-      } else if (chosenValue == "Намар") {
-        productType = "AUTUMN";
-      } else if (chosenValue == "Зун") {
-        productType = "SUMMER";
-      } else {
-        productType = "";
+      for (CategoriesModel data in categories) {
+        if (chosenValue == data.name) {
+          productType = data.parent;
+        } else if (chosenValue == "Бүх төрөл") {
+          productType = "";
+        }
       }
       _getProductData();
     }
@@ -120,6 +125,7 @@ class _StoreItemScreenState extends State<StoreItemScreen> with BaseStateMixin {
             backgroundColor: kPrimarySecondColor),
         body: Column(children: [
           TypeBuilder(
+            // typeValue:typeValue,
             chosenValue: chosenValue,
             chosenType: "",
             userRole: "",

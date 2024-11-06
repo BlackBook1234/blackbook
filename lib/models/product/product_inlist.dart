@@ -7,6 +7,7 @@ part 'product_inlist.g.dart';
 class ProductInDetialModel {
   String? type, created_at, store_name;
   int? cost, price, stock, id, warehouse_stock, store_id, transfer_id;
+  // ignore: deprecated_member_use
   @JsonKey(ignore: true)
   int ware_stock = 0;
 

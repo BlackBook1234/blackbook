@@ -23,7 +23,7 @@ class Blob extends StatefulWidget {
 
   static int count = 0;
 
-  Blob.animatedFromID({
+  const Blob.animatedFromID({super.key, 
     required this.id,
     required this.size,
     this.debug = false,
@@ -39,7 +39,7 @@ class Blob extends StatefulWidget {
         minGrowth = null;
 
   @override
-  _BlobState createState() => _BlobState();
+  State<Blob> createState() => _BlobState();
 
   BlobData _randomBlobData() {
     String? randomID = (id == null || id!.isEmpty) ? null : _randomID();

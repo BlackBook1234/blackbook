@@ -1,5 +1,7 @@
 import 'dart:async';
+import 'package:black_book/api/component/api_error.dart';
 import 'package:black_book/constant.dart';
+import 'package:black_book/models/default/razmer.dart';
 import 'package:black_book/models/product/product_detial.dart';
 import 'package:black_book/screen/home/widget/banners_carousel.dart';
 import 'package:black_book/util/utils.dart';
@@ -21,8 +23,17 @@ class _ProductAddSzieScreenState extends State<ProductAddSzieScreen>
   final TextEditingController productSize = TextEditingController();
   final TextEditingController productCount = TextEditingController();
   List<DynamicItemWidget> dynamicList = [];
+  List<ProductRazmerModel> list = [];
 
-  Future<void> _navigateAndDisplaySelection(context) async {}
+  Future<void> _navigateAndDisplaySelection(context) async {
+    try {
+      await api
+          .addProductSize(list: list)
+          .then((value) => {Navigator.pop(context)});
+    } on APIError catch (e) {
+      showErrorDialog(e.message);
+    }
+  }
 
   void onCreate() => _navigateAndDisplaySelection(context);
 
@@ -151,7 +162,7 @@ class _ProductAddSzieScreenState extends State<ProductAddSzieScreen>
             padding:
                 EdgeInsets.only(bottom: MediaQuery.of(context).padding.bottom),
             child: BlackBookButton(
-              onPressed: () => _saveData(context),
+              onPressed: () => _saveData(context, widget.model),
               child: const Text("Хадгалах"),
             ),
           ),
@@ -217,40 +228,49 @@ class _ProductAddSzieScreenState extends State<ProductAddSzieScreen>
     );
   }
 
-  void _saveData(BuildContext context) {
-    // if (_validateFields()) {
-    //   try {
-    //     setState(() {
-    //       ProductRazmerModel otpData = ProductRazmerModel(
-    //         stock: int.parse(productCount.text),
-    //         type: productSize.text,
-    //       );
-    //       if (dynamicList.isNotEmpty) {
-    //         for (var element in dynamicList) {
-    //           ProductRazmerModel otpDataSecond = ProductRazmerModel(
-    //             cost: int.parse(price.text),
-    //             price: int.parse(sellPrice.text),
-    //             stock: int.parse(element.countProduct.text),
-    //             type: element.razmer.text,
-    //           );
-    //           for (ProductRazmerModel data in list) {
-    //             if (data.price == null ||
-    //                 data.cost == null ||
-    //                 data.stock == null ||
-    //                 data.type == '' ||
-    //                 data.type == null) {
-    //               showWarningDialog("Утга бүрэн оруулна уу!");
-    //               return;
-    //             }
-    //           }
-    //         }
-    //       }
-    //     });
-    //     onCreate();
-    //   } catch (error) {
-    //     showWarningDialog("Утга бүрэн оруулна уу!");
-    //   }
-    // }
+  void _saveData(BuildContext context, ProductDetialModel model) {
+    if (_validateFields()) {
+      try {
+        setState(() {
+          ProductRazmerModel otpData = ProductRazmerModel(
+            size: productSize.text,
+            id: int.parse(model.good_id ?? "0"),
+            stock: int.parse(productCount.text),
+          );
+          list.add(otpData);
+          // if (dynamicList.isNotEmpty) {
+          //   for (var element in dynamicList) {
+          //     if (element.razmer.text != "" &&
+          //         element.countProduct.text != "") {
+          //       ProductDefaultModel otpDataSecond = ProductDefaultModel(
+          //         cost: int.parse(price.text),
+          //         price: int.parse(sellPrice.text),
+          //         stock: int.parse(element.countProduct.text),
+          //         type: element.razmer.text,
+          //       );
+          //       list.add(otpDataSecond);
+          //     }
+          //   }
+          // }
+          if (dynamicList.isNotEmpty) {
+            for (var element in dynamicList) {
+              if (element.razmer.text != "" &&
+                  element.countProduct.text != "") {
+                ProductRazmerModel otpDataSecond = ProductRazmerModel(
+                  size: element.razmer.text,
+                  id: int.parse(model.good_id ?? "0"),
+                  stock: int.parse(element.countProduct.text),
+                );
+                list.add(otpDataSecond);
+              }
+            }
+          }
+        });
+        onCreate();
+      } catch (error) {
+        showWarningDialog("Утга бүрэн оруулна уу!");
+      }
+    }
   }
 
   bool _validateFields() {

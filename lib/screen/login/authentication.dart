@@ -12,6 +12,7 @@ import 'package:black_book/widget/alert/mixin_dialog.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
+import 'package:flutter_keyboard_visibility/flutter_keyboard_visibility.dart';
 import 'package:pinput/pinput.dart';
 // import 'package:pinput/pinput.dart';
 import 'component/pin_code_text.dart';
@@ -116,12 +117,13 @@ class _LoginScreenState extends State<AuthenticationScreen>
               }
               if (state is UserAuthenticationSuccess) {
                 Utils.cancelLoader(context);
+                
                 if (state.data.type == "WORKER") {
                   Navigator.of(context).push(CupertinoPageRoute(
-                      builder: (context) => const NavigatorScreen()));
+                      builder: (context) => const NavigatorScreen(screenIndex: 0,)));
                 } else if (state.data.isPaid == 1) {
                   Navigator.of(context).push(CupertinoPageRoute(
-                      builder: (context) => const NavigatorScreen()));
+                      builder: (context) => const NavigatorScreen(screenIndex: 0,)));
                 } else {
                   Navigator.of(context).push(CupertinoPageRoute(
                       builder: (context) => const Packages()));
@@ -129,75 +131,79 @@ class _LoginScreenState extends State<AuthenticationScreen>
               }
             })
       ],
-      child: Scaffold(
-        // resizeToAvoidBottomInset: false,
-        appBar: AppBar(
-            elevation: 0,
-            backgroundColor: kBackgroundColor,
-            leading: IconButton(
-                onPressed: () {
-                  Navigator.pop(context);
-                },
-                icon: const Icon(Icons.keyboard_arrow_left, size: 30))),
-        body: Column(
-          children: [
-            Padding(
-                padding: const EdgeInsets.symmetric(horizontal: 32),
-                child: Column(children: [
-                  SizedBox(
-                      height: 80, child: Image.asset('assets/images/logo.png')),
-                  const SizedBox(height: 10),
-                  const Text(
-                      "Таны утсан дээр ирсэн 6 оронтой баталгаажуулах тоог оруулна уу.",
-                      style: TextStyle(
-                          fontSize: 12,
-                          color: Colors.black38,
-                          fontWeight: FontWeight.bold)),
-                  // const SizedBox(height: 18),
-                  // Container(
-                  //     decoration: BoxDecoration(
-                  //         color: kBackgroundColor,
-                  //         borderRadius: BorderRadius.circular(12)),
-                  //     child: Column(children: [
-                  //       Row(
-                  //           mainAxisAlignment:
-                  //               MainAxisAlignment.spaceBetween,
-                  //           children: [
-                  //             numberInputArea(first: true, index: 0),
-                  //             numberInputArea(first: false, index: 1),
-                  //             numberInputArea(first: false, index: 2),
-                  //             numberInputArea(first: false, index: 3),
-                  //             numberInputArea(first: false, index: 4),
-                  //             numberInputArea(first: false, index: 5)
-                  //           ])
-                  //     ])),
-                ])),
-            _buildBody(),
-            const Spacer(),
-            Text(showTimer,
-                style: const TextStyle(
-                    fontSize: 14,
-                    color: Colors.black38,
-                    fontWeight: FontWeight.bold)),
-            Padding(
-              padding: EdgeInsets.only(
-                  right: 10,
-                  left: 10,
-                  bottom: MediaQuery.of(context).padding.bottom),
-              child: BlackBookButton(
-                width: double.infinity,
-                onPressed: () {
-                  if (showTimer == "0:00") {
-                    showWarningDialog(
-                        "Хугацаа дуусхаас өмнө баталгаажуулах тоог оруулна уу");
-                  } else {
-                    onLogin();
-                  }
-                },
-                child: const Text("Баталгаажуулах"),
+      child: KeyboardDismissOnTap(
+        dismissOnCapturedTaps: false,
+        child: Scaffold(
+          // resizeToAvoidBottomInset: false,
+          appBar: AppBar(
+              elevation: 0,
+              backgroundColor: kBackgroundColor,
+              leading: IconButton(
+                  onPressed: () {
+                    Navigator.pop(context);
+                  },
+                  icon: const Icon(Icons.keyboard_arrow_left, size: 30))),
+          body: Column(
+            children: [
+              Padding(
+                  padding: const EdgeInsets.symmetric(horizontal: 32),
+                  child: Column(children: [
+                    SizedBox(
+                        height: 80,
+                        child: Image.asset('assets/images/logo.png')),
+                    const SizedBox(height: 10),
+                    const Text(
+                        "Таны утсан дээр ирсэн 6 оронтой баталгаажуулах тоог оруулна уу.",
+                        style: TextStyle(
+                            fontSize: 12,
+                            color: Colors.black38,
+                            fontWeight: FontWeight.bold)),
+                    // const SizedBox(height: 18),
+                    // Container(
+                    //     decoration: BoxDecoration(
+                    //         color: kBackgroundColor,
+                    //         borderRadius: BorderRadius.circular(12)),
+                    //     child: Column(children: [
+                    //       Row(
+                    //           mainAxisAlignment:
+                    //               MainAxisAlignment.spaceBetween,
+                    //           children: [
+                    //             numberInputArea(first: true, index: 0),
+                    //             numberInputArea(first: false, index: 1),
+                    //             numberInputArea(first: false, index: 2),
+                    //             numberInputArea(first: false, index: 3),
+                    //             numberInputArea(first: false, index: 4),
+                    //             numberInputArea(first: false, index: 5)
+                    //           ])
+                    //     ])),
+                  ])),
+              _buildBody(),
+              const Spacer(),
+              Text(showTimer,
+                  style: const TextStyle(
+                      fontSize: 14,
+                      color: Colors.black38,
+                      fontWeight: FontWeight.bold)),
+              Padding(
+                padding: EdgeInsets.only(
+                    right: 10,
+                    left: 10,
+                    bottom: MediaQuery.of(context).padding.bottom),
+                child: BlackBookButton(
+                  width: double.infinity,
+                  onPressed: () {
+                    if (showTimer == "0:00") {
+                      showWarningDialog(
+                          "Хугацаа дуусхаас өмнө баталгаажуулах тоог оруулна уу");
+                    } else {
+                      onLogin();
+                    }
+                  },
+                  child: const Text("Баталгаажуулах"),
+                ),
               ),
-            ),
-          ],
+            ],
+          ),
         ),
       ),
     );

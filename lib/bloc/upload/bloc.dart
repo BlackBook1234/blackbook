@@ -18,7 +18,6 @@ class UploadBloc extends Bloc<UploadPhotoEvent, UploadPhotoState> {
             {"photo": await MultipartFile.fromFile(event.photo.path)});
         Response response = await apiService
             .postRequest('/v1/misc/upload/product/photo', body: body);
-        print(response.data);
         UploadResponseModel dataResponse =
             UploadResponseModel.fromJson(response.data);
         if (response.statusCode == 200 && dataResponse.status == "success") {

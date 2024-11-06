@@ -16,10 +16,8 @@ class CategoryBloc extends Bloc<CategoryEvent, CategoryState> {
       try {
         final apiService = ApiTokenService(Utils.getToken());
         var body = {"name": event.name, "parent": event.parent};
-        print(body);
         Response response =
             await apiService.postRequest('/v1/category/create', body: body);
-        print("this reponse  = ${response.data}");
         AuthenticationResponseModel dataResponse =
             AuthenticationResponseModel.fromJson(response.data);
         if (response.statusCode == 200 && dataResponse.status == "success") {
@@ -43,11 +41,9 @@ class CategoryBloc extends Bloc<CategoryEvent, CategoryState> {
       emit(GetCategoryLoading());
       try {
         String accessToken = Utils.getToken();
-        print(" this is token = $accessToken");
         final apiService = ApiTokenService(accessToken);
         Response response = await apiService
             .getRequest('/v1/category/my/list?parent=${event.type}');
-        print(response);
         CategoryResponseModel dataResponse =
             CategoryResponseModel.fromJson(response.data);
         if (response.statusCode == 200 && dataResponse.status == "success") {
@@ -64,7 +60,6 @@ class CategoryBloc extends Bloc<CategoryEvent, CategoryState> {
           emit(GetCategoryFailure("Серверийн алдаа"));
         }
       } catch (ex) {
-        print(ex);
         emit(GetCategoryFailure("Серверийн алдаа"));
       }
     });
