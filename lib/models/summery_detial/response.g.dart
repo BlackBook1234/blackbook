@@ -24,12 +24,12 @@ Map<String, dynamic> _$SummeryResponseToJson(SummeryResponse instance) =>
     };
 
 Store _$StoreFromJson(Map<String, dynamic> json) => Store(
-      id: json['id'] as int,
+      id: (json['id'] as num).toInt(),
       name: json['name'] as String,
       phone_number: json['phone_number'] as String,
-      total_balance: json['total_balance'] as int,
-      total_cost: json['total_cost'] as int,
-      total_price: json['total_price'] as int,
+      total_balance: (json['total_balance'] as num).toInt(),
+      total_cost: (json['total_cost'] as num).toInt(),
+      total_price: (json['total_price'] as num).toInt(),
     );
 
 Map<String, dynamic> _$StoreToJson(Store instance) => <String, dynamic>{
@@ -43,9 +43,9 @@ Map<String, dynamic> _$StoreToJson(Store instance) => <String, dynamic>{
 
 Total _$TotalFromJson(Map<String, dynamic> json) => Total(
       text: json['text'] as String,
-      total_balance: json['total_balance'] as int,
-      total_cost: json['total_cost'] as int,
-      total_price: json['total_price'] as int,
+      total_balance: (json['total_balance'] as num).toInt(),
+      total_cost: (json['total_cost'] as num).toInt(),
+      total_price: (json['total_price'] as num).toInt(),
     );
 
 Map<String, dynamic> _$TotalToJson(Total instance) => <String, dynamic>{

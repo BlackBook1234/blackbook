@@ -14,8 +14,8 @@ NotficationResponse _$NotficationResponseFromJson(Map<String, dynamic> json) =>
       data: (json['data'] as List<dynamic>?)
           ?.map((e) => NotificationDetail.fromJson(e as Map<String, dynamic>))
           .toList(),
-      total: json['total'] as int?,
-      unseen: json['unseen'] as int?,
+      total: (json['total'] as num?)?.toInt(),
+      unseen: (json['unseen'] as num?)?.toInt(),
     );
 
 Map<String, dynamic> _$NotficationResponseToJson(

@@ -14,6 +14,7 @@ import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_keyboard_visibility/flutter_keyboard_visibility.dart';
 import 'package:flutter_svg/flutter_svg.dart';
+import 'package:package_info/package_info.dart';
 import 'add_item.dart';
 import 'home.dart';
 import 'ware_house_user_admin.dart';
@@ -37,7 +38,7 @@ class _NavigatorScreenState extends State<NavigatorScreen> with BaseStateMixin {
 
   @override
   void initState() {
-    refreshPage();
+    refreshPage(context);
     super.initState();
     setState(() {
       screenIndex = widget.screenIndex;
@@ -45,15 +46,19 @@ class _NavigatorScreenState extends State<NavigatorScreen> with BaseStateMixin {
     _checkInvitaion();
   }
 
-  Future<void> refreshPage() async {
-    if (Utils.getUpdate() == 1) {
-      updateDialog(context);
+  Future<void> refreshPage(BuildContext context) async {
+    PackageInfo packageInfo = await PackageInfo.fromPlatform();
+    String version = packageInfo.version;
+    if (Utils.getUpdate() != version) {
+      if (context.mounted) {
+        await updateDialog(context);
+      }
     }
     await _getNotification();
   }
 
   void onBottomIconPressed(int index) {
-    refreshPage();
+    refreshPage(context);
     setState(() {
       screenIndex = index;
     });
@@ -150,8 +155,12 @@ class _NavigatorScreenState extends State<NavigatorScreen> with BaseStateMixin {
                           .push(CupertinoPageRoute(
                               builder: (context) => const NotficationScreen()))
                           .then(
-                            (value) => refreshPage(),
-                          );
+                        (value) {
+                          if (context.mounted) {
+                            refreshPage(context);
+                          }
+                        },
+                      );
                     },
                   ),
                   // Container(

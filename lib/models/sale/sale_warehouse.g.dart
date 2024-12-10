@@ -9,8 +9,8 @@ part of 'sale_warehouse.dart';
 SaleListWarehouseModel _$SaleListWarehouseModelFromJson(
         Map<String, dynamic> json) =>
     SaleListWarehouseModel(
-      total_cost: json['total_cost'] as int?,
-      total_price: json['total_price'] as int?,
+      total_cost: (json['total_cost'] as num?)?.toInt(),
+      total_price: (json['total_price'] as num?)?.toInt(),
     )..name = json['name'] as String?;
 
 Map<String, dynamic> _$SaleListWarehouseModelToJson(

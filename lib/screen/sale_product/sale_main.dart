@@ -43,8 +43,8 @@ class _MainSellProductScreenState extends State<MainSellProductScreen>
   }
 
   void _loadMorePages() {
-    if (_scrollController.position.pixels ==
-            _scrollController.position.maxScrollExtent &&
+    if (_scrollController.position.pixels >=
+            _scrollController.position.maxScrollExtent - 50 &&
         !_runApi) {
       setState(() {
         searchAgian = false;

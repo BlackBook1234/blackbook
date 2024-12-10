@@ -30,6 +30,7 @@ mixin BaseStateMixin<T extends StatefulWidget> on State<T> {
   Future<S?> showSuccessDialog<S>(String title, bool popup, String message) {
     if (mounted) {
       return showDialog<S>(
+        barrierDismissible: popup,
         useSafeArea: popup,
         context: context,
         builder: (ctx) => KSuccessDialog(
@@ -46,6 +47,7 @@ mixin BaseStateMixin<T extends StatefulWidget> on State<T> {
     if (mounted) {
       return showDialog<S>(
         useSafeArea: popup,
+        barrierDismissible: popup,
         context: context,
         builder: (ctx) => KSuccessDialog(
           button: close,

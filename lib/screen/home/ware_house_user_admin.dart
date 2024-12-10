@@ -12,6 +12,7 @@ import 'package:black_book/provider/type.dart';
 import 'package:black_book/screen/core/add_razmer.dart';
 import 'package:black_book/util/utils.dart';
 import 'package:black_book/widget/alert/component/buttons.dart';
+import 'package:black_book/widget/alert/custom_dialog.dart';
 import 'package:black_book/widget/alert/mixin_dialog.dart';
 import 'package:black_book/widget/bottom_sheet.dart/purchase_product.dart';
 import 'package:black_book/widget/component/choose_type.dart';
@@ -71,8 +72,8 @@ class _WareHouseAdminScreenState extends State<WareHouseAdminScreen>
   }
 
   void _loadMorePages() {
-    if (_scrollController.position.pixels ==
-            _scrollController.position.maxScrollExtent &&
+    if (_scrollController.position.pixels >=
+            _scrollController.position.maxScrollExtent - 50 &&
         !_runApi) {
       setState(() {
         searchAgian = false;
@@ -145,6 +146,11 @@ class _WareHouseAdminScreenState extends State<WareHouseAdminScreen>
       });
       _getProductData();
     });
+  }
+
+  @override
+  void dispose() {
+    super.dispose();
   }
 
   void _agianSearch() {
@@ -222,7 +228,7 @@ class _WareHouseAdminScreenState extends State<WareHouseAdminScreen>
                         borderRadius: 16,
                         onPressed: () {
                           Navigator.pop(context);
-                          _showLogOutWarning(context);
+                          _showDeleteProduct(context);
                         },
                         color: kPrimaryColor,
                         child: const Center(child: Text("Устгах")),
@@ -241,40 +247,17 @@ class _WareHouseAdminScreenState extends State<WareHouseAdminScreen>
     });
   }
 
-  void _showLogOutWarning(BuildContext context) async {
-    Widget continueButton = TextButton(
-        child: const Text("Тийм", style: TextStyle(color: kBlack)),
-        onPressed: () {
-          removeBloc.add(RemoveProductEvent(goodId));
-          // Navigator.pop(context);
-        });
-    Widget cancelButton = TextButton(
-        child: const Text("Үгүй", style: TextStyle(color: kBlack)),
-        onPressed: () {
-          Navigator.pop(context);
-        });
-    AlertDialog alert = AlertDialog(
-        title: const Column(children: [
-          Center(
-              child: Text("Анхаар!",
-                  style: TextStyle(
-                      fontSize: 16,
-                      fontWeight: FontWeight.bold,
-                      color: kPrimaryColor))),
-          Divider()
-        ]),
-        content: const Text("Бараа устгахдаа итгэлтэй байна уу",
-            textAlign: TextAlign.center),
-        actions: [
-          Row(
-              mainAxisAlignment: MainAxisAlignment.spaceBetween,
-              children: [cancelButton, continueButton])
-        ]);
-    showDialog(
-        context: context,
-        builder: (BuildContext context) {
-          return alert;
-        });
+  _showDeleteProduct(BuildContext context) async {
+    showDialog<void>(
+      context: context,
+      builder: (ctx) => CustomDialog(
+          onPressedSubmit: () {
+            removeBloc.add(RemoveProductEvent(goodId));
+          },
+          title: 'Анхаар',
+          desc: "Бараа устгахдаа итгэлтэй байна уу",
+          type: 2),
+    );
   }
 
   void addRazmer(ProductDetialModel datas) {
@@ -305,8 +288,7 @@ class _WareHouseAdminScreenState extends State<WareHouseAdminScreen>
               if (state is RemoveSuccess) {
                 Utils.cancelLoader(context);
                 showSuccessDialog("Мэдээлэл", false, "Амжилттай устгагдлаа");
-                Future.delayed(const Duration(seconds: 2), () {
-                  Navigator.pop(context);
+                Future.delayed(const Duration(seconds: 1), () {
                   Navigator.pop(context);
                 }).then((value) => refreshPage());
               }
@@ -324,60 +306,80 @@ class _WareHouseAdminScreenState extends State<WareHouseAdminScreen>
                   showNewDialog(context, Utils.getstoreName(), typeStore),
               child: const Icon(Icons.remove_red_eye_outlined,
                   color: kPrimaryColor)),
-          body: Column(
+          body: Stack(
             children: [
-              TypeBuilder(
-                chosenValue: chosenValue,
-                chosenType: chosenType,
-                userRole: userRole,
-                typeStore: typeStore,
-                chooseType: (String value) {
-                  setState(() {
-                    chosenValue = value;
-                  });
-                },
-                chooseStore: (String value) {
-                  setState(() {
-                    chosenType = value;
-                  });
-                },
+              Column(
+                children: [
+                  TypeBuilder(
+                    chosenValue: chosenValue,
+                    chosenType: chosenType,
+                    userRole: userRole,
+                    typeStore: typeStore,
+                    chooseType: (String value) {
+                      setState(() {
+                        chosenValue = value;
+                      });
+                    },
+                    chooseStore: (String value) {
+                      setState(() {
+                        chosenType = value;
+                      });
+                    },
+                  ),
+                  SearchBuilder(
+                    searchAgian: (bool type) {
+                      setState(() {
+                        searchAgian = type;
+                      });
+                      _agianSearch();
+                    },
+                    searchValue: (String value) {
+                      setState(() {
+                        searchValue = value;
+                      });
+                    },
+                  ),
+                  list.isEmpty
+                      ? Center(
+                          child: Lottie.asset('assets/json/empty-page.json'),
+                        )
+                      : ListBuilder(
+                          list: list,
+                          showWarningCallback: (ProductDetialModel? datas) {
+                            setState(() {
+                              goodId = datas!.good_id!;
+                              purchase = datas;
+                            });
+                          },
+                          showDilaog: () {
+                            _chooseAction();
+                          },
+                          controller: _scrollController,
+                          userRole: userRole,
+                          isExpanded: _isExpanded,
+                          typeTrailling: true,
+                          icon: Icons.info,
+                          trailingText: "",
+                          screenType: 'warepurchase',
+                        ),
+                ],
               ),
-              SearchBuilder(
-                searchAgian: (bool type) {
-                  setState(() {
-                    searchAgian = type;
-                  });
-                  _agianSearch();
-                },
-                searchValue: (String value) {
-                  setState(() {
-                    searchValue = value;
-                  });
-                },
-              ),
-              list.isEmpty
-                  ? Center(
-                      child: Lottie.asset('assets/json/empty-page.json'),
-                    )
-                  : ListBuilder(
-                      list: list,
-                      showWarningCallback: (ProductDetialModel? datas) {
-                        setState(() {
-                          goodId = datas!.good_id!;
-                          purchase = datas;
-                        });
-                      },
-                      showDilaog: () {
-                        _chooseAction();
-                      },
-                      controller: _scrollController,
-                      userRole: userRole,
-                      isExpanded: _isExpanded,
-                      typeTrailling: true,
-                      icon: Icons.info,
-                      trailingText: "",
-                      screenType: 'warepurchase',
-                    )
+              if (_runApi)
+                const Positioned(
+                  bottom: 10,
+                  left: 0,
+                  right: 0,
+                  child: Center(
+                    child: SizedBox(
+                      width: 25,
+                      height: 25,
+                      child: CircularProgressIndicator(
+                        color: kPrimaryColor,
+                        strokeWidth: 4,
+                      ),
+                    ),
+                  ),
+                ),
             ],
           ),
         ),

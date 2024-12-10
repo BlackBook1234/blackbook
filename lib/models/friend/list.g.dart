@@ -10,10 +10,10 @@ PhoneNumberList _$PhoneNumberListFromJson(Map<String, dynamic> json) =>
     PhoneNumberList(
       country_code: json['country_code'] as String?,
       has_color: json['has_color'] as String?,
-      has_line: json['has_line'] as int?,
+      has_line: (json['has_line'] as num?)?.toInt(),
       phone_number: json['phone_number'] as String?,
       created_at: json['created_at'] as String?,
-      line_amount: json['line_amount'] as int?,
+      line_amount: (json['line_amount'] as num?)?.toInt(),
       line_text: json['line_text'] as String?,
       status: json['status'] as String?,
       status_text: json['status_text'] as String?,

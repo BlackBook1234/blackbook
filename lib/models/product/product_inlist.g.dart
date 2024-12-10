@@ -10,15 +10,15 @@ ProductInDetialModel _$ProductInDetialModelFromJson(
         Map<String, dynamic> json) =>
     ProductInDetialModel(
       type: json['type'] as String?,
-      cost: json['cost'] as int?,
-      transfer_id: json['transfer_id'] as int?,
+      cost: (json['cost'] as num?)?.toInt(),
+      transfer_id: (json['transfer_id'] as num?)?.toInt(),
       created_at: json['created_at'] as String?,
-      price: json['price'] as int?,
+      price: (json['price'] as num?)?.toInt(),
       store_name: json['store_name'] as String?,
-      store_id: json['store_id'] as int?,
-      stock: json['stock'] as int?,
-      warehouse_stock: json['warehouse_stock'] as int?,
-      id: json['id'] as int?,
+      store_id: (json['store_id'] as num?)?.toInt(),
+      stock: (json['stock'] as num?)?.toInt(),
+      warehouse_stock: (json['warehouse_stock'] as num?)?.toInt(),
+      id: (json['id'] as num?)?.toInt(),
     );
 
 Map<String, dynamic> _$ProductInDetialModelToJson(

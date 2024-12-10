@@ -8,10 +8,10 @@ part of 'total.dart';
 
 TotalProductModel _$TotalProductModelFromJson(Map<String, dynamic> json) =>
     TotalProductModel(
-      count: json['count'] as int,
-      balance: json['balance'] as int,
-      cost: json['cost'] as int,
-      price: json['price'] as int,
+      count: (json['count'] as num).toInt(),
+      balance: (json['balance'] as num).toInt(),
+      cost: (json['cost'] as num).toInt(),
+      price: (json['price'] as num).toInt(),
     );
 
 Map<String, dynamic> _$TotalProductModelToJson(TotalProductModel instance) =>

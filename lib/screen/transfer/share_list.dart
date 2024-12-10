@@ -60,8 +60,8 @@ class _ShareListHistoryScreenState extends State<ShareListHistoryScreen>
   }
 
   void _loadMorePages() {
-    if (_scrollController.position.pixels ==
-            _scrollController.position.maxScrollExtent &&
+    if (_scrollController.position.pixels >=
+            _scrollController.position.maxScrollExtent - 50 &&
         list.length > 39) {
       setState(() {
         _page++;

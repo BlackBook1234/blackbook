@@ -8,11 +8,11 @@ part of 'sale_list.dart';
 
 SaleListModel _$SaleListModelFromJson(Map<String, dynamic> json) =>
     SaleListModel(
-      store_id: json['store_id'] as int?,
+      store_id: (json['store_id'] as num?)?.toInt(),
       phone_number: json['phone_number'] as String?,
       store_name: json['store_name'] as String?,
-      total_cost: json['total_cost'] as int?,
-      total_price: json['total_price'] as int?,
+      total_cost: (json['total_cost'] as num?)?.toInt(),
+      total_price: (json['total_price'] as num?)?.toInt(),
     );
 
 Map<String, dynamic> _$SaleListModelToJson(SaleListModel instance) =>

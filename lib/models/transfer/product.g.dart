@@ -12,7 +12,7 @@ TransferProduct _$TransferProductFromJson(Map<String, dynamic> json) =>
       code: json['code'] as String?,
       photo: json['photo'] as String?,
       good_id: json['good_id'] as String?,
-      count: json['count'] as int?,
+      count: (json['count'] as num?)?.toInt(),
       sizes: (json['sizes'] as List<dynamic>?)
           ?.map((e) => TransferProductSize.fromJson(e as Map<String, dynamic>))
           .toList(),

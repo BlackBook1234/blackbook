@@ -8,8 +8,8 @@ part of 'store_amount.dart';
 
 StoreAmountModel _$StoreAmountModelFromJson(Map<String, dynamic> json) =>
     StoreAmountModel(
-      total_cost: json['total_cost'] as int?,
-      total_price: json['total_price'] as int?,
+      total_cost: (json['total_cost'] as num?)?.toInt(),
+      total_price: (json['total_price'] as num?)?.toInt(),
     );
 
 Map<String, dynamic> _$StoreAmountModelToJson(StoreAmountModel instance) =>

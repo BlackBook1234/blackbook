@@ -24,7 +24,7 @@ class NewDialog extends StatefulWidget {
 class _NewDialogState extends State<NewDialog> with BaseStateMixin {
   SummeryDetial? response;
   bool _runApi = false;
-  String chosenStore = "";
+  String chosenStore = "Бүх дэлгүүр";
   final NumberFormat format = NumberFormat("#,###");
 
   _getSummery() async {
@@ -47,6 +47,7 @@ class _NewDialogState extends State<NewDialog> with BaseStateMixin {
 
   @override
   void initState() {
+    print(widget.typeStore);
     _getSummery();
     setState(() {
       chosenStore = widget.chosenStore;
@@ -82,43 +83,45 @@ class _NewDialogState extends State<NewDialog> with BaseStateMixin {
               Row(
                 children: [
                   Expanded(
-                      child: Container(
-                          width: 80,
-                          height: 38,
-                          decoration: BoxDecoration(
-                              color: kWhite,
-                              boxShadow: [
-                                BoxShadow(
-                                    color: Colors.grey.shade400,
-                                    blurRadius: 9,
-                                    offset: const Offset(0, 0))
-                              ],
-                              borderRadius: BorderRadius.circular(10)),
-                          child: Padding(
-                              padding:
-                                  const EdgeInsets.only(right: 10, left: 10),
-                              child: DropdownButton<String>(
-                                  dropdownColor: kWhite,
-                                  isExpanded: true,
-                                  iconEnabledColor: kPrimarySecondColor,
-                                  value: chosenStore,
-                                  style: const TextStyle(
-                                      color: kPrimarySecondColor,
-                                      fontSize: 12,
-                                      fontWeight: FontWeight.w500),
-                                  items: widget.typeStore
-                                      .map<DropdownMenuItem<String>>(
-                                          (String value) {
-                                    return DropdownMenuItem<String>(
-                                        value: value, child: Text(value));
-                                  }).toList(),
-                                  underline: Container(
-                                      height: 0, color: Colors.transparent),
-                                  onChanged: (value) {
-                                    setState(() {
-                                      chosenStore = value!;
-                                    });
-                                  })))),
+                    child: Container(
+                      width: 80,
+                      height: 38,
+                      decoration: BoxDecoration(
+                          color: kWhite,
+                          boxShadow: [
+                            BoxShadow(
+                                color: Colors.grey.shade400,
+                                blurRadius: 9,
+                                offset: const Offset(0, 0))
+                          ],
+                          borderRadius: BorderRadius.circular(10)),
+                      child: Padding(
+                        padding: const EdgeInsets.only(right: 10, left: 10),
+                        child: DropdownButton<String>(
+                          dropdownColor: kWhite,
+                          isExpanded: true,
+                          iconEnabledColor: kPrimarySecondColor,
+                          value: chosenStore,
+                          style: const TextStyle(
+                              color: kPrimarySecondColor,
+                              fontSize: 12,
+                              fontWeight: FontWeight.w500),
+                          items: widget.typeStore
+                              .map<DropdownMenuItem<String>>((String value) {
+                            return DropdownMenuItem<String>(
+                                value: value, child: Text(value));
+                          }).toList(),
+                          underline:
+                              Container(height: 0, color: Colors.transparent),
+                          onChanged: (value) {
+                            setState(() {
+                              chosenStore = value!;
+                            });
+                          },
+                        ),
+                      ),
+                    ),
+                  ),
                   const SizedBox(width: 10),
                   BlackBookButton(
                     height: 38,

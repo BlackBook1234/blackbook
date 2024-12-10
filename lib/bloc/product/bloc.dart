@@ -190,12 +190,10 @@ class ProductBloc extends Bloc<ProductEvent, ProductState> {
           "sizes": event.sizes.map((e) => e.toJson()).toList(),
           "good_id": event.good_id
         };
-        // print("----bod:   $body");
         Response response =
             await apiService.postRequest('/v1/product/add', body: body);
         AuthenticationResponseModel dataResponse =
             AuthenticationResponseModel.fromJson(response.data);
-        // print("---${response.data}");
         if (response.statusCode == 200 && dataResponse.status == "success") {
           emit(PurchaseProductSuccess());
         } else if (dataResponse.status == "error" &&

@@ -11,8 +11,8 @@ ProductStoreModel _$ProductStoreModelFromJson(Map<String, dynamic> json) =>
       name: json['name'] as String?,
       phone_number: json['phone_number'] as String?,
       created_at: json['created_at'] as String?,
-      is_main: json['is_main'] as int?,
-      id: json['id'] as int?,
+      is_main: (json['is_main'] as num?)?.toInt(),
+      id: (json['id'] as num?)?.toInt(),
     );
 
 Map<String, dynamic> _$ProductStoreModelToJson(ProductStoreModel instance) =>

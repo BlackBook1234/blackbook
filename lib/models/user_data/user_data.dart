@@ -15,6 +15,7 @@ class UserDataModel {
       position,
       refreshToken,
       tenantName,
+      mustUpdate,
       type;
   int? active,
       userId,
@@ -22,7 +23,6 @@ class UserDataModel {
       tenantId,
       countryCode,
       isAdmin,
-      mustUpdate,
       storeId,
       isPaid;
 

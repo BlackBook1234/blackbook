@@ -95,7 +95,7 @@ class StoreBloc extends Bloc<StoreEvent, StoreState> {
             hasMoreOrder = false;
           }
           emit(GetStoreProductSuccess(dataResponse.data!, dataResponse.amount!,
-              dataResponse.stores!, hasMoreOrder,dataResponse.categories!));
+              dataResponse.stores!, hasMoreOrder, dataResponse.categories!));
         } else if (dataResponse.status == "error" &&
             dataResponse.message.reason == "auth_token_error") {
           final bloc = RefreshBloc();

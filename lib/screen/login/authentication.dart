@@ -117,13 +117,16 @@ class _LoginScreenState extends State<AuthenticationScreen>
               }
               if (state is UserAuthenticationSuccess) {
                 Utils.cancelLoader(context);
-                
                 if (state.data.type == "WORKER") {
                   Navigator.of(context).push(CupertinoPageRoute(
-                      builder: (context) => const NavigatorScreen(screenIndex: 0,)));
+                      builder: (context) => const NavigatorScreen(
+                            screenIndex: 0,
+                          )));
                 } else if (state.data.isPaid == 1) {
                   Navigator.of(context).push(CupertinoPageRoute(
-                      builder: (context) => const NavigatorScreen(screenIndex: 0,)));
+                      builder: (context) => const NavigatorScreen(
+                            screenIndex: 0,
+                          )));
                 } else {
                   Navigator.of(context).push(CupertinoPageRoute(
                       builder: (context) => const Packages()));

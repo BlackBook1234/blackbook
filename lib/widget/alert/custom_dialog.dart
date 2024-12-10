@@ -145,12 +145,11 @@ class _CustomDialogState extends State<CustomDialog> {
                         ],
                       ),
                     )
-                  : Padding(
-                      padding: const EdgeInsets.only(
-                          left: 12, right: 12, top: 40, bottom: 20),
-                      child: Column(
-                        children: [
-                          Row(
+                  : widget.type == 3
+                      ? Padding(
+                          padding: const EdgeInsets.only(
+                              left: 12, right: 12, top: 40, bottom: 20),
+                          child: Row(
                             mainAxisAlignment: MainAxisAlignment.spaceBetween,
                             children: [
                               Expanded(
@@ -158,10 +157,7 @@ class _CustomDialogState extends State<CustomDialog> {
                                   height: 40,
                                   borderRadius: 16,
                                   onPressed: () {
-                                    widget.onBackSubmit?.call();
-                                     if (Navigator.canPop(context)) {
-                                      Navigator.pop(context, false);
-                                    }
+                                    Navigator.pop(context, false);
                                   },
                                   color: kDisable,
                                   child: Center(
@@ -181,9 +177,6 @@ class _CustomDialogState extends State<CustomDialog> {
                                   borderRadius: 16,
                                   onPressed: () {
                                     widget.onPressedSubmit?.call();
-                                    if (Navigator.canPop(context)) {
-                                      Navigator.pop(context, false);
-                                    }
                                   },
                                   color: kPrimaryColor,
                                   child: Center(
@@ -193,24 +186,74 @@ class _CustomDialogState extends State<CustomDialog> {
                               ),
                             ],
                           ),
-                          const SizedBox(
-                            height: 10,
+                        )
+                      : Padding(
+                          padding: const EdgeInsets.only(
+                              left: 12, right: 12, top: 40, bottom: 20),
+                          child: Column(
+                            children: [
+                              Row(
+                                mainAxisAlignment:
+                                    MainAxisAlignment.spaceBetween,
+                                children: [
+                                  Expanded(
+                                    child: BlackBookButton(
+                                      height: 40,
+                                      borderRadius: 16,
+                                      onPressed: () {
+                                        widget.onBackSubmit?.call();
+                                        if (Navigator.canPop(context)) {
+                                          Navigator.pop(context, false);
+                                        }
+                                      },
+                                      color: kDisable,
+                                      child: Center(
+                                        child: Text(
+                                            widget.footerCancelText.toString(),
+                                            style: const TextStyle(
+                                                color: kPrimaryColor)),
+                                      ),
+                                    ),
+                                  ),
+                                  const SizedBox(
+                                    width: 6,
+                                  ),
+                                  Expanded(
+                                    child: BlackBookButton(
+                                      height: 40,
+                                      borderRadius: 16,
+                                      onPressed: () {
+                                        widget.onPressedSubmit?.call();
+                                        if (Navigator.canPop(context)) {
+                                          Navigator.pop(context, false);
+                                        }
+                                      },
+                                      color: kPrimaryColor,
+                                      child: Center(
+                                          child: Text(widget.footerSubmitText
+                                              .toString())),
+                                    ),
+                                  ),
+                                ],
+                              ),
+                              const SizedBox(
+                                height: 10,
+                              ),
+                              BlackBookButton(
+                                shadow: false,
+                                height: 40,
+                                onPressed: () {
+                                  Navigator.pop(context, false);
+                                },
+                                color: Colors.transparent,
+                                child: const Center(
+                                  child: Text("Хаах",
+                                      style: TextStyle(color: kPrimaryColor)),
+                                ),
+                              ),
+                            ],
                           ),
-                          BlackBookButton(
-                            shadow: false,
-                            height: 40,
-                            onPressed: () {
-                              Navigator.pop(context, false);
-                            },
-                            color: Colors.transparent,
-                            child: const Center(
-                              child: Text("Хаах",
-                                  style: TextStyle(color: kPrimaryColor)),
-                            ),
-                          ),
-                        ],
-                      ),
-                    )
+                        )
             ],
           ),
         ),

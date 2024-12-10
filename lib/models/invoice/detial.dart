@@ -7,7 +7,8 @@ part 'detial.g.dart';
 @JsonSerializable()
 class InvoiceDetial {
   int? amount, period, orderId;
-  String? description, title;
+  String? title;
+  String? description;
   Qpay? qpay;
   List<Manual>? manual;
 

@@ -15,6 +15,8 @@ class InvitationDialog extends StatefulWidget {
 
 class _InvitationDialogState extends State<InvitationDialog>
     with BaseStateMixin {
+  double length = 120;
+  final List<String> list = [];
   Future<void> _transferDataSend(int id) async {
     try {
       await api.approveInvation(id);
@@ -25,14 +27,24 @@ class _InvitationDialogState extends State<InvitationDialog>
   }
 
   @override
+  void initState() {
+    setState(() {
+      length = (widget.res.data ?? list).length * 120;
+      if (length > 480) {
+        length = 480;
+      }
+    });
+    super.initState();
+  }
+
+  @override
   Widget build(BuildContext context) {
-    final List<String> list = [];
     return Dialog(
       shape: RoundedRectangleBorder(
         borderRadius: BorderRadius.circular(24.0),
       ),
       child: Container(
-        height: (widget.res.data ?? list).length * 200,
+        height: length,
         color: Colors.transparent,
         child: Padding(
           padding: const EdgeInsets.all(12.0),
@@ -51,10 +63,24 @@ class _InvitationDialogState extends State<InvitationDialog>
                           child: Image.asset("assets/images/mainLogo.png",
                               fit: BoxFit.cover)))),
               const Divider(color: kTextMedium),
+              SizedBox(
+                height: 40,
+                child: BlackBookButton(
+                  
+                  width: double.infinity,
+                  onPressed: () {
+                    _transferDataSend(-1);
+                  },
+                  child: const Text("Шууд нэвтрэх"),
+                ),
+              ),
               Expanded(
                 child: ListView.builder(
                   itemCount: widget.res.data!.length,
                   itemBuilder: (context, index) {
+                    if (widget.res.data![index].id == -1) {
+                      return const SizedBox.shrink();
+                    }
                     return SizedBox(
                       height: 80,
                       child: Row(
@@ -72,11 +98,18 @@ class _InvitationDialogState extends State<InvitationDialog>
                                   color: kTextMedium),
                             ),
                           ),
-                          BlackBookButton(
-                            onPressed: () {
-                              _transferDataSend(widget.res.data![index].id);
-                            },
-                            child: const Text("Урисан"),
+                          SizedBox(
+                            height: 30,
+                            child: BlackBookButton(
+                              color: Colors.grey.withOpacity(0.5),
+                              onPressed: () {
+                                _transferDataSend(widget.res.data![index].id);
+                              },
+                              child: const Text(
+                                "Урьсан",
+                                style: TextStyle(fontSize: 12),
+                              ),
+                            ),
                           ),
                         ],
                       ),

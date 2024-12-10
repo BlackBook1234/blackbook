@@ -108,21 +108,21 @@ class _HomeScreenState extends State<HomeScreen> with BaseStateMixin {
                   );
                 }, "BOSS"),
                 homeContainer(
-                    context, "Орлуулсан бараа", "assets/svg/add_type.svg", () {
+                    context, "Анх бүртгэсэн бараа", "assets/svg/add_type.svg", () {
                   Navigator.of(context).push(
                     CupertinoPageRoute(
                       builder: (context) => const DateProductSearch(),
                     ),
                   );
-                }, "BOSS"),
+                }, userRole),
                 homeContainer(
-                    context, "Төрөл өөрчлөлт", "assets/svg/share.svg", () {
+                    context, "Ангиллын нэр солих", "assets/svg/share.svg", () {
                   Navigator.of(context).push(
                     CupertinoPageRoute(
                       builder: (context) => const ChangeCategoryScreen(),
                     ),
                   );
-                }, "BOSS"),
+                }, userRole),
               ],
             ),
           ),

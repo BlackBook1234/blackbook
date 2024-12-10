@@ -8,14 +8,14 @@ part of 'detial.dart';
 
 InvoiceDetial _$InvoiceDetialFromJson(Map<String, dynamic> json) =>
     InvoiceDetial(
-      amount: json['amount'] as int?,
-      period: json['period'] as int?,
+      amount: (json['amount'] as num?)?.toInt(),
+      period: (json['period'] as num?)?.toInt(),
       qpay: json['qpay'] == null
           ? null
           : Qpay.fromJson(json['qpay'] as Map<String, dynamic>),
       description: json['description'] as String?,
       title: json['title'] as String?,
-      orderId: json['orderId'] as int?,
+      orderId: (json['orderId'] as num?)?.toInt(),
       manual: (json['manual'] as List<dynamic>?)
           ?.map((e) => Manual.fromJson(e as Map<String, dynamic>))
           .toList(),
@@ -26,8 +26,8 @@ Map<String, dynamic> _$InvoiceDetialToJson(InvoiceDetial instance) =>
       'amount': instance.amount,
       'period': instance.period,
       'orderId': instance.orderId,
-      'description': instance.description,
       'title': instance.title,
+      'description': instance.description,
       'qpay': instance.qpay,
       'manual': instance.manual,
     };

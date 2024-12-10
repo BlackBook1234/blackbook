@@ -10,9 +10,9 @@ CategoryDetialModel _$CategoryDetialModelFromJson(Map<String, dynamic> json) =>
     CategoryDetialModel(
       name: json['name'] as String?,
       iconUrl: json['iconUrl'] as String?,
-      sort_order: json['sort_order'] as int?,
+      sort_order: (json['sort_order'] as num?)?.toInt(),
       parent: json['parent'] as String?,
-      id: json['id'] as int?,
+      id: (json['id'] as num?)?.toInt(),
       created_at: json['created_at'] as String?,
       parent_name: json['parent_name'] as String?,
     );

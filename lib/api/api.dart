@@ -182,27 +182,27 @@ class API {
       if (searchAgian) {
         if (storeId == "-1") {
           path =
-              '/v1/product/my/list?page=$page&limit=$limit&q=$searchValue&parent_category=$category&sort=desc&is_warehouse=1';
+              '/v1/product/my/list?page=$page&limit=10&q=$searchValue&parent_category=$category&sort=desc&is_warehouse=1';
         } else {
           path =
-              '/v1/product/my/list?page=$page&limit=$limit&q=$searchValue&parent_category=$category&store_id=$storeId&sort=desc';
+              '/v1/product/my/list?page=$page&limit=10&q=$searchValue&parent_category=$category&store_id=$storeId&sort=desc';
         }
       } else {
         path =
-            '/v1/product/my/list?page=$page&limit=$limit&sort=desc&is_warehouse=1';
+            '/v1/product/my/list?page=$page&limit=10&sort=desc&is_warehouse=1';
       }
     } else {
       if (searchAgian) {
         if (storeId == "-1") {
           path =
-              '/v1/product/my/list?page=$page&limit=$limit&q=$searchValue&parent_category=$category&sort=desc&is_warehouse=1';
+              '/v1/product/my/list?page=$page&limit=10&q=$searchValue&parent_category=$category&sort=desc&is_warehouse=1';
         } else {
           path =
-              '/v1/product/my/list?page=$page&limit=$limit&q=$searchValue&parent_category=$category&store_id=$storeId&sort=desc';
+              '/v1/product/my/list?page=$page&limit=10&q=$searchValue&parent_category=$category&store_id=$storeId&sort=desc';
         }
       } else {
         path =
-            '/v1/product/my/list?page=$page&limit=$limit&sort=desc&store_id=${Utils.getStoreId()}';
+            '/v1/product/my/list?page=$page&limit=10&sort=desc&store_id=${Utils.getStoreId()}';
       }
     }
 
@@ -222,18 +222,18 @@ class API {
     if (searchAgian) {
       if (storeId == "-1") {
         path =
-            '/v1/product/my/list?page=$page&limit=$limit&q=$searchValue&parent_category=$category&sort=desc&is_warehouse=1';
+            '/v1/product/my/list?page=$page&limit=10&q=$searchValue&parent_category=$category&sort=desc&is_warehouse=1';
       } else {
         path =
-            '/v1/product/my/list?page=$page&limit=$limit&q=$searchValue&parent_category=$category&store_id=$storeId&sort=desc';
+            '/v1/product/my/list?page=$page&limit=10&q=$searchValue&parent_category=$category&store_id=$storeId&sort=desc';
       }
     } else {
       if (Utils.getUserRole() == "BOSS") {
         path =
-            '/v1/product/my/list?page=$page&limit=$limit&sort=desc&is_warehouse=1';
+            '/v1/product/my/list?page=$page&limit=10&sort=desc&is_warehouse=1';
       } else {
         path =
-            '/v1/product/my/list?page=$page&limit=$limit&sort=desc&store_id=${Utils.getStoreId()}';
+            '/v1/product/my/list?page=$page&limit=10&sort=desc&store_id=${Utils.getStoreId()}';
       }
     }
     return await client.get(path).then((value) async {

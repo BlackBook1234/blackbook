@@ -10,6 +10,7 @@ import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
+import 'package:intl/intl.dart';
 import 'package:url_launcher/url_launcher.dart';
 
 class PayScreen extends StatefulWidget {
@@ -24,6 +25,7 @@ class _PayScreenState extends State<PayScreen> with BaseStateMixin {
   final String _chosenValue = "Хаан Банк";
   final _bloc = PaymentBloc();
   InvoiceDetial lst = InvoiceDetial();
+  final NumberFormat format = NumberFormat("#,###");
   int currentPage = 0;
 
   @override
@@ -79,11 +81,21 @@ class _PayScreenState extends State<PayScreen> with BaseStateMixin {
                 }
                 if (state is CheckInvoiceSuccess) {
                   Utils.cancelLoader(context);
-                  Navigator.pushAndRemoveUntil(
-                      context,
-                      CupertinoPageRoute(
-                          builder: (context) => const NavigatorScreen(screenIndex: 0,)),
-                      (route) => false);
+                  if (widget.keys == "extend_store_limit") {
+                    showSuccessPopDialog(
+                            "Амжилттай", false, true, "Амжилттай төлөгдлөө")
+                        .then((_) {
+                      Navigator.pop(context);
+                    });
+                  } else {
+                    Navigator.pushAndRemoveUntil(
+                        context,
+                        CupertinoPageRoute(
+                            builder: (context) => const NavigatorScreen(
+                                  screenIndex: 0,
+                                )),
+                        (route) => false);
+                  }
                   // Navigator.of(context).push(CupertinoPageRoute(
                   //     builder: (context) => const NavigatorScreen()));
                 }
@@ -193,13 +205,13 @@ class _PayScreenState extends State<PayScreen> with BaseStateMixin {
                                       fontWeight: FontWeight.w400,
                                       fontSize: 14))),
                           const SizedBox(height: 5),
-                          Text("${lst.amount ?? "0"} ₮",
+                          Text("${format.format(lst.amount ?? 0)} ₮",
                               style: const TextStyle(
                                   fontWeight: FontWeight.w900,
                                   fontSize: 30,
                                   color: kPrimaryColor)),
                           Container(
-                              width: 110,
+                              // width: 110,
                               height: 40,
                               decoration: BoxDecoration(
                                   color: Colors.grey.withOpacity(0.15),
@@ -270,7 +282,7 @@ class _PayScreenState extends State<PayScreen> with BaseStateMixin {
                               style: TextStyle(
                                   fontWeight: FontWeight.w400, fontSize: 14))),
                       const SizedBox(height: 5),
-                      Text("${lst.amount.toString()} ₮",
+                      Text("${format.format(lst.amount ?? 0)} ₮",
                           style: const TextStyle(
                               fontWeight: FontWeight.w900,
                               fontSize: 30,

@@ -7,9 +7,9 @@ part of 'amount.dart';
 // **************************************************************************
 
 AmountModel _$AmountModelFromJson(Map<String, dynamic> json) => AmountModel(
-      total_cost: json['total_cost'] as int?,
-      total_income: json['total_income'] as int?,
-      total_price: json['total_price'] as int?,
+      total_cost: (json['total_cost'] as num?)?.toInt(),
+      total_income: (json['total_income'] as num?)?.toInt(),
+      total_price: (json['total_price'] as num?)?.toInt(),
     );
 
 Map<String, dynamic> _$AmountModelToJson(AmountModel instance) =>

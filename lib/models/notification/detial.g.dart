@@ -8,14 +8,14 @@ part of 'detial.dart';
 
 NotificationDetail _$NotificationDetailFromJson(Map<String, dynamic> json) =>
     NotificationDetail(
-      id: json['id'] as int?,
+      id: (json['id'] as num?)?.toInt(),
       sourceType: json['source_type'] as String?,
       sourceId: json['source_id'] as String?,
       type: json['type'] as String?,
-      userId: json['user_id'] as int?,
+      userId: (json['user_id'] as num?)?.toInt(),
       title: json['title'] as String?,
       body: json['body'] as String?,
-      isSeen: json['is_seen'] as int?,
+      isSeen: (json['is_seen'] as num?)?.toInt(),
       seenAt: json['seen_at'] as String?,
       isTrashed: json['is_trashed'] as bool?,
       trashedAt: json['trashed_at'] as String?,

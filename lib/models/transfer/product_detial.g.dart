@@ -8,11 +8,11 @@ part of 'product_detial.dart';
 
 TransferProductSize _$TransferProductSizeFromJson(Map<String, dynamic> json) =>
     TransferProductSize(
-      cost: json['cost'] as int?,
-      product_id: json['product_id'] as int?,
-      price: json['price'] as int?,
-      stock: json['stock'] as int?,
-      transfer_id: json['transfer_id'] as int?,
+      cost: (json['cost'] as num?)?.toInt(),
+      product_id: (json['product_id'] as num?)?.toInt(),
+      price: (json['price'] as num?)?.toInt(),
+      stock: (json['stock'] as num?)?.toInt(),
+      transfer_id: (json['transfer_id'] as num?)?.toInt(),
       type: json['type'] as String?,
     );
 

@@ -9,24 +9,24 @@ part of 'product_in_detial.dart';
 SaleProductInDetialModel _$SaleProductInDetialModelFromJson(
         Map<String, dynamic> json) =>
     SaleProductInDetialModel(
-      cost: json['cost'] as int?,
-      sale_id: json['sale_id'] as int?,
-      is_from_warehouse: json['is_from_warehouse'] as int?,
+      cost: (json['cost'] as num?)?.toInt(),
+      sale_id: (json['sale_id'] as num?)?.toInt(),
+      is_from_warehouse: (json['is_from_warehouse'] as num?)?.toInt(),
       money_type: json['money_type'] as String?,
       created_at: json['created_at'] as String?,
-      price: json['price'] as int?,
+      price: (json['price'] as num?)?.toInt(),
       product_photo: json['product_photo'] as String?,
       product_code: json['product_code'] as String?,
       good_id: json['good_id'] as String?,
-      product_id: json['product_id'] as int?,
+      product_id: (json['product_id'] as num?)?.toInt(),
       product_name: json['product_name'] as String?,
-      stock: json['stock'] as int?,
+      stock: (json['stock'] as num?)?.toInt(),
       store_color: json['store_color'] as String?,
-      store_id: json['store_id'] as int?,
+      store_id: (json['store_id'] as num?)?.toInt(),
       store_name: json['store_name'] as String?,
-      total_balance: json['total_balance'] as int?,
+      total_balance: (json['total_balance'] as num?)?.toInt(),
       type: json['type'] as String?,
-      warehouse_balance: json['warehouse_balance'] as int?,
+      warehouse_balance: (json['warehouse_balance'] as num?)?.toInt(),
     );
 
 Map<String, dynamic> _$SaleProductInDetialModelToJson(

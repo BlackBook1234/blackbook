@@ -9,7 +9,7 @@ part of 'price_money_types.dart';
 TotalDetialSaleModel _$TotalDetialSaleModelFromJson(
         Map<String, dynamic> json) =>
     TotalDetialSaleModel(
-      amount: json['amount'] as int?,
+      amount: (json['amount'] as num?)?.toInt(),
       name: json['name'] as String?,
     );
 

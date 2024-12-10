@@ -14,7 +14,7 @@ ProductDetialModel _$ProductDetialModelFromJson(Map<String, dynamic> json) =>
           ? null
           : TotalSaleModel.fromJson(json['total'] as Map<String, dynamic>),
       photo: json['photo'] as String?,
-      category_id: json['category_id'] as int?,
+      category_id: (json['category_id'] as num?)?.toInt(),
       category_name: json['category_name'] as String?,
       created_at: json['created_at'] as String?,
       parent_category: json['parent_category'] as String?,

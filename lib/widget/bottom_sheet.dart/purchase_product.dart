@@ -33,6 +33,7 @@ class _BottomSheetsWidgetState extends State<PurchaseProductBottom>
   final TextEditingController productSize = TextEditingController();
   final TextEditingController productCount = TextEditingController();
   List<DynamicItemWidget> dynamicList = [];
+  String warningText = "";
 
   void addDynamic() {
     if (dynamicList.length > 20) return;
@@ -55,6 +56,10 @@ class _BottomSheetsWidgetState extends State<PurchaseProductBottom>
   }
 
   addDataInDraft(List<ProductInDetialModel> data) {
+    setState(() {
+      listData.clear();
+      warningText = "";
+    });
     for (ProductInDetialModel otpList in data) {
       if (otpList.ware_stock != 0) {
         ProductAddSizeModel inData = ProductAddSizeModel(
@@ -62,42 +67,42 @@ class _BottomSheetsWidgetState extends State<PurchaseProductBottom>
           stock: otpList.ware_stock,
         );
         listData.add(inData);
-
-        //default size add
-        if (productCount.text.isEmpty && productSize.text.isEmpty) {
-        } else {
-          if (productCount.text.isEmpty || productSize.text.isEmpty) {
-            showWarningDialog("Утга бүрэн оруулна уу!-");
-          } else {
-            ProductAddSizeModel otpData = ProductAddSizeModel(
-              size: productSize.text,
-              stock: int.parse(productCount.text),
-            );
-            listData.add(otpData);
-          }
-        }
-
-        //dynamic size add
-        if (dynamicList.isNotEmpty) {
-          for (var element in dynamicList) {
-            if (element.razmer.text != "" && element.countProduct.text != "") {
-              ProductAddSizeModel otpDataSecond = ProductAddSizeModel(
-                size: element.razmer.text,
-                stock: int.parse(element.countProduct.text),
-              );
-              listData.add(otpDataSecond);
-            }
-            // for (ProductAddSizeModel data in listData) {
-            //   if (data.size == null || data.stock == null) {
-            //     showWarningDialog("Утга бүрэн оруулна уу!111");
-            //     return;
-            //   }
-            // }
-          }
+      }
+    }
+    if (productCount.text.isNotEmpty && productSize.text.isNotEmpty) {
+      ProductAddSizeModel otpData = ProductAddSizeModel(
+        size: productSize.text,
+        stock: int.parse(productCount.text),
+      );
+      listData.add(otpData);
+    } else if ((productCount.text.isNotEmpty && productSize.text.isEmpty) ||
+        (productCount.text.isEmpty && productSize.text.isNotEmpty)) {
+      setState(() {
+        warningText = "Утга бүрэн оруулна уу!";
+      });
+    }
+    if (dynamicList.isNotEmpty) {
+      for (var element in dynamicList) {
+        if (element.razmer.text != "" && element.countProduct.text != "") {
+          ProductAddSizeModel otpDataSecond = ProductAddSizeModel(
+            size: element.razmer.text,
+            stock: int.parse(element.countProduct.text),
+          );
+          listData.add(otpDataSecond);
+        } else if ((element.razmer.text.isNotEmpty &&
+                element.countProduct.text.isEmpty) ||
+            (element.razmer.text.isEmpty &&
+                element.countProduct.text.isNotEmpty)) {
+          setState(() {
+            warningText = "Утга бүрэн оруулна уу!";
+          });
         }
       }
     }
-    if (listData.isEmpty) {
+
+    if (warningText != "") {
+      showWarningDialog(warningText);
+    } else if (listData.isEmpty && warningText == "") {
       showWarningDialog("Бараа оруулна уу");
     } else {
       _bloc.add(PurchaseProduct(listData, widget.data.good_id!));
@@ -126,6 +131,7 @@ class _BottomSheetsWidgetState extends State<PurchaseProductBottom>
               }
               if (state is PurchaseProductSuccess) {
                 Utils.cancelLoader(context);
+                listData.clear();
                 showSuccessDialog("Мэдээлэл", false, "Амжилттай хадгаллаа");
                 Future.delayed(const Duration(seconds: 2), () {
                   Navigator.pop(context);

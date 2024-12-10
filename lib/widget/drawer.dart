@@ -251,14 +251,16 @@ class _NavBarState extends State<NavBar> with BaseStateMixin {
                 SizedBox(width: 20),
                 Icon(Icons.phone_outlined, color: Colors.grey),
                 SizedBox(width: 10),
-                Text("(+976) 98111149", style: TextStyle(color: Colors.grey))
+                InkWell(
+                    child: Text("(+976) 7676-7694",
+                        style: TextStyle(color: Colors.grey)))
               ]),
               SizedBox(height: 10),
               Row(children: [
                 SizedBox(width: 20),
                 Icon(Icons.mail_outline, color: Colors.grey),
                 SizedBox(width: 10),
-                Text("KharDevter@gmail.com",
+                Text("Dogshin.Domogt@gmail.com",
                     style: TextStyle(color: Colors.grey))
               ]),
             ])),

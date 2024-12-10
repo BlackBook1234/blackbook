@@ -59,8 +59,8 @@ class _SearchScreenState extends State<SearchScreen> with BaseStateMixin {
   }
 
   void _loadMorePages() {
-    if (_scrollController.position.pixels ==
-            _scrollController.position.maxScrollExtent &&
+    if (_scrollController.position.pixels >=
+            _scrollController.position.maxScrollExtent - 50 &&
         !_runApi) {
       setState(() {
         searchAgian = false;
@@ -92,6 +92,7 @@ class _SearchScreenState extends State<SearchScreen> with BaseStateMixin {
         for (ProductStoreModel data in storeList) {
           typeStore.add(data.name ?? "");
         }
+        print("--set store----");
         typeStore = typeStore.toSet().toList();
         categories = res.categories!;
         Provider.of<TypeProvider>(GlobalKeys.navigatorKey.currentContext!,
@@ -158,58 +159,77 @@ class _SearchScreenState extends State<SearchScreen> with BaseStateMixin {
       backgroundColor: kWhite,
       key: refresh,
       onRefresh: refreshList,
-      child: KeyboardDismissOnTap(
-        dismissOnCapturedTaps: false,
-        child: Column(
-          children: [
-            TypeBuilder(
-              // typeValue: typeValue,
-              chosenValue: chosenValue,
-              chosenType: chosenType,
-              userRole: "BOSS",
-              typeStore: typeStore,
-              chooseType: (String value) {
-                setState(() {
-                  chosenValue = value;
-                });
-              },
-              chooseStore: (String value) {
-                setState(() {
-                  chosenType = value;
-                });
-              },
-            ),
-            SearchBuilder(
-              searchAgian: (bool type) {
-                setState(() {
-                  searchAgian = type;
-                });
-                _agianSearch();
-              },
-              searchValue: (String value) {
-                setState(
-                  () {
-                    searchValue = value;
+      child: Stack(
+        children: [
+          KeyboardDismissOnTap(
+            dismissOnCapturedTaps: false,
+            child: Column(
+              children: [
+                TypeBuilder(
+                  chosenValue: chosenValue,
+                  chosenType: chosenType,
+                  userRole: "BOSS",
+                  typeStore: typeStore,
+                  chooseType: (String value) {
+                    setState(() {
+                      chosenValue = value;
+                    });
                   },
-                );
-              },
+                  chooseStore: (String value) {
+                    setState(() {
+                      chosenType = value;
+                    });
+                  },
+                ),
+                SearchBuilder(
+                  searchAgian: (bool type) {
+                    setState(() {
+                      searchAgian = type;
+                    });
+                    _agianSearch();
+                  },
+                  searchValue: (String value) {
+                    setState(
+                      () {
+                        searchValue = value;
+                      },
+                    );
+                  },
+                ),
+                list.isEmpty
+                    ? Center(
+                        child: Lottie.asset('assets/json/empty-page.json'),
+                      )
+                    : ListBuilder(
+                        list: list,
+                        controller: _scrollController,
+                        userRole: "BOSS",
+                        isExpanded: _isExpanded,
+                        typeTrailling: false,
+                        icon: Icons.abc,
+                        trailingText: "",
+                        screenType: 'search',
+                      ),
+              ],
             ),
-            list.isEmpty
-                ? Center(
-                    child: Lottie.asset('assets/json/empty-page.json'),
-                  )
-                : ListBuilder(
-                    list: list,
-                    controller: _scrollController,
-                    userRole: "BOSS",
-                    isExpanded: _isExpanded,
-                    typeTrailling: false,
-                    icon: Icons.abc,
-                    trailingText: "",
-                    screenType: 'search',
+          ),
+          if (_runApi)
+            const Positioned(
+              bottom: 10,
+              left: 0,
+              right: 0,
+              child: Center(
+                child: SizedBox(
+                  width: 25,
+                  height: 25,
+                  child: CircularProgressIndicator(
+                    color: kPrimaryColor,
+                    strokeWidth: 4,
                   ),
-          ],
-        ),
+                ),
+              ),
+            ),
+        ],
       ),
     );
   }

@@ -8,8 +8,8 @@ part of 'categories.dart';
 
 CategoriesModel _$CategoriesModelFromJson(Map<String, dynamic> json) =>
     CategoriesModel(
-      id: json['id'] as int,
-      sort_order: json['sort_order'] as int,
+      id: (json['id'] as num).toInt(),
+      sort_order: (json['sort_order'] as num).toInt(),
       name: json['name'] as String,
       parent: json['parent'] as String,
       created_at: json['created_at'] as String,

@@ -23,45 +23,49 @@ class UpdateDialog extends StatelessWidget {
         color: Colors.transparent,
         child: Padding(
           padding: const EdgeInsets.all(12.0),
-          child: Column(
-            mainAxisAlignment: MainAxisAlignment.center,
-            crossAxisAlignment: CrossAxisAlignment.center,
-            mainAxisSize: MainAxisSize.min,
-            children: [
-              Padding(
-                  padding: const EdgeInsets.symmetric(vertical: 20),
-                  child: SizedBox(
-                      height: 40,
-                      width: 40,
-                      child: ClipRRect(
-                          borderRadius: BorderRadius.circular(9),
-                          child: Image.asset("assets/images/mainLogo.png",
-                              fit: BoxFit.cover)))),
-              SizedBox(
-                height: 150,
-                child: Column(
-                  mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                  crossAxisAlignment: CrossAxisAlignment.center,
-                  children: [
-                    const Text(
-                      "Та аппликейшнаа шинэчилнэ үү!",
-                      textAlign: TextAlign.center,
-                      style: TextStyle(
-                          fontSize: 15,
-                          fontWeight: FontWeight.w400,
-                          color: kTextMedium),
-                    ),
-                    const SizedBox(height: 20),
-                    BlackBookButton(
-                      onPressed: () {
-                        _launchURL();
-                      },
-                      child: const Text("Шинэчилэх"),
-                    ),
-                  ],
+          child: Container(
+            color: Colors.white,
+            child: Column(
+              mainAxisAlignment: MainAxisAlignment.center,
+              crossAxisAlignment: CrossAxisAlignment.center,
+              mainAxisSize: MainAxisSize.min,
+              children: [
+                Padding(
+                    padding: const EdgeInsets.symmetric(vertical: 20),
+                    child: SizedBox(
+                        height: 40,
+                        width: 40,
+                        child: ClipRRect(
+                            borderRadius: BorderRadius.circular(9),
+                            child: Image.asset("assets/images/mainLogo.png",
+                                fit: BoxFit.cover)))),
+                SizedBox(
+                  height: 150,
+                  child: Column(
+                    mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                    crossAxisAlignment: CrossAxisAlignment.center,
+                    children: [
+                      const Text(
+                        "Та аппликейшнаа шинэчилнэ үү!",
+                        textAlign: TextAlign.center,
+                        style: TextStyle(
+                            fontSize: 16,
+                            fontWeight: FontWeight.w800,
+                            color: kTextMedium),
+                      ),
+                      const SizedBox(height: 20),
+                      BlackBookButton(
+                        width: double.infinity,
+                        onPressed: () {
+                          _launchURL();
+                        },
+                        child: const Text("Шинэчилэх"),
+                      ),
+                    ],
+                  ),
                 ),
-              ),
-            ],
+              ],
+            ),
           ),
         ),
       ),

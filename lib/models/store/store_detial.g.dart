@@ -9,10 +9,10 @@ part of 'store_detial.dart';
 StoreDetialModel _$StoreDetialModelFromJson(Map<String, dynamic> json) =>
     StoreDetialModel(
       name: json['name'] as String?,
-      id: json['id'] as int?,
+      id: (json['id'] as num?)?.toInt(),
       phone_number: json['phone_number'] as String?,
       created_at: json['created_at'] as String?,
-      is_main: json['is_main'] as int?,
+      is_main: (json['is_main'] as num?)?.toInt(),
     );
 
 Map<String, dynamic> _$StoreDetialModelToJson(StoreDetialModel instance) =>

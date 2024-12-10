@@ -24,7 +24,7 @@ InvitationDetail _$InvitationDetailFromJson(Map<String, dynamic> json) =>
       phoneNumber: json['phoneNumber'] as String,
       text: json['text'] as String,
       date: json['date'] as String,
-      id: json['id'] as int,
+      id: (json['id'] as num).toInt(),
     );
 
 Map<String, dynamic> _$InvitationDetailToJson(InvitationDetail instance) =>

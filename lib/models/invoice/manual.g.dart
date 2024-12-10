@@ -7,7 +7,7 @@ part of 'manual.dart';
 // **************************************************************************
 
 Manual _$ManualFromJson(Map<String, dynamic> json) => Manual(
-      amount: json['amount'] as int?,
+      amount: (json['amount'] as num?)?.toInt(),
       account: json['account'] as String?,
       accountName: json['accountName'] as String?,
       description: json['description'] as String?,

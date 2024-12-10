@@ -16,7 +16,7 @@ SaleProductResponseModel _$SaleProductResponseModelFromJson(
           ? null
           : SaleProductDetialModel.fromJson(
               json['data'] as Map<String, dynamic>),
-      total: json['total'] as int?,
+      total: (json['total'] as num?)?.toInt(),
     );
 
 Map<String, dynamic> _$SaleProductResponseModelToJson(

@@ -1,4 +1,5 @@
 import 'dart:convert';
+// import 'dart:io';
 
 import 'package:black_book/api/component/api_error.dart';
 import 'package:black_book/global_keys.dart';
@@ -92,7 +93,9 @@ class MyAppState extends State<MyApp> with BaseStateMixin {
             title: 'Flutter Demo',
             navigatorKey: GlobalKeys.navigatorKey,
             theme: AppTheme.lightTheme(context),
-            home: user == null
+            home: 
+            // NavigatorScreen(screenIndex: 0,)
+            user == null
                 ? const LoginScreen()
                 : Utils.getUserRole() == "WORKER" || Utils.getIpaid() == 1
                     ? const NavigatorScreen(
@@ -162,6 +165,15 @@ class MyAppState extends State<MyApp> with BaseStateMixin {
     );
   }
 }
+
+// class MyHttpOverrides extends HttpOverrides {
+//   @override
+//   HttpClient createHttpClient(SecurityContext? context) {
+//     return super.createHttpClient(context)
+//       ..badCertificateCallback =
+//           (X509Certificate cert, String host, int port) => true;
+//   }
+// }
 // allBalance niit ashig orlogiig hamt yvuulah (20 baraanaas niilber tootsvol buruu dun garna)
 // borluulalt hiih uyd delguur bolon aguulahiig ylgah store_id g yu gej yvuulah we boss uyd
 
