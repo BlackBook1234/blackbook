@@ -6,7 +6,6 @@ import 'package:black_book/screen/home/search.dart';
 import 'package:black_book/screen/home/widget/banners_carousel.dart';
 import 'package:black_book/screen/notification/notification.dart';
 import 'package:black_book/screen/sale_product/sale_main.dart';
-import 'package:black_book/util/utils.dart';
 import 'package:black_book/widget/alert/mixin_dialog.dart';
 import 'package:black_book/widget/bottom_navigation_bar/bottom_navigation_bar.dart';
 import 'package:black_book/widget/drawer.dart';
@@ -14,12 +13,9 @@ import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_keyboard_visibility/flutter_keyboard_visibility.dart';
 import 'package:flutter_svg/flutter_svg.dart';
-import 'package:package_info/package_info.dart';
 import 'add_item.dart';
 import 'home.dart';
 import 'ware_house_user_admin.dart';
-
-const Color inActiveIconColor = Colors.grey;
 
 class NavigatorScreen extends StatefulWidget {
   const NavigatorScreen({super.key, required int screenIndex});
@@ -47,18 +43,12 @@ class _NavigatorScreenState extends State<NavigatorScreen> with BaseStateMixin {
   }
 
   Future<void> refreshPage(BuildContext context) async {
-    PackageInfo packageInfo = await PackageInfo.fromPlatform();
-    String version = packageInfo.version;
-    if (Utils.getUpdate() != version) {
-      if (context.mounted) {
-        await updateDialog(context);
-      }
-    }
+    await _getUpdateStatus();
     await _getNotification();
   }
 
   void onBottomIconPressed(int index) {
-    refreshPage(context);
+    // refreshPage(context);
     setState(() {
       screenIndex = index;
     });
@@ -73,6 +63,19 @@ class _NavigatorScreenState extends State<NavigatorScreen> with BaseStateMixin {
     } on APIError catch (e) {
       showErrorDialog(e.message);
     }
+  }
+
+  Future<void> _getUpdateStatus() async {
+    try {
+      var res = await api.getUpdateStatus();
+      if (res.data.mustUpdate) {
+        if (context.mounted) {
+          // ignore: use_build_context_synchronously
+          updateDialog(context);
+        }
+      }
+      // ignore: empty_catches
+    } on APIError {}
   }
 
   _showLogOutWarning(BuildContext context) async {
@@ -119,14 +122,9 @@ class _NavigatorScreenState extends State<NavigatorScreen> with BaseStateMixin {
                         child: Container(
                             height: 30,
                             width: 50,
-                            decoration: const BoxDecoration(
-                                color: kWhite,
-                                borderRadius: BorderRadius.only(
-                                    bottomRight: Radius.circular(15),
-                                    topRight: Radius.circular(15))),
+                            decoration: const BoxDecoration(color: kWhite, borderRadius: BorderRadius.only(bottomRight: Radius.circular(15), topRight: Radius.circular(15))),
                             child: Center(
-                                child: SvgPicture.asset(
-                                    "assets/icons/Camera Icon.svg",
+                                child: SvgPicture.asset("assets/icons/Camera Icon.svg",
                                     colorFilter: const ColorFilter.mode(
                                       kPrimaryColor,
                                       BlendMode.srcIn,
@@ -139,8 +137,7 @@ class _NavigatorScreenState extends State<NavigatorScreen> with BaseStateMixin {
                       onBottomIconPressed(0);
                     });
                   },
-                  child:
-                      Image.asset('assets/images/logoSecond.png', width: 160)),
+                  child: Image.asset('assets/images/logoSecond.png', width: 160)),
               const Expanded(child: SizedBox.shrink()),
               Stack(
                 children: [
@@ -151,16 +148,7 @@ class _NavigatorScreenState extends State<NavigatorScreen> with BaseStateMixin {
                       size: 30,
                     ),
                     onPressed: () {
-                      Navigator.of(context)
-                          .push(CupertinoPageRoute(
-                              builder: (context) => const NotficationScreen()))
-                          .then(
-                        (value) {
-                          if (context.mounted) {
-                            refreshPage(context);
-                          }
-                        },
-                      );
+                      Navigator.of(context).push(CupertinoPageRoute(builder: (context) => const NotficationScreen()));
                     },
                   ),
                   // Container(
@@ -206,8 +194,7 @@ class _NavigatorScreenState extends State<NavigatorScreen> with BaseStateMixin {
                             ),
                             child: Text(
                               '$notificationCount',
-                              style: const TextStyle(
-                                  color: Colors.white, fontSize: 10),
+                              style: const TextStyle(color: Colors.white, fontSize: 10),
                               textAlign: TextAlign.center,
                             ),
                           ),

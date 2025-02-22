@@ -1,4 +1,4 @@
-package com.example.black_book
+package com.candy.black_book
 
 import io.flutter.embedding.android.FlutterActivity
 

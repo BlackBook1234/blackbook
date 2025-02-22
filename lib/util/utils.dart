@@ -66,14 +66,6 @@ class Utils {
         "";
   }
 
-  static String getUpdate() {
-    return Provider.of<CommonProvider>(GlobalKeys.navigatorKey.currentContext!,
-                listen: false)
-            .userInfo!
-            .mustUpdate ??
-        "";
-  }
-
   static String getstoreName() {
     return Provider.of<CommonProvider>(GlobalKeys.navigatorKey.currentContext!,
                 listen: false)

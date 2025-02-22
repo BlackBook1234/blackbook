@@ -43,9 +43,15 @@ class _BottomSheetsWidgetState extends State<PurchaseProductBottom>
 
   void changeOrderQty(ProductInDetialModel data, int type) {
     if (type == 1) {
-      setState(() {
-        data.ware_stock++;
-      });
+      if(data.ware_stock < 999) {
+        setState(() {
+          data.ware_stock++;
+        });
+      } else {
+        setState(() {
+          data.ware_stock = 999;
+        });
+      }
     } else if (type == 0) {
       if (data.ware_stock > 0) {
         setState(() {
@@ -282,7 +288,7 @@ class _BottomSheetsWidgetState extends State<PurchaseProductBottom>
                                                     0)
                                               }),
                                       SizedBox(
-                                          width: 15,
+                                          width: 35,
                                           height: 50,
                                           child: TextField(
                                               style:
@@ -535,9 +541,15 @@ class _BottomSheetsWidgetState extends State<PurchaseProductBottom>
 
   void changeCount(ProductInDetialModel data, int value) {
     if (value >= 0) {
-      setState(() {
-        data.ware_stock = value;
-      });
+      if (value < 1000) {
+        setState(() {
+          data.ware_stock = value;
+        });
+      } else {
+        setState(() {
+          data.ware_stock = 999;
+        });
+      }
     }
   }
 }

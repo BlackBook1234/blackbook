@@ -31,7 +31,10 @@ class _NotficationScreenState extends State<NotficationScreen>
   void _scrollListener() {
     if (_controller.offset >= _controller.position.maxScrollExtent &&
         !_controller.position.outOfRange) {
-      // _getNotification();
+      setState(() {
+        page++;
+      });
+      _getNotification();
     }
   }
 
@@ -155,7 +158,7 @@ class _NotficationScreenState extends State<NotficationScreen>
           ),
           Padding(
             padding: EdgeInsets.only(
-              top: 10,
+                top: 10,
                 bottom: MediaQuery.of(context).padding.bottom,
                 right: 20.0,
                 left: 20),
