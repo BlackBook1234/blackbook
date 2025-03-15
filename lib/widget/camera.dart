@@ -21,13 +21,7 @@ import 'package:image_picker/image_picker.dart';
 import 'alert/mixin_dialog.dart';
 
 class CameraScreen extends StatefulWidget {
-  const CameraScreen(
-      {super.key,
-      required this.cameras,
-      required this.id,
-      required this.list,
-      required this.productCode,
-      required this.productName});
+  const CameraScreen({super.key, required this.cameras, required this.id, required this.list, required this.productCode, required this.productName});
   @override
   State<CameraScreen> createState() => _CameraScreenState();
   final List<CameraDescription> cameras;
@@ -48,8 +42,7 @@ class _CameraScreenState extends State<CameraScreen> with BaseStateMixin {
   @override
   void initState() {
     super.initState();
-    _cameraController =
-        CameraController(widget.cameras[0], ResolutionPreset.high);
+    _cameraController = CameraController(widget.cameras[0], ResolutionPreset.high);
     _cameraController.initialize().then((_) {
       if (!mounted) {
         return;
@@ -86,9 +79,9 @@ class _CameraScreenState extends State<CameraScreen> with BaseStateMixin {
 
   Future<bool> checkNetwork() async {
     var connectivityResult = await (Connectivity().checkConnectivity());
-    if (connectivityResult == ConnectivityResult.mobile) {
+    if (connectivityResult.contains(ConnectivityResult.mobile)) {
       return true;
-    } else if (connectivityResult == ConnectivityResult.wifi) {
+    } else if (connectivityResult.contains(ConnectivityResult.wifi)) {
       return true;
     }
     return false;
@@ -118,8 +111,7 @@ class _CameraScreenState extends State<CameraScreen> with BaseStateMixin {
               }
               if (state is ProductFailure) {
                 if (state.message == "Token") {
-                  _bloc.add(CreateProductEvent(widget.productName,
-                      widget.productCode, widget.id, widget.list, url!));
+                  _bloc.add(CreateProductEvent(widget.productName, widget.productCode, widget.id, widget.list, url!));
                 } else {
                   Utils.cancelLoader(context);
                   ErrorMessage.attentionMessage(context, state.message);
@@ -133,7 +125,9 @@ class _CameraScreenState extends State<CameraScreen> with BaseStateMixin {
                   Navigator.pushAndRemoveUntil(
                       context,
                       CupertinoPageRoute(
-                          builder: (context) => const NavigatorScreen(screenIndex: 0,)),
+                          builder: (context) => const NavigatorScreen(
+                                screenIndex: 0,
+                              )),
                       (route) => false);
                 });
               }
@@ -157,8 +151,7 @@ class _CameraScreenState extends State<CameraScreen> with BaseStateMixin {
                 setState(() {
                   url = state.data.url!;
                 });
-                _bloc.add(CreateProductEvent(widget.productName,
-                    widget.productCode, widget.id, widget.list, url!));
+                _bloc.add(CreateProductEvent(widget.productName, widget.productCode, widget.id, widget.list, url!));
               }
             })
       ],
@@ -190,8 +183,7 @@ class _CameraScreenState extends State<CameraScreen> with BaseStateMixin {
                                 fit: BoxFit.cover,
                               ),
                               color: Colors.grey,
-                              border:
-                                  Border.all(width: 8, color: Colors.black12),
+                              border: Border.all(width: 8, color: Colors.black12),
                             ),
                           ),
                         ),
@@ -209,34 +201,15 @@ class _CameraScreenState extends State<CameraScreen> with BaseStateMixin {
                           Expanded(
                               child: Container(
                                   height: 40,
-                                  decoration: BoxDecoration(
-                                      color: kWhite.withOpacity(0.7),
-                                      borderRadius: BorderRadius.circular(10)),
-                                  child: TextButton(
-                                      style: ElevatedButton.styleFrom(
-                                          foregroundColor: kPrimarySecondColor),
-                                      onPressed: () =>
-                                          getImage(source: ImageSource.gallery),
-                                      child: const Text("Цомог",
-                                          style: TextStyle(fontSize: 14))))),
-                          Expanded(
-                              child: InkWell(
-                                  onTap: () =>
-                                      _showCamera ? _takePicture() : null,
-                                  child: CircleAvatar(
-                                      maxRadius: 30,
-                                      backgroundColor: kWhite.withOpacity(0.7),
-                                      child: const Icon(Icons.circle,
-                                          color: kWhite, size: 60)))),
+                                  decoration: BoxDecoration(color: kWhite.withOpacity(0.7), borderRadius: BorderRadius.circular(10)),
+                                  child: TextButton(style: ElevatedButton.styleFrom(foregroundColor: kPrimarySecondColor), onPressed: () => getImage(source: ImageSource.gallery), child: const Text("Цомог", style: TextStyle(fontSize: 14))))),
+                          Expanded(child: InkWell(onTap: () => _showCamera ? _takePicture() : null, child: CircleAvatar(maxRadius: 30, backgroundColor: kWhite.withOpacity(0.7), child: const Icon(Icons.circle, color: kWhite, size: 60)))),
                           Expanded(
                             child: Container(
                               height: 40,
-                              decoration: BoxDecoration(
-                                  color: kWhite.withOpacity(0.7),
-                                  borderRadius: BorderRadius.circular(10)),
+                              decoration: BoxDecoration(color: kWhite.withOpacity(0.7), borderRadius: BorderRadius.circular(10)),
                               child: TextButton(
-                                style: ElevatedButton.styleFrom(
-                                    foregroundColor: kPrimarySecondColor),
+                                style: ElevatedButton.styleFrom(foregroundColor: kPrimarySecondColor),
                                 onPressed: () => onCreate(),
                                 child: const Text(
                                   "Хадгалах",

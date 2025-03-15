@@ -7,8 +7,7 @@ import 'package:dio/dio.dart';
 
 typedef HttpLibraryMethod<T> = Future<Response<T>> Function();
 
-Future<dynamic> mapException(
-    HttpLibraryMethod<Map<String, dynamic>> method) async {
+Future<dynamic> mapException(HttpLibraryMethod<Map<String, dynamic>> method) async {
   try {
     return await method().then((value) => value.data!);
   } on DioError catch (exception) {
@@ -56,15 +55,14 @@ Future<dynamic> mapException(
 
       case DioErrorType.connectionError:
         if (exception.error is SocketException) {
-          ConnectivityResult connectivityResult;
+          List<ConnectivityResult> connectivityResult = [];
           try {
             connectivityResult = await (Connectivity().checkConnectivity());
           } catch (e) {
-            connectivityResult = ConnectivityResult.none;
+            // connectivityResult = ConnectivityResult.none;
           }
 
-          if (connectivityResult != ConnectivityResult.wifi &&
-              connectivityResult != ConnectivityResult.mobile) {
+          if (!connectivityResult.contains(ConnectivityResult.wifi) && !connectivityResult.contains(ConnectivityResult.mobile)) {
             throw APIError('Интернэт холболтоо шалгана уу.', 'Холболт');
           } else {
             bool hasConnection = false;
