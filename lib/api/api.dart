@@ -18,7 +18,7 @@ import 'package:black_book/models/update/response.dart';
 import 'package:black_book/models/user_data/user_data_response.dart';
 import 'package:black_book/util/utils.dart';
 import 'package:intl/intl.dart';
-import 'package:package_info/package_info.dart';
+import 'package:package_info_plus/package_info_plus.dart';
 import 'settings/api_client.dart';
 
 class API {

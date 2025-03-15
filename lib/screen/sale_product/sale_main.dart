@@ -166,7 +166,7 @@ class _MainSellProductScreenState extends State<MainSellProductScreen>
                     isScrollControlled: true,
                     builder: (context) {
                       return FractionallySizedBox(
-                          heightFactor: 0.7,
+                          heightFactor: 0.8,
                           child: SellProductBottomSheetsWidget(
                               title: "Бараа зарах", data: list[index]));
                     }).then((value) {

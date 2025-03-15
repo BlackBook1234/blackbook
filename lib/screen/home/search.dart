@@ -92,7 +92,6 @@ class _SearchScreenState extends State<SearchScreen> with BaseStateMixin {
         for (ProductStoreModel data in storeList) {
           typeStore.add(data.name ?? "");
         }
-        print("--set store----");
         typeStore = typeStore.toSet().toList();
         categories = res.categories!;
         Provider.of<TypeProvider>(GlobalKeys.navigatorKey.currentContext!,

@@ -205,7 +205,7 @@ class _ShareProductScreenState extends State<ShareProductScreen> {
                               isScrollControlled: true,
                               builder: (context) {
                                 return FractionallySizedBox(
-                                    heightFactor: 0.7,
+                                    heightFactor: 0.8,
                                     child: ProductBottomSheetsWidget(
                                         title: "Сагс", data: list[index!]));
                               });
