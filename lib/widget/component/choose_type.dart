@@ -13,18 +13,11 @@ class TypeBuilder extends StatelessWidget {
   final List<String>? typeStore;
   String chosenValue;
   String chosenType;
-  // List<String> typeValue;
+  List<String>? typeValue;
 
-  TypeBuilder(
-      {super.key,
-      required this.chosenValue,
-      required this.chosenType,
-      this.chooseType,
-      this.chooseStore,
-      required this.userRole,
-      this.typeStore});
+  TypeBuilder({super.key, required this.chosenValue, required this.chosenType, this.chooseType, this.chooseStore, this.typeValue, required this.userRole, this.typeStore});
 
-  final List<String> typeValue = ["Бүх төрөл", "Өвөл", "Хавар", "Намар", "Зун"];
+  // final List<String> typeValue = ["Бүх төрөл", "Өвөл", "Хавар", "Намар", "Зун"];
   @override
   Widget build(BuildContext context) {
     return Padding(
@@ -35,32 +28,18 @@ class TypeBuilder extends StatelessWidget {
                   child: Container(
                       width: 80,
                       height: 38,
-                      decoration: BoxDecoration(
-                          color: kWhite,
-                          boxShadow: [
-                            BoxShadow(
-                                color: Colors.grey.shade300,
-                                blurRadius: 3,
-                                offset: const Offset(2, 2))
-                          ],
-                          borderRadius: BorderRadius.circular(10)),
+                      decoration: BoxDecoration(color: kWhite, boxShadow: [BoxShadow(color: Colors.grey.shade300, blurRadius: 3, offset: const Offset(2, 2))], borderRadius: BorderRadius.circular(10)),
                       child: Padding(
                           padding: const EdgeInsets.only(right: 10, left: 10),
                           child: DropdownButton<String>(
                               isExpanded: true,
                               iconEnabledColor: kPrimarySecondColor,
                               value: chosenType,
-                              style: const TextStyle(
-                                  color: kPrimarySecondColor,
-                                  fontSize: 12,
-                                  fontWeight: FontWeight.w500),
-                              items: typeStore!.map<DropdownMenuItem<String>>(
-                                  (String value) {
-                                return DropdownMenuItem<String>(
-                                    value: value, child: Text(value));
+                              style: const TextStyle(color: kPrimarySecondColor, fontSize: 12, fontWeight: FontWeight.w500),
+                              items: typeStore!.map<DropdownMenuItem<String>>((String value) {
+                                return DropdownMenuItem<String>(value: value, child: Text(value));
                               }).toList(),
-                              underline: Container(
-                                  height: 0, color: Colors.transparent),
+                              underline: Container(height: 0, color: Colors.transparent),
                               onChanged: (value) {
                                 chooseStore?.call(value);
                               }))))
@@ -70,35 +49,18 @@ class TypeBuilder extends StatelessWidget {
               child: Container(
                   width: 80,
                   height: 38,
-                  decoration: BoxDecoration(
-                      color: kWhite,
-                      boxShadow: [
-                        BoxShadow(
-                            color: Colors.grey.shade300,
-                            blurRadius: 3,
-                            offset: const Offset(2, 2))
-                      ],
-                      borderRadius: BorderRadius.circular(10)),
+                  decoration: BoxDecoration(color: kWhite, boxShadow: [BoxShadow(color: Colors.grey.shade300, blurRadius: 3, offset: const Offset(2, 2))], borderRadius: BorderRadius.circular(10)),
                   child: Padding(
                       padding: const EdgeInsets.only(right: 10, left: 10),
                       child: DropdownButton<String>(
                           isExpanded: true,
                           iconEnabledColor: kPrimarySecondColor,
                           value: chosenValue,
-                          style: const TextStyle(
-                              color: kPrimarySecondColor,
-                              fontSize: 12,
-                              fontWeight: FontWeight.w500),
-                          items: Provider.of<TypeProvider>(
-                                  GlobalKeys.navigatorKey.currentContext!,
-                                  listen: false)
-                              .typeList
-                              .map<DropdownMenuItem<String>>((String value) {
-                            return DropdownMenuItem<String>(
-                                value: value, child: Text(value));
+                          style: const TextStyle(color: kPrimarySecondColor, fontSize: 12, fontWeight: FontWeight.w500),
+                          items: Provider.of<TypeProvider>(GlobalKeys.navigatorKey.currentContext!, listen: false).typeList.map<DropdownMenuItem<String>>((String value) {
+                            return DropdownMenuItem<String>(value: value, child: Text(value));
                           }).toList(),
-                          underline:
-                              Container(height: 0, color: Colors.transparent),
+                          underline: Container(height: 0, color: Colors.transparent),
                           onChanged: (value) {
                             chooseType?.call(value!);
                           }))))

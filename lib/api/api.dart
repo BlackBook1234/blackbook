@@ -191,7 +191,6 @@ class API {
         path = '/v1/product/my/list?page=$page&limit=100&sort=desc&store_id=${Utils.getStoreId()}';
       }
     }
-
     return await client.get(path).then((value) async {
       if (value == "auth_token_error") {
         await refreshToken();
@@ -313,11 +312,11 @@ class API {
     );
   }
 
-  Future<SummeryDetial> getSummery() async {
-    return await client.get('/v1/product/balance/summary').then((value) async {
+  Future<SummeryDetial> getSummery(String chosenValue) async {
+    return await client.get('/v1/product/balance/summary?category_id=$chosenValue').then((value) async {
       if (value == "auth_token_error") {
         await refreshToken();
-        return getSummery();
+        return getSummery(chosenValue);
       } else {
         return SummeryResponse.fromJson(value).data!;
       }

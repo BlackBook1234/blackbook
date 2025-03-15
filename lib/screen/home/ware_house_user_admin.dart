@@ -63,6 +63,9 @@ class _WareHouseAdminScreenState extends State<WareHouseAdminScreen> with BaseSt
     _scrollController.addListener(_loadMorePages);
     userRole = Utils.getUserRole();
     _getProductData();
+    setState(() {
+      chosenType = Utils.getstoreName();
+    });
   }
 
   void _loadMorePages() {
@@ -130,6 +133,7 @@ class _WareHouseAdminScreenState extends State<WareHouseAdminScreen> with BaseSt
       setState(() {
         _page = 1;
         searchAgian = true;
+        list.clear();
       });
       _getProductData();
     });
@@ -144,7 +148,6 @@ class _WareHouseAdminScreenState extends State<WareHouseAdminScreen> with BaseSt
     setState(() {
       searchAgian = true;
       _page = 1;
-
       if (chosenType == "Бүх дэлгүүр" && chosenValue == "Бүх төрөл" && searchValue == "") {
         setState(() {
           storeId = '';
@@ -154,7 +157,6 @@ class _WareHouseAdminScreenState extends State<WareHouseAdminScreen> with BaseSt
       } else {
         for (ProductStoreModel data in storeList) {
           if (data.name == chosenType) {
-            storeId = "";
             storeId = data.id.toString();
           } else if (chosenType == "Бүх дэлгүүр") {
             storeId = "";
@@ -261,7 +263,7 @@ class _WareHouseAdminScreenState extends State<WareHouseAdminScreen> with BaseSt
                 Utils.cancelLoader(context);
                 showSuccessDialog("Мэдээлэл", false, "Амжилттай устгагдлаа");
                 Future.delayed(const Duration(seconds: 1), () {
-                  Navigator.pop(context);
+                  if (context.mounted) Navigator.pop(context);
                 }).then((value) => refreshPage());
               }
             })
@@ -270,7 +272,7 @@ class _WareHouseAdminScreenState extends State<WareHouseAdminScreen> with BaseSt
         dismissOnCapturedTaps: false,
         child: Scaffold(
           floatingActionButtonLocation: FloatingActionButtonLocation.miniEndFloat,
-          floatingActionButton: FloatingActionButton(mini: true, backgroundColor: kDisable, onPressed: () => showNewDialog(context, Utils.getstoreName(), typeStore), child: const Icon(Icons.remove_red_eye_outlined, color: kPrimaryColor)),
+          floatingActionButton: FloatingActionButton(mini: true, backgroundColor: kDisable, onPressed: () => showNewDialog(context, chosenType, typeStore, categories, chosenValue), child: const Icon(Icons.remove_red_eye_outlined, color: kPrimaryColor)),
           body: Stack(
             children: [
               Column(

@@ -1,6 +1,7 @@
 import 'package:black_book/api/api.dart';
 import 'package:black_book/api/component/error_mapper.dart';
 import 'package:black_book/models/invitaion/response.dart';
+import 'package:black_book/models/product/categories.dart';
 import 'package:black_book/util/utils.dart';
 import 'package:black_book/widget/alert/custom_dialog.dart';
 import 'package:black_book/widget/alert/inviation_dialog.dart';
@@ -85,12 +86,14 @@ mixin BaseStateMixin<T extends StatefulWidget> on State<T> {
   }
 
   Future<S?> showNewDialog<S>(
-      BuildContext context, String message, List<String> typeStore) {
+      BuildContext context, String message, List<String> typeStore, List<CategoriesModel> categories,String chosenType) {
     if (mounted) {
       return showDialog<S>(
         context: context,
         builder: (ctx) => NewDialog(
           typeStore: typeStore,
+          categories: categories,
+          chosenType: chosenType,
           chosenStore: message,
           userRole: Utils.getUserRole(),
         ),

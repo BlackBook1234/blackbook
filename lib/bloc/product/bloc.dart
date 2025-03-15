@@ -190,7 +190,6 @@ class ProductBloc extends Bloc<ProductEvent, ProductState> {
           "sizes": event.sizes.map((e) => e.toJson()).toList(),
           "good_id": event.good_id
         };
-        print("---$body");
         Response response =
             await apiService.postRequest('/v1/product/add', body: body);
         AuthenticationResponseModel dataResponse =
