@@ -66,32 +66,32 @@ class SaleBloc extends Bloc<SaleEvent, SaleState> {
           if (event.searchAgian) {
             if (event.storeId == -1) {
               path =
-                  "/v1/product/sale/list/warehouse?sort=asc&page=${event.page}&limit=40&q=${event.searchValue}&from_date=${formatDateTime(event.begindate)}&to_date=${formatDateTime(event.endDate)}";
+                  "/v1/product/sale/list/warehouse?sort=asc&page=${event.page}&limit=100&q=${event.searchValue}&from_date=${formatDateTime(event.begindate)}&to_date=${formatDateTime(event.endDate)}";
             } else {
               path =
-                  "/v1/product/sale/list/store/${event.storeId}?sort=asc&page=${event.page}&limit=40&store_id=${event.storeId}&q=${event.searchValue}&from_date=${formatDateTime(event.begindate)}&to_date=${formatDateTime(event.endDate)}";
+                  "/v1/product/sale/list/store/${event.storeId}?sort=asc&page=${event.page}&limit=100&store_id=${event.storeId}&q=${event.searchValue}&from_date=${formatDateTime(event.begindate)}&to_date=${formatDateTime(event.endDate)}";
             }
           } else {
             if (event.storeId == -1) {
               path =
-                  "/v1/product/sale/list/warehouse?sort=asc&page=${event.page}&limit=40&q=${event.searchValue}&from_date=${formatDateTime(event.begindate)}&to_date=${formatDateTime(event.endDate)}";
+                  "/v1/product/sale/list/warehouse?sort=asc&page=${event.page}&limit=100&q=${event.searchValue}&from_date=${formatDateTime(event.begindate)}&to_date=${formatDateTime(event.endDate)}";
             } else {
               path =
-                  "/v1/product/sale/list/store/${event.storeId}?sort=asc&page=${event.page}&limit=40&store_id=${event.storeId}&q=${event.searchValue}&from_date=${formatDateTime(event.begindate)}&to_date=${formatDateTime(event.endDate)}";
+                  "/v1/product/sale/list/store/${event.storeId}?sort=asc&page=${event.page}&limit=100&store_id=${event.storeId}&q=${event.searchValue}&from_date=${formatDateTime(event.begindate)}&to_date=${formatDateTime(event.endDate)}";
             }
           }
         } else {
           if (event.searchAgian) {
             if (event.storeId == -1) {
               path =
-                  "/v1/product/sale/list/warehouse?sort=asc&page=${event.page}&limit=40&q=${event.searchValue}&from_date=${formatDateTime(event.begindate)}&to_date=${formatDateTime(event.endDate)}";
+                  "/v1/product/sale/list/warehouse?sort=asc&page=${event.page}&limit=100&q=${event.searchValue}&from_date=${formatDateTime(event.begindate)}&to_date=${formatDateTime(event.endDate)}";
             } else {
               path =
-                  "/v1/product/sale/list/store/${event.storeId}?sort=asc&page=${event.page}&limit=40&store_id=${event.storeId}&q=${event.searchValue}&from_date=${formatDateTime(event.begindate)}&to_date=${formatDateTime(event.endDate)}";
+                  "/v1/product/sale/list/store/${event.storeId}?sort=asc&page=${event.page}&limit=100&store_id=${event.storeId}&q=${event.searchValue}&from_date=${formatDateTime(event.begindate)}&to_date=${formatDateTime(event.endDate)}";
             }
           } else {
             path =
-                "/v1/product/sale/list/store/${event.storeId}?sort=asc&page=${event.page}&limit=40&store_id=${event.storeId}&from_date=${formatDateTime(event.begindate)}&to_date=${formatDateTime(event.endDate)}";
+                "/v1/product/sale/list/store/${event.storeId}?sort=asc&page=${event.page}&limit=100&store_id=${event.storeId}&from_date=${formatDateTime(event.begindate)}&to_date=${formatDateTime(event.endDate)}";
           }
         }
         Response response = await apiService.getRequest(path);
@@ -128,27 +128,27 @@ class SaleBloc extends Bloc<SaleEvent, SaleState> {
           if (event.searchAgian) {
             if (event.storeId == "-1") {
               path =
-                  "/v1/product/sale/list?sort=desc&page=${event.page}&limit=40&from_date=${formatDateTime(event.beginDate)}&to_date=${formatDateTime(event.endDate)}&is_warehouse=1";
+                  "/v1/product/sale/list?sort=desc&page=${event.page}&limit=100&from_date=${formatDateTime(event.beginDate)}&to_date=${formatDateTime(event.endDate)}&is_warehouse=1";
             } else {
               if (event.storeId == "") {
                 path =
-                    "/v1/product/sale/list?sort=desc&page=${event.page}&limit=40&from_date=${formatDateTime(event.beginDate)}&to_date=${formatDateTime(event.endDate)}";
+                    "/v1/product/sale/list?sort=desc&page=${event.page}&limit=100&from_date=${formatDateTime(event.beginDate)}&to_date=${formatDateTime(event.endDate)}";
               } else {
                 path =
-                    "/v1/product/sale/list?sort=desc&page=${event.page}&limit=40&from_date=${formatDateTime(event.beginDate)}&to_date=${formatDateTime(event.endDate)}&store_id=${event.storeId}";
+                    "/v1/product/sale/list?sort=desc&page=${event.page}&limit=100&from_date=${formatDateTime(event.beginDate)}&to_date=${formatDateTime(event.endDate)}&store_id=${event.storeId}";
               }
             }
           } else {
             path =
-                '/v1/product/sale/list?sort=desc&page=${event.page}&limit=40';
+                '/v1/product/sale/list?sort=desc&page=${event.page}&limit=100';
           }
         } else {
           if (event.searchAgian) {
             path =
-                '/v1/product/sale/list?sort=desc&page=${event.page}&limit=40&store_id=${Utils.getStoreId()}&from_date=${formatDateTime(event.beginDate)}&to_date=${formatDateTime(event.endDate)}';
+                '/v1/product/sale/list?sort=desc&page=${event.page}&limit=100&store_id=${Utils.getStoreId()}&from_date=${formatDateTime(event.beginDate)}&to_date=${formatDateTime(event.endDate)}';
           } else {
             path =
-                '/v1/product/sale/list?sort=desc&page=${event.page}&limit=40&store_id=${Utils.getStoreId()}';
+                '/v1/product/sale/list?sort=desc&page=${event.page}&limit=100&store_id=${Utils.getStoreId()}';
           }
         }
         Response response = await apiService.getRequest(path);

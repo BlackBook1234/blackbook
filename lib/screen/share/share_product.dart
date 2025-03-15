@@ -74,7 +74,7 @@ class _ShareProductScreenState extends State<ShareProductScreen> {
     } else {
       for (CategoriesModel data in categories) {
         if (chosenValue == data.name) {
-          productType = data.parent;
+          productType = data.id.toString();
         } else if (chosenValue == "Бүх төрөл") {
           productType = "";
         }

@@ -32,8 +32,7 @@ class WareHouseAdminScreen extends StatefulWidget {
   State<WareHouseAdminScreen> createState() => _WareHouseAdminScreenState();
 }
 
-class _WareHouseAdminScreenState extends State<WareHouseAdminScreen>
-    with BaseStateMixin {
+class _WareHouseAdminScreenState extends State<WareHouseAdminScreen> with BaseStateMixin {
   DateTime dateTime = DateTime.now();
   DateTime date = DateTime.now();
   List<ProductDetialModel> list = [];
@@ -55,12 +54,7 @@ class _WareHouseAdminScreenState extends State<WareHouseAdminScreen>
   bool _runApi = false;
   late ScrollController _scrollController;
   List<CategoriesModel> categories = [];
-  ProductStoreModel defaultStoreModel = ProductStoreModel(
-      name: "Агуулах",
-      phone_number: "",
-      created_at: DateTime.now().toString(),
-      is_main: 1,
-      id: -1);
+  ProductStoreModel defaultStoreModel = ProductStoreModel(name: "Агуулах", phone_number: "", created_at: DateTime.now().toString(), is_main: 1, id: -1);
 
   @override
   void initState() {
@@ -72,9 +66,7 @@ class _WareHouseAdminScreenState extends State<WareHouseAdminScreen>
   }
 
   void _loadMorePages() {
-    if (_scrollController.position.pixels >=
-            _scrollController.position.maxScrollExtent - 50 &&
-        !_runApi) {
+    if (_scrollController.position.pixels >= _scrollController.position.maxScrollExtent - 50 && !_runApi) {
       setState(() {
         searchAgian = false;
         _page++;
@@ -92,8 +84,7 @@ class _WareHouseAdminScreenState extends State<WareHouseAdminScreen>
       _runApi = true;
     });
     try {
-      ProductResponseModel res = await api.getProductData(
-          _page, searchAgian, storeId, productType, searchValue);
+      ProductResponseModel res = await api.getProductData(_page, searchAgian, storeId, productType, searchValue);
       setState(() {
         if (searchAgian) {
           list = res.data!;
@@ -107,13 +98,11 @@ class _WareHouseAdminScreenState extends State<WareHouseAdminScreen>
         }
         typeStore = typeStore.toSet().toList();
         categories = res.categories!;
-        Provider.of<TypeProvider>(GlobalKeys.navigatorKey.currentContext!,
-                listen: false)
-            .setTypeList(res.categories!.map((e) => e.name).toList());
+        Provider.of<TypeProvider>(GlobalKeys.navigatorKey.currentContext!, listen: false).setTypeList(res.categories!.map((e) => e.name).toList());
         _runApi = false;
-        if (list != []) {
-          chosenType = Utils.getstoreName();
-        }
+        // if (list != []) {
+        //   chosenType = Utils.getstoreName();
+        // }
       });
     } on APIError catch (e) {
       setState(() {
@@ -136,9 +125,7 @@ class _WareHouseAdminScreenState extends State<WareHouseAdminScreen>
         context: context,
         isScrollControlled: true,
         builder: (context) {
-          return FractionallySizedBox(
-              heightFactor: 0.9,
-              child: PurchaseProductBottom(title: "Бараа нэмэх", data: datas));
+          return FractionallySizedBox(heightFactor: 0.9, child: PurchaseProductBottom(title: "Бараа нэмэх", data: datas));
         }).then((value) {
       setState(() {
         _page = 1;
@@ -157,86 +144,74 @@ class _WareHouseAdminScreenState extends State<WareHouseAdminScreen>
     setState(() {
       searchAgian = true;
       _page = 1;
+
+      if (chosenType == "Бүх дэлгүүр" && chosenValue == "Бүх төрөл" && searchValue == "") {
+        setState(() {
+          storeId = '';
+          productType = '';
+        });
+        _getProductData();
+      } else {
+        for (ProductStoreModel data in storeList) {
+          if (data.name == chosenType) {
+            storeId = "";
+            storeId = data.id.toString();
+          } else if (chosenType == "Бүх дэлгүүр") {
+            storeId = "";
+          }
+        }
+        for (CategoriesModel data in categories) {
+          if (chosenValue == data.name) {
+            productType = data.id.toString();
+          } else if (chosenValue == "Бүх төрөл") {
+            productType = "";
+          }
+        }
+        _getProductData();
+      }
     });
-    if (chosenType == "Бүх дэлгүүр" &&
-        chosenValue == "Бүх төрөл" &&
-        searchValue == "") {
-      setState(() {
-        storeId = '';
-        productType = '';
-      });
-      _getProductData();
-    } else {
-      for (ProductStoreModel data in storeList) {
-        if (data.name == chosenType) {
-          storeId = "";
-          storeId = data.id.toString();
-        } else if (chosenType == "Бүх дэлгүүр") {
-          storeId = "";
-        }
-      }
-      for (CategoriesModel data in categories) {
-        if (chosenValue == data.name) {
-          productType = data.parent;
-        } else if (chosenValue == "Бүх төрөл") {
-          productType = "";
-        }
-      }
-      _getProductData();
-    }
   }
 
   void _chooseAction() {
     showDialog(
         context: context,
         builder: (BuildContext context) {
-          return AlertDialog(
-              title: const Column(children: [
-                Center(
-                    child: Text("Бараа",
-                        style: TextStyle(
-                            fontSize: 16,
-                            fontWeight: FontWeight.bold,
-                            color: kPrimaryColor))),
-                Divider()
-              ]),
-              actions: [
-                Row(
-                  mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                  children: [
-                    Expanded(
-                      child: BlackBookButton(
-                        height: 40,
-                        borderRadius: 16,
-                        onPressed: () {
-                          Navigator.pop(context);
-                          _purchaseBottom(purchase!);
-                        },
-                        color: kDisable,
-                        child: const Center(
-                          child: Text("Нэмэх",
-                              style: TextStyle(color: kPrimaryColor)),
-                        ),
-                      ),
+          return AlertDialog(backgroundColor: Colors.white, title: const Column(children: [Center(child: Text("Бараа", style: TextStyle(fontSize: 16, fontWeight: FontWeight.bold, color: kPrimaryColor))), Divider()]), actions: [
+            Row(
+              mainAxisAlignment: MainAxisAlignment.spaceBetween,
+              children: [
+                Expanded(
+                  child: BlackBookButton(
+                    height: 40,
+                    borderRadius: 16,
+                    onPressed: () {
+                      Navigator.pop(context);
+                      _purchaseBottom(purchase!);
+                    },
+                    color: kDisable,
+                    child: const Center(
+                      child: Text("Нэмэх", style: TextStyle(color: kPrimaryColor)),
                     ),
-                    const SizedBox(
-                      width: 6,
-                    ),
-                    Expanded(
-                      child: BlackBookButton(
-                        height: 40,
-                        borderRadius: 16,
-                        onPressed: () {
-                          Navigator.pop(context);
-                          _showDeleteProduct(context);
-                        },
-                        color: kPrimaryColor,
-                        child: const Center(child: Text("Устгах")),
-                      ),
-                    ),
-                  ],
+                  ),
                 ),
-              ]);
+                const SizedBox(
+                  width: 6,
+                ),
+                Expanded(
+                  child: BlackBookButton(
+                    height: 40,
+                    borderRadius: 16,
+                    onPressed: () {
+                      Navigator.pop(context);
+                      _showDeleteProduct(context);
+                    },
+                    color: kPrimaryColor,
+                    child: const Center(child: Text("Устгах")),
+                  ),
+                ),
+              ],
+            ),
+          ]);
         }).then((value) {
       setState(() {
         _page = 1;
@@ -261,10 +236,7 @@ class _WareHouseAdminScreenState extends State<WareHouseAdminScreen>
   }
 
   void addRazmer(ProductDetialModel datas) {
-    Navigator.push(
-        context,
-        CupertinoPageRoute(
-            builder: (context) => ProductAddSzieScreen(model: datas)));
+    Navigator.push(context, CupertinoPageRoute(builder: (context) => ProductAddSzieScreen(model: datas)));
   }
 
   @override
@@ -297,15 +269,8 @@ class _WareHouseAdminScreenState extends State<WareHouseAdminScreen>
       child: KeyboardDismissOnTap(
         dismissOnCapturedTaps: false,
         child: Scaffold(
-          floatingActionButtonLocation:
-              FloatingActionButtonLocation.miniEndDocked,
-          floatingActionButton: FloatingActionButton(
-              mini: true,
-              backgroundColor: kDisable,
-              onPressed: () =>
-                  showNewDialog(context, Utils.getstoreName(), typeStore),
-              child: const Icon(Icons.remove_red_eye_outlined,
-                  color: kPrimaryColor)),
+          floatingActionButtonLocation: FloatingActionButtonLocation.miniEndFloat,
+          floatingActionButton: FloatingActionButton(mini: true, backgroundColor: kDisable, onPressed: () => showNewDialog(context, Utils.getstoreName(), typeStore), child: const Icon(Icons.remove_red_eye_outlined, color: kPrimaryColor)),
           body: Stack(
             children: [
               Column(

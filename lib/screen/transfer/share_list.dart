@@ -181,6 +181,7 @@ class _ShareListHistoryScreenState extends State<ShareListHistoryScreen>
           searchAgian = true;
           tidActive = true;
         });
+        Navigator.pop(context);
         _getTransferData();
       });
       // await _agianSearch();

@@ -47,7 +47,6 @@ class _NewDialogState extends State<NewDialog> with BaseStateMixin {
 
   @override
   void initState() {
-    print(widget.typeStore);
     _getSummery();
     setState(() {
       chosenStore = widget.chosenStore;
@@ -261,6 +260,7 @@ class _NewDialogState extends State<NewDialog> with BaseStateMixin {
                                             fontWeight: FontWeight.w500,
                                             color: Colors.black54),
                                       ),
+                                      if(widget.userRole == "BOSS")
                                       Text(
                                         "Нийт авсан үнэ: ${format.format(response!.stores![index].total_cost)}₮",
                                         textAlign: TextAlign.center,

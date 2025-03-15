@@ -78,37 +78,31 @@ class _DivisionScreenState extends State<DivisionScreen> {
                       itemCount: lst.length,
                       itemBuilder: (context, index) {
                         return Padding(
-                          padding: const EdgeInsets.symmetric(
-                              vertical: 6, horizontal: 20),
+                          padding: const EdgeInsets.symmetric(vertical: 6, horizontal: 20),
                           child: Container(
                             decoration: BoxDecoration(
                               color: kWhite,
-                              boxShadow: [
-                                BoxShadow(
-                                    color: Colors.grey.shade300,
-                                    blurRadius: 3,
-                                    offset: const Offset(2, 2))
-                              ],
+                              boxShadow: [BoxShadow(color: Colors.grey.shade300, blurRadius: 3, offset: const Offset(2, 2))],
                               borderRadius: BorderRadius.circular(20),
                             ),
                             child: ListTile(
                               leading: SvgPicture.asset(
                                 "assets/icons/store.svg",
                                 width: 40,
-                                colorFilter: const ColorFilter.mode(
-                                    kPrimaryColor, BlendMode.srcIn),
+                                colorFilter: const ColorFilter.mode(kPrimaryColor, BlendMode.srcIn),
                               ),
                               title: Text(
                                 lst[index].name!,
-                                style: const TextStyle(
-                                    fontSize: 13.0,
-                                    fontWeight: FontWeight.bold),
+                                style: const TextStyle(fontSize: 13.0, fontWeight: FontWeight.bold),
+                              ),
+                              subtitle: Text(
+                                lst[index].phone_number.toString(),
+                                style: const TextStyle(fontSize: 13.0, color: Colors.black38, fontWeight: FontWeight.bold),
                               ),
                               onTap: () {
                                 Navigator.of(context).push(
                                   CupertinoPageRoute(
-                                    builder: (context) =>
-                                        StoreItemScreen(id: lst[index].id!),
+                                    builder: (context) => StoreItemScreen(id: lst[index].id!),
                                   ),
                                 );
                               },

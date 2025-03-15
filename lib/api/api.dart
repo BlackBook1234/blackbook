@@ -26,7 +26,7 @@ class API {
   API._internal();
   factory API() => _instance;
   final client = APIHttpClient();
-  final int limit = 40;
+  final int limit = 100;
 
   Future<void> addFriendRequest({
     required String phoneNumber,
@@ -42,15 +42,15 @@ class API {
   }
 
   Future<PhoneNumber> getFriendList(int page, String status) async {
-    String path = "/v1/invite/my/list?sort=desc&page=$page&limit=40";
+    String path = "/v1/invite/my/list?sort=desc&page=$page&limit=100";
     if (status == "Баталгаажсан") {
-      path = '/v1/invite/my/list?sort=desc&page=$page&limit=40&status=APPROVED';
+      path = '/v1/invite/my/list?sort=desc&page=$page&limit=100&status=APPROVED';
     } else if (status == "Хүлээгдэж байна") {
-      path = '/v1/invite/my/list?sort=desc&page=$page&limit=40&status=PENDING';
+      path = '/v1/invite/my/list?sort=desc&page=$page&limit=100&status=PENDING';
     } else if (status == "Сонгох") {
-      path = '/v1/invite/my/list?sort=desc&page=$page&limit=40';
+      path = '/v1/invite/my/list?sort=desc&page=$page&limit=100';
     } else if (status == "Цуцалсан") {
-      path = '/v1/invite/my/list?sort=desc&page=$page&limit=40&status=DECLINED';
+      path = '/v1/invite/my/list?sort=desc&page=$page&limit=100&status=DECLINED';
     }
     return await client.get(path).then((value) {
       PackagesResponse res = PackagesResponse.fromJson(value);
@@ -59,7 +59,7 @@ class API {
   }
 
   Future<NotficationResponse> getNotification(int page) async {
-    return await client.get('/v1/notification/my/list?page=$page&limit=40&sort_type=desc').then((value) async {
+    return await client.get('/v1/notification/my/list?page=$page&limit=100&sort_type=desc').then((value) async {
       if (value == "auth_token_error") {
         await refreshToken();
         return getNotification(page);
@@ -173,22 +173,22 @@ class API {
     if (Utils.getUserRole() == "BOSS") {
       if (searchAgian) {
         if (storeId == "-1") {
-          path = '/v1/product/my/list?page=$page&limit=10&q=$searchValue&parent_category=$category&sort=desc&is_warehouse=1';
+          path = '/v1/product/my/list?page=$page&limit=100&q=$searchValue&category_id=$category&sort=desc&is_warehouse=1';
         } else {
-          path = '/v1/product/my/list?page=$page&limit=10&q=$searchValue&parent_category=$category&store_id=$storeId&sort=desc';
+          path = '/v1/product/my/list?page=$page&limit=100&q=$searchValue&category_id=$category&store_id=$storeId&sort=desc';
         }
       } else {
-        path = '/v1/product/my/list?page=$page&limit=10&sort=desc&is_warehouse=1';
+        path = '/v1/product/my/list?page=$page&limit=100&sort=desc&is_warehouse=1';
       }
     } else {
       if (searchAgian) {
         if (storeId == "-1") {
-          path = '/v1/product/my/list?page=$page&limit=10&q=$searchValue&parent_category=$category&sort=desc&is_warehouse=1';
+          path = '/v1/product/my/list?page=$page&limit=100&q=$searchValue&category_id=$category&sort=desc&is_warehouse=1';
         } else {
-          path = '/v1/product/my/list?page=$page&limit=10&q=$searchValue&parent_category=$category&store_id=$storeId&sort=desc';
+          path = '/v1/product/my/list?page=$page&limit=100&q=$searchValue&category_id=$category&store_id=$storeId&sort=desc';
         }
       } else {
-        path = '/v1/product/my/list?page=$page&limit=10&sort=desc&store_id=${Utils.getStoreId()}';
+        path = '/v1/product/my/list?page=$page&limit=100&sort=desc&store_id=${Utils.getStoreId()}';
       }
     }
 
@@ -206,15 +206,15 @@ class API {
     String path = "";
     if (searchAgian) {
       if (storeId == "-1") {
-        path = '/v1/product/my/list?page=$page&limit=10&q=$searchValue&parent_category=$category&sort=desc&is_warehouse=1';
+        path = '/v1/product/my/list?page=$page&limit=100&q=$searchValue&category_id=$category&sort=desc&is_warehouse=1';
       } else {
-        path = '/v1/product/my/list?page=$page&limit=10&q=$searchValue&parent_category=$category&store_id=$storeId&sort=desc';
+        path = '/v1/product/my/list?page=$page&limit=100&q=$searchValue&category_id=$category&store_id=$storeId&sort=desc';
       }
     } else {
       if (Utils.getUserRole() == "BOSS") {
-        path = '/v1/product/my/list?page=$page&limit=10&sort=desc&is_warehouse=1';
+        path = '/v1/product/my/list?page=$page&limit=100&sort=desc&is_warehouse=1';
       } else {
-        path = '/v1/product/my/list?page=$page&limit=10&sort=desc&store_id=${Utils.getStoreId()}';
+        path = '/v1/product/my/list?page=$page&limit=100&sort=desc&store_id=${Utils.getStoreId()}';
       }
     }
     return await client.get(path).then((value) async {
@@ -279,18 +279,18 @@ class API {
     if (Utils.getUserRole() == "BOSS") {
       if (searchAgian) {
         if (storeId == "-1") {
-          path = "/v1/product/sale/list?sort=desc&page=$page&limit=100&from_date=${formatDateTime(beginDate)}&to_date=${formatDateTime(endDate)}&is_warehouse=1";
+          path = "/v1/product/sale/list?sort=desc&page=$page&limit=1000&from_date=${formatDateTime(beginDate)}&to_date=${formatDateTime(endDate)}&is_warehouse=1";
         } else {
-          path = "/v1/product/sale/list?sort=desc&page=$page&limit=100&from_date=${formatDateTime(beginDate)}&to_date=${formatDateTime(endDate)}&store_id=$storeId";
+          path = "/v1/product/sale/list?sort=desc&page=$page&limit=1000&from_date=${formatDateTime(beginDate)}&to_date=${formatDateTime(endDate)}&store_id=$storeId";
         }
       } else {
-        path = '/v1/product/sale/list?sort=desc&page=$page&limit=100&is_warehouse=1';
+        path = '/v1/product/sale/list?sort=desc&page=$page&limit=1000&is_warehouse=1';
       }
     } else {
       if (searchAgian) {
-        path = '/v1/product/sale/list?sort=desc&page=$page&limit=100&store_id=${Utils.getStoreId()}&from_date=${formatDateTime(beginDate)}&to_date=${formatDateTime(endDate)}';
+        path = '/v1/product/sale/list?sort=desc&page=$page&limit=1000&store_id=${Utils.getStoreId()}&from_date=${formatDateTime(beginDate)}&to_date=${formatDateTime(endDate)}';
       } else {
-        path = '/v1/product/sale/list?sort=desc&page=$page&limit=100&store_id=${Utils.getStoreId()}';
+        path = '/v1/product/sale/list?sort=desc&page=$page&limit=1000&store_id=${Utils.getStoreId()}';
       }
     }
     return await client.get(path).then((value) async {

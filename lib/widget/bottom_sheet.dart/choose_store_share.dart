@@ -11,6 +11,7 @@ import "package:black_book/models/product/product_inlist.dart";
 import "package:black_book/models/store/store_detial.dart";
 import "package:black_book/provider/product_share_provider.dart";
 import "package:black_book/util/utils.dart";
+import "package:black_book/widget/alert/component/buttons.dart";
 import "package:black_book/widget/alert/mixin_dialog.dart";
 import "package:flutter/material.dart";
 import "package:flutter_bloc/flutter_bloc.dart";
@@ -18,29 +19,21 @@ import "package:flutter_svg/svg.dart";
 import "package:provider/provider.dart";
 
 class ChooseStoreBottomSheetsWidget extends StatefulWidget {
-  const ChooseStoreBottomSheetsWidget(
-      {super.key, required this.title, required this.data});
+  const ChooseStoreBottomSheetsWidget({super.key, required this.title, required this.data});
   @override
-  State<ChooseStoreBottomSheetsWidget> createState() =>
-      _ChooseStoreBottomSheetsWidgetState();
+  State<ChooseStoreBottomSheetsWidget> createState() => _ChooseStoreBottomSheetsWidgetState();
   final String title;
   final List<ProductDetialModel> data;
 }
 
-class _ChooseStoreBottomSheetsWidgetState
-    extends State<ChooseStoreBottomSheetsWidget> with BaseStateMixin {
+class _ChooseStoreBottomSheetsWidgetState extends State<ChooseStoreBottomSheetsWidget> with BaseStateMixin {
   List<StoreDetialModel> lst = [];
   final _bloc = StoreBloc();
   final _shareBloc = ShareBloc();
   int? storeId;
   List<ProductInDetialModel> otpData = [];
   List<ProductShareOtp> sendData = [];
-  StoreDetialModel defaultStoreModel = StoreDetialModel(
-      name: "Агуулах",
-      phone_number: "",
-      created_at: DateTime.now().toString(),
-      is_main: 1,
-      id: 0);
+  StoreDetialModel defaultStoreModel = StoreDetialModel(name: "Агуулах", phone_number: "", created_at: DateTime.now().toString(), is_main: 1, id: 0);
 
   @override
   void initState() {
@@ -48,11 +41,7 @@ class _ChooseStoreBottomSheetsWidgetState
     for (ProductDetialModel data in widget.data) {
       otpData.addAll(data.sizes!);
       for (ProductInDetialModel size in data.sizes!) {
-        sendData.add(ProductShareOtp(
-            cost: size.cost,
-            price: size.price,
-            stock: size.stock,
-            id: size.id));
+        sendData.add(ProductShareOtp(cost: size.cost, price: size.price, stock: size.stock, id: size.id));
       }
     }
 
@@ -139,11 +128,7 @@ class _ChooseStoreBottomSheetsWidgetState
           child: Padding(
               padding: const EdgeInsets.symmetric(horizontal: 20, vertical: 5),
               child: Column(children: [
-                Text(widget.title,
-                    style: const TextStyle(
-                        color: kPrimarySecondColor,
-                        fontSize: 14,
-                        fontWeight: FontWeight.bold)),
+                Text(widget.title, style: const TextStyle(color: kPrimarySecondColor, fontSize: 14, fontWeight: FontWeight.bold)),
                 const Divider(),
                 Expanded(
                     child: ListView.builder(
@@ -152,35 +137,13 @@ class _ChooseStoreBottomSheetsWidgetState
                           return Padding(
                               padding: const EdgeInsets.symmetric(vertical: 6),
                               child: Container(
-                                  decoration: BoxDecoration(
-                                      color: lst[index].isChecked
-                                          ? Colors.grey.shade600
-                                          : kWhite,
-                                      boxShadow: [
-                                        BoxShadow(
-                                            color: Colors.grey.shade300,
-                                            blurRadius: 3,
-                                            offset: const Offset(2, 2))
-                                      ],
-                                      borderRadius: BorderRadius.circular(20)),
+                                  decoration: BoxDecoration(color: lst[index].isChecked ? Colors.grey.shade600 : kWhite, boxShadow: [BoxShadow(color: Colors.grey.shade300, blurRadius: 3, offset: const Offset(2, 2))], borderRadius: BorderRadius.circular(20)),
                                   child: ListTile(
-                                      leading: SvgPicture.asset(
-                                          "assets/icons/store.svg",
-                                          width: 40,
-                                          colorFilter: ColorFilter.mode(
-                                              lst[index].isChecked
-                                                  ? kWhite
-                                                  : kPrimaryColor,
-                                              BlendMode.srcIn)),
-                                      title: Text(lst[index].name!,
-                                          style: lst[index].isChecked
-                                              ? const TextStyle(
-                                                  color: kWhite,
-                                                  fontSize: 14.0,
-                                                  fontWeight: FontWeight.bold)
-                                              : const TextStyle(
-                                                  fontSize: 14.0,
-                                                  fontWeight: FontWeight.bold)),
+                                    hoverColor: Colors.transparent,
+                                    splashColor: Colors.transparent,
+                                      leading: SvgPicture.asset("assets/icons/store.svg", width: 40, colorFilter: ColorFilter.mode(lst[index].isChecked ? kWhite : kPrimaryColor, BlendMode.srcIn)),
+                                      title: Text(lst[index].name!, style: lst[index].isChecked ? const TextStyle(color: kWhite, fontSize: 14.0, fontWeight: FontWeight.bold) : const TextStyle(fontSize: 14.0, fontWeight: FontWeight.bold)),
+                                      subtitle: Text(lst[index].phone_number!, style: lst[index].isChecked ? const TextStyle(color: Colors.white38, fontSize: 12.0, fontWeight: FontWeight.bold) : const TextStyle(fontSize: 12.0,color: Colors.black38, fontWeight: FontWeight.bold)),
                                       onTap: () {
                                         setState(() {
                                           for (StoreDetialModel data in lst) {
@@ -192,18 +155,16 @@ class _ChooseStoreBottomSheetsWidgetState
                                         });
                                       })));
                         })),
-                SizedBox(
+                Padding(
+                  padding: EdgeInsets.only(bottom: MediaQuery.of(context).padding.bottom),
+                  child: BlackBookButton(
                     width: double.infinity,
-                    child: ElevatedButton(
-                        style: OutlinedButton.styleFrom(
-                            shape: RoundedRectangleBorder(
-                                borderRadius: BorderRadius.circular(20)),
-                            backgroundColor: kPrimaryColor),
-                        onPressed: () {
-                          _shareProduct();
-                        },
-                        child: const Text("Шилжүүлэх",
-                            style: TextStyle(color: kWhite))))
+                    onPressed: () {
+                      _shareProduct();
+                    },
+                    child: const Text("Шилжүүлэх"),
+                  ),
+                ),
               ])));
     });
   }

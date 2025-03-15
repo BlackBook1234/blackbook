@@ -56,74 +56,76 @@ class _HomeScreenState extends State<HomeScreen> with BaseStateMixin {
             height: getSize(10),
           ),
           HeadphoneBanner(urls: url),
-          SingleChildScrollView(
-            child: Column(
-              children: [
-                SizedBox(
-                  height: getSize(20),
-                ),
-                homeContainer(
-                    context, "Салбар дэлгүүр нээх", "assets/svg/add_store.svg",
-                    () {
-                  Navigator.of(context).push(CupertinoPageRoute(
-                      builder: (context) => const AddDivision()));
-                }, userRole),
-                homeContainer(
-                    context, "Бараа шилжүүлэг", "assets/svg/home_share.svg",
-                    () {
-                  Navigator.of(context).push(CupertinoPageRoute(
-                      builder: (context) => const ShareProductScreen()));
-                }, "BOSS"),
-                homeContainer(
-                    context, "Зарагдсан бараа", "assets/svg/home-sold.svg", () {
-                  Navigator.of(context).push(CupertinoPageRoute(
-                      builder: (context) => const SoldItemMainScreen()));
-                }, "BOSS"),
-                homeContainer(context, "Миний дэлгүүрүүд",
-                    "assets/svg/home_all_store.svg", () {
-                  Navigator.of(context).push(CupertinoPageRoute(
-                      builder: (context) => const DivisionScreen()));
-                }, userRole),
-                homeContainer(context, "Бараа шилжүүлсэн түүх",
-                    "assets/svg/home_history.svg", () {
-                  Navigator.of(context).push(
-                    CupertinoPageRoute(
-                      builder: (context) => const ShareListHistoryScreen(
-                        inComeOutCome: false,
-                        sourceId: '',
+          Expanded(
+            child: SingleChildScrollView(
+              child: Column(
+                children: [
+                  SizedBox(
+                    height: getSize(20),
+                  ),
+                  homeContainer(
+                      context, "Салбар дэлгүүр нээх", "assets/svg/add_store.svg",
+                      () {
+                    Navigator.of(context).push(CupertinoPageRoute(
+                        builder: (context) => const AddDivision()));
+                  }, userRole),
+                  homeContainer(
+                      context, "Бараа шилжүүлэг", "assets/svg/home_share.svg",
+                      () {
+                    Navigator.of(context).push(CupertinoPageRoute(
+                        builder: (context) => const ShareProductScreen()));
+                  }, "BOSS"),
+                  homeContainer(
+                      context, "Зарагдсан бараа", "assets/svg/home-sold.svg", () {
+                    Navigator.of(context).push(CupertinoPageRoute(
+                        builder: (context) => const SoldItemMainScreen()));
+                  }, "BOSS"),
+                  homeContainer(context, "Миний дэлгүүрүүд",
+                      "assets/svg/home_all_store.svg", () {
+                    Navigator.of(context).push(CupertinoPageRoute(
+                        builder: (context) => const DivisionScreen()));
+                  }, userRole),
+                  homeContainer(context, "Бараа шилжүүлсэн түүх",
+                      "assets/svg/home_history.svg", () {
+                    Navigator.of(context).push(
+                      CupertinoPageRoute(
+                        builder: (context) => const ShareListHistoryScreen(
+                          inComeOutCome: false,
+                          sourceId: '',
+                        ),
                       ),
-                    ),
-                  );
-                }, "BOSS"),
-                homeContainer(
-                    context, "Шилжиж ирсэн бараа", "assets/svg/warehouse.svg",
-                    () {
-                  Navigator.of(context).push(
-                    CupertinoPageRoute(
-                      builder: (context) => const ShareListHistoryScreen(
-                        inComeOutCome: true,
-                        sourceId: '',
+                    );
+                  }, "BOSS"),
+                  homeContainer(
+                      context, "Шилжиж ирсэн бараа", "assets/svg/warehouse.svg",
+                      () {
+                    Navigator.of(context).push(
+                      CupertinoPageRoute(
+                        builder: (context) => const ShareListHistoryScreen(
+                          inComeOutCome: true,
+                          sourceId: '',
+                        ),
                       ),
-                    ),
-                  );
-                }, "BOSS"),
-                homeContainer(
-                    context, "Анх бүртгэсэн бараа", "assets/svg/add_type.svg", () {
-                  Navigator.of(context).push(
-                    CupertinoPageRoute(
-                      builder: (context) => const DateProductSearch(),
-                    ),
-                  );
-                }, userRole),
-                homeContainer(
-                    context, "Ангиллын нэр солих", "assets/svg/share.svg", () {
-                  Navigator.of(context).push(
-                    CupertinoPageRoute(
-                      builder: (context) => const ChangeCategoryScreen(),
-                    ),
-                  );
-                }, userRole),
-              ],
+                    );
+                  }, "BOSS"),
+                  homeContainer(
+                      context, "Анх бүртгэсэн бараа", "assets/svg/add_type.svg", () {
+                    Navigator.of(context).push(
+                      CupertinoPageRoute(
+                        builder: (context) => const DateProductSearch(),
+                      ),
+                    );
+                  }, userRole),
+                  homeContainer(
+                      context, "Ангиллын нэр солих", "assets/svg/share.svg", () {
+                    Navigator.of(context).push(
+                      CupertinoPageRoute(
+                        builder: (context) => const ChangeCategoryScreen(),
+                      ),
+                    );
+                  }, userRole),
+                ],
+              ),
             ),
           ),
         ],

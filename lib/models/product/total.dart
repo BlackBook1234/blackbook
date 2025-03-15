@@ -3,7 +3,7 @@ part 'total.g.dart';
 
 @JsonSerializable()
 class TotalProductModel {
-  int count, balance, cost, price;
+  int count, balance, cost, price; //TODO
 
   TotalProductModel(
       {required this.count,

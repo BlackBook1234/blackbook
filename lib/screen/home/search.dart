@@ -130,7 +130,7 @@ class _SearchScreenState extends State<SearchScreen> with BaseStateMixin {
       }
       for (CategoriesModel data in categories) {
         if (chosenValue == data.name) {
-          productType = data.parent;
+          productType = data.id.toString();
         } else if (chosenValue == "Бүх төрөл") {
           productType = "";
         }

@@ -98,7 +98,7 @@ class _HeadphoneBannerState extends State<HeadphoneBanner> {
                             axisDirection: Axis.horizontal,
                             effect: CustomizableEffect(
                               activeDotDecoration: DotDecoration(
-                                width: 24,
+                                width: 12,
                                 height: 8,
                                 color: fromHex('#EFEFF0'),
                                 rotationAngle: 180,

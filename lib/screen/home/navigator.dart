@@ -1,3 +1,5 @@
+import 'dart:io';
+
 import 'package:black_book/api/component/api_error.dart';
 import 'package:black_book/constant.dart';
 import 'package:black_book/models/invitaion/response.dart';
@@ -6,6 +8,7 @@ import 'package:black_book/screen/home/search.dart';
 import 'package:black_book/screen/home/widget/banners_carousel.dart';
 import 'package:black_book/screen/notification/notification.dart';
 import 'package:black_book/screen/sale_product/sale_main.dart';
+import 'package:black_book/util/utils.dart';
 import 'package:black_book/widget/alert/mixin_dialog.dart';
 import 'package:black_book/widget/bottom_navigation_bar/bottom_navigation_bar.dart';
 import 'package:black_book/widget/drawer.dart';
@@ -48,7 +51,7 @@ class _NavigatorScreenState extends State<NavigatorScreen> with BaseStateMixin {
   }
 
   void onBottomIconPressed(int index) {
-    // refreshPage(context);
+    refreshPage(context);
     setState(() {
       screenIndex = index;
     });
@@ -87,16 +90,18 @@ class _NavigatorScreenState extends State<NavigatorScreen> with BaseStateMixin {
   }
 
   Future<void> _checkInvitaion() async {
-    try {
-      var res = await api.checkInvation();
-      setState(() {
-        invitationResponse = res;
-      });
-      if (invitationResponse.data!.isNotEmpty) {
-        invitaionDialog(invitationResponse);
+    if (Utils.getUserRole() == "BOSS") {
+      try {
+        var res = await api.checkInvation();
+        setState(() {
+          invitationResponse = res;
+        });
+        if (invitationResponse.data!.isNotEmpty) {
+          invitaionDialog(invitationResponse);
+        }
+      } on APIError catch (e) {
+        showErrorDialog(e.message);
       }
-    } on APIError catch (e) {
-      showErrorDialog(e.message);
     }
   }
 
@@ -148,7 +153,7 @@ class _NavigatorScreenState extends State<NavigatorScreen> with BaseStateMixin {
                       size: 30,
                     ),
                     onPressed: () {
-                      Navigator.of(context).push(CupertinoPageRoute(builder: (context) => const NotficationScreen()));
+                      Navigator.of(context).push(CupertinoPageRoute(builder: (context) => const NotficationScreen())).then((e) => refreshPage(context));
                     },
                   ),
                   // Container(
@@ -237,7 +242,7 @@ class _NavigatorScreenState extends State<NavigatorScreen> with BaseStateMixin {
                 ],
               ),
               Positioned(
-                bottom: 20,
+                bottom: Platform.isIOS ? 20 : 0,
                 right: 0,
                 child: CustomBottomNavigationBar(
                   onIconPresedCallback: onBottomIconPressed,

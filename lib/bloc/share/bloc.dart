@@ -77,24 +77,24 @@ class ShareBloc extends Bloc<ShareEvent, ShareState> {
                 path = "/v1/product/transfer/list?sort=desc&page=1&limit=20";
               } else {
                 // path =
-                // "/v1/product/transfer/list?page=${event.page}&sort=desc&limit=40&q=${event.searchValue}";
+                // "/v1/product/transfer/list?page=${event.page}&sort=desc&limit=100&q=${event.searchValue}";
               }
             } else {
               path =
-                  '/v1/product/transfer/list?page=${event.page}&is_warehouse=1&limit=40&sort=desc';
+                  '/v1/product/transfer/list?page=${event.page}&is_warehouse=1&limit=100&sort=desc';
             }
           } else {
             if (event.searchAgian) {
               // path =
-              //     '/v1/product/transfer/list?limit=40&store_id=${Utils.getStoreId()}&page=${event.page}&sort=desc&q=${event.searchValue}';
+              //     '/v1/product/transfer/list?limit=100&store_id=${Utils.getStoreId()}&page=${event.page}&sort=desc&q=${event.searchValue}';
             } else {
               path =
-                  '/v1/product/transfer/list?limit=40&store_id=${Utils.getStoreId()}&page=${event.page}&sort=desc';
+                  '/v1/product/transfer/list?limit=100&store_id=${Utils.getStoreId()}&page=${event.page}&sort=desc';
             }
           }
         } else {
           path =
-              '/v1/product/transfer/list?limit=40&page=${event.page}&sort=desc&tid=${event.sourceId}';
+              '/v1/product/transfer/list?limit=100&page=${event.page}&sort=desc&tid=${event.sourceId}';
         }
 
         Response response = await apiService.getRequest(path);
@@ -130,18 +130,18 @@ class ShareBloc extends Bloc<ShareEvent, ShareState> {
         if (Utils.getUserRole() == "BOSS") {
           if (event.searchAgian) {
             path =
-                "/v1/product/my/list?page=${event.page}&sort=desc&limit=40&q=${event.searchValue}&parent_category=${event.chosenValue}&is_warehouse=1";
+                "/v1/product/my/list?page=${event.page}&sort=desc&limit=100&q=${event.searchValue}&category_id=${event.chosenValue}&is_warehouse=1";
           } else {
             path =
-                '/v1/product/my/list?page=${event.page}&is_warehouse=1&limit=40&sort=desc';
+                '/v1/product/my/list?page=${event.page}&is_warehouse=1&limit=100&sort=desc';
           }
         } else {
           if (event.searchAgian) {
             path =
-                '/v1/product/my/list?limit=40&store_id=${Utils.getStoreId()}&page=${event.page}&sort=desc&q=${event.searchValue}&parent_category=${event.chosenValue}';
+                '/v1/product/my/list?limit=100&store_id=${Utils.getStoreId()}&page=${event.page}&sort=desc&q=${event.searchValue}&category_id=${event.chosenValue}';
           } else {
             path =
-                '/v1/product/my/list?limit=40&store_id=${Utils.getStoreId()}&page=${event.page}&sort=desc';
+                '/v1/product/my/list?limit=100&store_id=${Utils.getStoreId()}&page=${event.page}&sort=desc';
           }
         }
         Response response = await apiService.getRequest(path);

@@ -24,10 +24,10 @@ class ProductDetialModel {
       this.code,
       this.total,
       this.photo,
-      this.category_id,
+      this.parent_category,
       this.category_name,
       this.created_at,
-      this.parent_category,
+      this.category_id,
       this.parent_name,
       this.good_id,
       this.sizes});

@@ -73,7 +73,6 @@ class _SoldItemScreenState extends State<SoldItemScreen> with BaseStateMixin {
 
   void _backProduct(SaleProductInDetialModel data) {
     setState(() {
-      // print(productBackdata.price);
       backamount = data.price;
       backsaleId = data.sale_id;
       backstock = data.stock;

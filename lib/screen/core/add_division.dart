@@ -66,15 +66,12 @@ class _AddDivisionState extends State<AddDivision> with BaseStateMixin {
                 Utils.startLoader(context);
               }
               if (state is StoreFailure) {
-                if (state.message ==
-                    "Дэлгүүр нээх эрх дууссан байна, та сунгахуу?") {
+                if (state.message == "Дэлгүүр нээх эрх дууссан байна, та сунгахуу?") {
                   Utils.cancelLoader(context);
                   // show
-                  _showLogOutWarning(
-                      context, state.message, "extend_store_limit");
+                  _showLogOutWarning(context, state.message, "extend_store_limit");
                 } else if (state.message == "Token") {
-                  _bloc.add(CreateStoreEvent(
-                      storeName.text, int.parse(phoneNumber.text)));
+                  _bloc.add(CreateStoreEvent(storeName.text, int.parse(phoneNumber.text)));
                 } else {
                   Utils.cancelLoader(context);
                   ErrorMessage.attentionMessage(context, state.message);
@@ -95,18 +92,18 @@ class _AddDivisionState extends State<AddDivision> with BaseStateMixin {
           bloc: _bloc,
           listener: (context, state) {
             if (state is GetStoreLoading) {
-              Utils.startLoader(context);
+              // Utils.startLoader(context);
             }
             if (state is GetStoreFailure) {
               if (state.message == "Token") {
                 _bloc.add(const GetStoreEvent());
               } else {
-                Utils.cancelLoader(context);
+                // Utils.cancelLoader(context);
                 ErrorMessage.attentionMessage(context, state.message);
               }
             }
             if (state is GetStoreSuccess) {
-              Utils.cancelLoader(context);
+              // Utils.cancelLoader(context);
               setState(() {
                 lst = state.list;
               });
@@ -139,29 +136,10 @@ class _AddDivisionState extends State<AddDivision> with BaseStateMixin {
                         Padding(
                             padding: const EdgeInsets.symmetric(vertical: 20),
                             child: Container(
-                                decoration: BoxDecoration(
-                                    color: kWhite,
-                                    boxShadow: [
-                                      BoxShadow(
-                                          color: Colors.grey.shade300,
-                                          blurRadius: 3,
-                                          offset: const Offset(2, 2))
-                                    ],
-                                    borderRadius: BorderRadius.circular(10)),
+                                decoration: BoxDecoration(color: kWhite, boxShadow: [BoxShadow(color: Colors.grey.shade300, blurRadius: 3, offset: const Offset(2, 2))], borderRadius: BorderRadius.circular(10)),
                                 child: InkWell(
                                     onTap: () {},
-                                    child: SizedBox(
-                                        width:
-                                            MediaQuery.of(context).size.width /
-                                                1.1,
-                                        child: const Padding(
-                                            padding: EdgeInsets.symmetric(
-                                                vertical: 20),
-                                            child: Text("Салбар дэлгүүр нээх",
-                                                textAlign: TextAlign.center,
-                                                style: TextStyle(
-                                                    fontWeight: FontWeight.bold,
-                                                    fontSize: 13.0))))))),
+                                    child: SizedBox(width: MediaQuery.of(context).size.width / 1.1, child: const Padding(padding: EdgeInsets.symmetric(vertical: 20), child: Text("Салбар дэлгүүр нээх", textAlign: TextAlign.center, style: TextStyle(fontWeight: FontWeight.bold, fontSize: 13.0))))))),
                         Padding(
                             padding: const EdgeInsets.only(bottom: 10),
                             child: SizedBox(
@@ -169,25 +147,12 @@ class _AddDivisionState extends State<AddDivision> with BaseStateMixin {
                                 child: TextField(
                                     textInputAction: TextInputAction.next,
                                     controller: storeName,
-                                    style: const TextStyle(
-                                        fontSize: 14,
-                                        fontWeight: FontWeight.bold),
+                                    style: const TextStyle(fontSize: 14, fontWeight: FontWeight.bold),
                                     decoration: InputDecoration(
                                       labelText: "Дэлгүүрээ нэрлэнэ үү",
-                                      labelStyle: const TextStyle(
-                                          fontWeight: FontWeight.bold,
-                                          fontSize: 14,
-                                          color: Colors.black38),
-                                      enabledBorder: OutlineInputBorder(
-                                          borderSide: const BorderSide(
-                                              color: Colors.black12),
-                                          borderRadius:
-                                              BorderRadius.circular(10)),
-                                      focusedBorder: OutlineInputBorder(
-                                          borderSide: const BorderSide(
-                                              color: Colors.black26),
-                                          borderRadius:
-                                              BorderRadius.circular(10)),
+                                      labelStyle: const TextStyle(fontWeight: FontWeight.bold, fontSize: 14, color: Colors.black38),
+                                      enabledBorder: OutlineInputBorder(borderSide: const BorderSide(color: Colors.black12), borderRadius: BorderRadius.circular(10)),
+                                      focusedBorder: OutlineInputBorder(borderSide: const BorderSide(color: Colors.black26), borderRadius: BorderRadius.circular(10)),
                                     )))),
                         SizedBox(
                             height: 70,
@@ -196,42 +161,18 @@ class _AddDivisionState extends State<AddDivision> with BaseStateMixin {
                                 controller: phoneNumber,
                                 maxLength: 8,
                                 keyboardType: TextInputType.number,
-                                inputFormatters: [
-                                  FilteringTextInputFormatter.digitsOnly
-                                ],
-                                style: const TextStyle(
-                                    fontSize: 14, fontWeight: FontWeight.bold),
+                                inputFormatters: [FilteringTextInputFormatter.digitsOnly],
+                                style: const TextStyle(fontSize: 14, fontWeight: FontWeight.bold),
                                 decoration: InputDecoration(
                                     labelText: "Дэлгүүрийн утасны дугаар",
-                                    labelStyle: const TextStyle(
-                                        fontWeight: FontWeight.bold,
-                                        fontSize: 14,
-                                        color: Colors.black38),
-                                    enabledBorder: OutlineInputBorder(
-                                        borderSide: const BorderSide(
-                                            color: Colors.black12),
-                                        borderRadius:
-                                            BorderRadius.circular(10)),
-                                    focusedBorder: OutlineInputBorder(
-                                        borderSide: const BorderSide(
-                                            color: Colors.black26),
-                                        borderRadius:
-                                            BorderRadius.circular(10)),
-                                    prefix: const Padding(
-                                        padding:
-                                            EdgeInsets.symmetric(horizontal: 8),
-                                        child: Text("(+976)",
-                                            style: TextStyle(
-                                                fontSize: 14,
-                                                fontWeight:
-                                                    FontWeight.bold)))))),
+                                    labelStyle: const TextStyle(fontWeight: FontWeight.bold, fontSize: 14, color: Colors.black38),
+                                    enabledBorder: OutlineInputBorder(borderSide: const BorderSide(color: Colors.black12), borderRadius: BorderRadius.circular(10)),
+                                    focusedBorder: OutlineInputBorder(borderSide: const BorderSide(color: Colors.black26), borderRadius: BorderRadius.circular(10)),
+                                    prefix: const Padding(padding: EdgeInsets.symmetric(horizontal: 8), child: Text("(+976)", style: TextStyle(fontSize: 14, fontWeight: FontWeight.bold)))))),
                         const Divider(color: Colors.grey),
                         const Text(
                           "Таны бүртгэлтэй дэлгүүрүүд",
-                          style: TextStyle(
-                              color: Colors.black,
-                              fontSize: 14,
-                              fontWeight: FontWeight.w600),
+                          style: TextStyle(color: Colors.black, fontSize: 14, fontWeight: FontWeight.w600),
                         ),
                       ])),
                   lst.isNotEmpty
@@ -240,32 +181,26 @@ class _AddDivisionState extends State<AddDivision> with BaseStateMixin {
                             itemCount: lst.length,
                             itemBuilder: (context, index) {
                               return Padding(
-                                padding: const EdgeInsets.symmetric(
-                                    vertical: 6, horizontal: 20),
+                                padding: const EdgeInsets.symmetric(vertical: 6, horizontal: 20),
                                 child: Container(
                                   decoration: BoxDecoration(
                                     color: kWhite,
-                                    boxShadow: [
-                                      BoxShadow(
-                                          color: Colors.grey.shade300,
-                                          blurRadius: 3,
-                                          offset: const Offset(2, 2))
-                                    ],
+                                    boxShadow: [BoxShadow(color: Colors.grey.shade300, blurRadius: 3, offset: const Offset(2, 2))],
                                     borderRadius: BorderRadius.circular(20),
                                   ),
                                   child: ListTile(
                                     leading: SvgPicture.asset(
                                       "assets/icons/store.svg",
                                       width: 40,
-                                      colorFilter: const ColorFilter.mode(
-                                          kPrimaryColor, BlendMode.srcIn),
+                                      colorFilter: const ColorFilter.mode(kPrimaryColor, BlendMode.srcIn),
                                     ),
                                     title: Text(
                                       lst[index].name!,
-                                      style: const TextStyle(
-                                          fontSize: 13.0,
-                                          color: Colors.black38,
-                                          fontWeight: FontWeight.w600),
+                                      style: const TextStyle(fontSize: 13.0, color: Colors.black, fontWeight: FontWeight.w600),
+                                    ),
+                                    subtitle: Text(
+                                      lst[index].phone_number.toString(),
+                                      style: const TextStyle(fontSize: 13.0, color: Colors.black38, fontWeight: FontWeight.w600),
                                     ),
                                   ),
                                 ),
@@ -277,18 +212,14 @@ class _AddDivisionState extends State<AddDivision> with BaseStateMixin {
                 ],
               )),
               Padding(
-                padding: EdgeInsets.only(
-                    right: 10,
-                    left: 10,
-                    bottom: MediaQuery.of(context).padding.bottom),
+                padding: EdgeInsets.only(right: 10, left: 10, bottom: MediaQuery.of(context).padding.bottom),
                 child: BlackBookButton(
                   width: double.infinity,
                   onPressed: () {
                     if (storeName.text.isEmpty) {
                       ErrorMessage.attentionMessage(context, "Нэр оруулна уу!");
                     } else if (phoneNumber.text.length != 8) {
-                      ErrorMessage.attentionMessage(
-                          context, "Дугаар оруулна уу!");
+                      ErrorMessage.attentionMessage(context, "Дугаар оруулна уу!");
                     } else {
                       onCreate();
                     }

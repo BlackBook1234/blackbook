@@ -31,11 +31,11 @@ Map<String, dynamic> _$ProductDetialModelToJson(ProductDetialModel instance) =>
       'code': instance.code,
       'photo': instance.photo,
       'category_name': instance.category_name,
-      'parent_category': instance.parent_category,
+      'category_id': instance.category_id,
       'parent_name': instance.parent_name,
       'created_at': instance.created_at,
       'good_id': instance.good_id,
-      'category_id': instance.category_id,
+      'parent_category': instance.parent_category,
       'sizes': instance.sizes,
       'total': instance.total,
     };

@@ -104,9 +104,9 @@ class _SoldItemMainScreenState extends State<SoldItemMainScreen>
         }
         typeStore = typeStore.toSet().toList();
         _runApi = false;
-        if (listData.list != []) {
-          chosenType = Utils.getstoreName();
-        }
+        // if (listData.list != []) {
+        //   chosenType = Utils.getstoreName();
+        // }
       });
     } on APIError catch (e) {
       setState(() {
