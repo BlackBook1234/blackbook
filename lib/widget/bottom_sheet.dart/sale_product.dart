@@ -31,9 +31,13 @@ class _BottomSheetsWidgetState extends State<SellProductBottomSheetsWidget> with
   String cashType = '';
   int? storeId;
   late List<TextEditingController> _controllers;
+  TextEditingController sellAmount = TextEditingController();
 
   @override
   void initState() {
+    setState(() {
+      sellAmount = TextEditingController(text: widget.data.sizes!.first.price!.toString());
+    });
     storeId = Utils.getStoreId();
     _controllers = widget.data.sizes!.map((size) {
       return TextEditingController(text: size.ware_stock.toString());
@@ -60,8 +64,10 @@ class _BottomSheetsWidgetState extends State<SellProductBottomSheetsWidget> with
       if (otpData.isEmpty) {
         showWarningDialog("Бараа оруулна уу");
         // AlertMessage.attentionMessage(context, "Бараа оруулна уу");
+      } else if (sellAmount.text.isEmpty) {
+        showWarningDialog("Зарах үнэ оруулна уу!");
       } else {
-        _bloc.add(CreateSaleEvent(otpData, cashType));
+        _bloc.add(CreateSaleEvent(otpData, cashType, int.parse(sellAmount.text)));
       }
     } else {
       showWarningDialog("Төлбөрийн хэрэгсэл сонгоно уу!");
@@ -113,7 +119,7 @@ class _BottomSheetsWidgetState extends State<SellProductBottomSheetsWidget> with
                   }
                   if (state is SaleFailure) {
                     if (state.message == "Token") {
-                      _bloc.add(CreateSaleEvent(widget.data.sizes!, cashType));
+                      _bloc.add(CreateSaleEvent(widget.data.sizes!, cashType, int.parse(sellAmount.text)));
                     } else {
                       Utils.cancelLoader(context);
                       showWarningDialog(state.message);
@@ -147,14 +153,38 @@ class _BottomSheetsWidgetState extends State<SellProductBottomSheetsWidget> with
                                 "assets/images/socks.png",
                                 width: 80.0,
                               )
-                            : Container(height: 80.0, width: 80.0, decoration: BoxDecoration(borderRadius: BorderRadius.circular(20.0)), child: ClipRRect(borderRadius: BorderRadius.circular(9), child: Image.network(widget.data.photo!, fit: BoxFit.cover))),
+                            : Container(
+                                height: 80.0,
+                                width: 80.0,
+                                decoration: BoxDecoration(borderRadius: BorderRadius.circular(20.0)),
+                                child: ClipRRect(borderRadius: BorderRadius.circular(9), child: Image.network(widget.data.photo!, fit: BoxFit.cover))),
                         title: Text("Барааны нэр: ${widget.data.name}", style: const TextStyle(fontSize: 12.0, fontWeight: FontWeight.bold)),
                         subtitle: Column(mainAxisAlignment: MainAxisAlignment.start, crossAxisAlignment: CrossAxisAlignment.start, children: [
                           Text("Барааны код: ${widget.data.code}", style: const TextStyle(fontSize: 12.0, fontWeight: FontWeight.normal)),
-                          Utils.getUserRole() == "BOSS" ? Text('Авсан үнэ: ${widget.data.sizes!.first.cost}₮', style: const TextStyle(fontSize: 11.0, fontWeight: FontWeight.normal)) : const SizedBox.shrink(),
+                          Utils.getUserRole() == "BOSS"
+                              ? Text('Авсан үнэ: ${widget.data.sizes!.first.cost}₮', style: const TextStyle(fontSize: 11.0, fontWeight: FontWeight.normal))
+                              : const SizedBox.shrink(),
                           Text('Зарах үнэ: ${widget.data.sizes!.first.price}₮', style: const TextStyle(fontSize: 11.0, fontWeight: FontWeight.normal))
                         ]))
                   ]),
+                  SizedBox(
+                      height: 50,
+                      child: TextField(
+                          controller: sellAmount,
+                          textInputAction: TextInputAction.next,
+                          keyboardType: TextInputType.phone,
+                          inputFormatters: [FilteringTextInputFormatter.digitsOnly],
+                          autofillHints: const [
+                            AutofillHints.telephoneNumberLocal,
+                            AutofillHints.telephoneNumberNational,
+                          ],
+                          style: const TextStyle(fontSize: 14, fontWeight: FontWeight.bold),
+                          decoration: InputDecoration(
+                            labelText: "Зарах үнэ",
+                            labelStyle: const TextStyle(fontWeight: FontWeight.bold, fontSize: 14, color: Colors.black38),
+                            enabledBorder: OutlineInputBorder(borderSide: const BorderSide(color: Colors.black12), borderRadius: BorderRadius.circular(10)),
+                            focusedBorder: OutlineInputBorder(borderSide: const BorderSide(color: Colors.black26), borderRadius: BorderRadius.circular(10)),
+                          ))),
                   Expanded(
                       child: ListView.builder(
                           // padding: const EdgeInsets.only(bottom: 250),
@@ -188,7 +218,8 @@ class _BottomSheetsWidgetState extends State<SellProductBottomSheetsWidget> with
                                         inputFormatters: [FilteringTextInputFormatter.digitsOnly],
                                         keyboardType: TextInputType.number,
                                         textInputAction: TextInputAction.done,
-                                        decoration: const InputDecoration(fillColor: kBackgroundColor, border: InputBorder.none, focusedBorder: InputBorder.none, enabledBorder: InputBorder.none, contentPadding: EdgeInsets.zero))),
+                                        decoration: const InputDecoration(
+                                            fillColor: kBackgroundColor, border: InputBorder.none, focusedBorder: InputBorder.none, enabledBorder: InputBorder.none, contentPadding: EdgeInsets.zero))),
                                 MaterialButton(
                                     shape: const RoundedRectangleBorder(borderRadius: BorderRadius.only(bottomRight: Radius.circular(10), topRight: Radius.circular(10))),
                                     height: 20,
@@ -205,7 +236,10 @@ class _BottomSheetsWidgetState extends State<SellProductBottomSheetsWidget> with
                       child: Container(
                           // width: 100,
                           height: 40,
-                          decoration: BoxDecoration(color: isChecked1 ? Colors.grey : kWhite, boxShadow: [BoxShadow(color: Colors.grey.shade300, blurRadius: 3, offset: const Offset(2, 2))], borderRadius: BorderRadius.circular(10)),
+                          decoration: BoxDecoration(
+                              color: isChecked1 ? Colors.grey : kWhite,
+                              boxShadow: [BoxShadow(color: Colors.grey.shade300, blurRadius: 3, offset: const Offset(2, 2))],
+                              borderRadius: BorderRadius.circular(10)),
                           child: InkWell(
                               child: const Center(child: Text("Бэлэн", style: TextStyle(fontSize: 14.0, fontWeight: FontWeight.bold))),
                               onTap: () {
@@ -232,7 +266,10 @@ class _BottomSheetsWidgetState extends State<SellProductBottomSheetsWidget> with
                       child: Container(
                           // width: 80,
                           height: 40,
-                          decoration: BoxDecoration(color: isChecked2 ? Colors.grey : kWhite, boxShadow: [BoxShadow(color: Colors.grey.shade300, blurRadius: 3, offset: const Offset(2, 2))], borderRadius: BorderRadius.circular(10)),
+                          decoration: BoxDecoration(
+                              color: isChecked2 ? Colors.grey : kWhite,
+                              boxShadow: [BoxShadow(color: Colors.grey.shade300, blurRadius: 3, offset: const Offset(2, 2))],
+                              borderRadius: BorderRadius.circular(10)),
                           child: InkWell(
                               child: const Center(child: Text("Карт", style: TextStyle(fontSize: 14.0, fontWeight: FontWeight.bold))),
                               onTap: () {
@@ -259,7 +296,10 @@ class _BottomSheetsWidgetState extends State<SellProductBottomSheetsWidget> with
                         child: Container(
                             // width: 100,
                             height: 40,
-                            decoration: BoxDecoration(color: isChecked3 ? Colors.grey : kWhite, boxShadow: [BoxShadow(color: Colors.grey.shade300, blurRadius: 3, offset: const Offset(2, 2))], borderRadius: BorderRadius.circular(10)),
+                            decoration: BoxDecoration(
+                                color: isChecked3 ? Colors.grey : kWhite,
+                                boxShadow: [BoxShadow(color: Colors.grey.shade300, blurRadius: 3, offset: const Offset(2, 2))],
+                                borderRadius: BorderRadius.circular(10)),
                             child: InkWell(
                                 child: const Center(child: Text("Шилжүүлэг", style: TextStyle(fontSize: 14.0, fontWeight: FontWeight.bold))),
                                 onTap: () {

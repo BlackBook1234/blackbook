@@ -9,16 +9,18 @@ abstract class PaymentEvent extends Equatable {
 
 // Ангилал шинээр үүсгэх
 class GetPackagesEvent extends PaymentEvent {
-  const GetPackagesEvent();
+  final String url;
+  const GetPackagesEvent(this.url);
   @override
-  List<Object> get props => [];
+  List<Object> get props => [url];
 }
 
 class GetInvoiceEvent extends PaymentEvent {
   final String keys;
-  const GetInvoiceEvent(this.keys);
+  final String storeId;
+  const GetInvoiceEvent(this.keys, this.storeId);
   @override
-  List<Object> get props => [keys];
+  List<Object> get props => [keys, storeId];
 }
 
 class CheckInvoiceEvent extends PaymentEvent {

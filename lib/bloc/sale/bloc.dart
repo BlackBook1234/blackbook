@@ -21,13 +21,7 @@ class SaleBloc extends Bloc<SaleEvent, SaleState> {
         final apiService = ApiTokenService(accessToken);
         List<dynamic> otpList = [];
         for (ProductInDetialModel data in event.list) {
-          var otpBody = {
-            "id": data.id,
-            "cost": data.cost,
-            "price": data.price,
-            "stock": data.ware_stock,
-            "moneyType": event.moneyType
-          };
+          var otpBody = {"id": data.id, "cost": data.cost, "price": data.price, "price_sell": event.sellAmount, "stock": data.ware_stock, "moneyType": event.moneyType};
           otpList.add(otpBody);
         }
         Map<String, Object> body;
@@ -36,19 +30,15 @@ class SaleBloc extends Bloc<SaleEvent, SaleState> {
         } else {
           body = {"storeId": Utils.getStoreId(), "products": otpList.toList()};
         }
-        Response response =
-            await apiService.postRequest('/v1/product/sale', body: body);
-        AuthenticationResponseModel dataResponse =
-            AuthenticationResponseModel.fromJson(response.data);
+        Response response = await apiService.postRequest('/v1/product/sale', body: body);
+        AuthenticationResponseModel dataResponse = AuthenticationResponseModel.fromJson(response.data);
         if (response.statusCode == 200 && dataResponse.status == "success") {
           emit(SaleSuccess());
-        } else if (dataResponse.status == "error" &&
-            dataResponse.message.reason == "auth_token_error") {
+        } else if (dataResponse.status == "error" && dataResponse.message.reason == "auth_token_error") {
           final bloc = RefreshBloc();
           bloc.add(const RefreshTokenEvent());
           emit(SaleFailure("Token"));
-        } else if (dataResponse.status == "error" &&
-            dataResponse.message.show) {
+        } else if (dataResponse.status == "error" && dataResponse.message.show) {
           emit(SaleFailure(dataResponse.message.reason!));
         } else {
           emit(SaleFailure("Серверийн алдаа"));
@@ -66,51 +56,47 @@ class SaleBloc extends Bloc<SaleEvent, SaleState> {
           if (event.searchAgian) {
             if (event.storeId == -1) {
               path =
-                  "/v1/product/sale/list/warehouse?sort=asc&page=${event.page}&limit=100&q=${event.searchValue}&from_date=${formatDateTime(event.begindate)}&to_date=${formatDateTime(event.endDate)}";
+                  "/v1/product/sale/list/warehouse?sort=asc&page=${event.page}&limit=1000&q=${event.searchValue}&from_date=${formatDateTime(event.begindate)}&to_date=${formatDateTime(event.endDate)}";
             } else {
               path =
-                  "/v1/product/sale/list/store/${event.storeId}?sort=asc&page=${event.page}&limit=100&store_id=${event.storeId}&q=${event.searchValue}&from_date=${formatDateTime(event.begindate)}&to_date=${formatDateTime(event.endDate)}";
+                  "/v1/product/sale/list/store/${event.storeId}?sort=asc&page=${event.page}&limit=1000&store_id=${event.storeId}&q=${event.searchValue}&from_date=${formatDateTime(event.begindate)}&to_date=${formatDateTime(event.endDate)}";
             }
           } else {
             if (event.storeId == -1) {
               path =
-                  "/v1/product/sale/list/warehouse?sort=asc&page=${event.page}&limit=100&q=${event.searchValue}&from_date=${formatDateTime(event.begindate)}&to_date=${formatDateTime(event.endDate)}";
+                  "/v1/product/sale/list/warehouse?sort=asc&page=${event.page}&limit=1000&q=${event.searchValue}&from_date=${formatDateTime(event.begindate)}&to_date=${formatDateTime(event.endDate)}";
             } else {
               path =
-                  "/v1/product/sale/list/store/${event.storeId}?sort=asc&page=${event.page}&limit=100&store_id=${event.storeId}&q=${event.searchValue}&from_date=${formatDateTime(event.begindate)}&to_date=${formatDateTime(event.endDate)}";
+                  "/v1/product/sale/list/store/${event.storeId}?sort=asc&page=${event.page}&limit=1000&store_id=${event.storeId}&q=${event.searchValue}&from_date=${formatDateTime(event.begindate)}&to_date=${formatDateTime(event.endDate)}";
             }
           }
         } else {
           if (event.searchAgian) {
             if (event.storeId == -1) {
               path =
-                  "/v1/product/sale/list/warehouse?sort=asc&page=${event.page}&limit=100&q=${event.searchValue}&from_date=${formatDateTime(event.begindate)}&to_date=${formatDateTime(event.endDate)}";
+                  "/v1/product/sale/list/warehouse?sort=asc&page=${event.page}&limit=1000&q=${event.searchValue}&from_date=${formatDateTime(event.begindate)}&to_date=${formatDateTime(event.endDate)}";
             } else {
               path =
-                  "/v1/product/sale/list/store/${event.storeId}?sort=asc&page=${event.page}&limit=100&store_id=${event.storeId}&q=${event.searchValue}&from_date=${formatDateTime(event.begindate)}&to_date=${formatDateTime(event.endDate)}";
+                  "/v1/product/sale/list/store/${event.storeId}?sort=asc&page=${event.page}&limit=1000&store_id=${event.storeId}&q=${event.searchValue}&from_date=${formatDateTime(event.begindate)}&to_date=${formatDateTime(event.endDate)}";
             }
           } else {
             path =
-                "/v1/product/sale/list/store/${event.storeId}?sort=asc&page=${event.page}&limit=100&store_id=${event.storeId}&from_date=${formatDateTime(event.begindate)}&to_date=${formatDateTime(event.endDate)}";
+                "/v1/product/sale/list/store/${event.storeId}?sort=asc&page=${event.page}&limit=1000&store_id=${event.storeId}&from_date=${formatDateTime(event.begindate)}&to_date=${formatDateTime(event.endDate)}";
           }
         }
         Response response = await apiService.getRequest(path);
-        SaleProductResponseModel dataResponse =
-            SaleProductResponseModel.fromJson(response.data);
+        SaleProductResponseModel dataResponse = SaleProductResponseModel.fromJson(response.data);
         if (response.statusCode == 200 && dataResponse.status == "success") {
           bool hasMoreOrder = true;
           if (dataResponse.data!.list!.length < 40) {
             hasMoreOrder = false;
           }
-          emit(GetSaleSuccess(dataResponse.data!.list!,
-              dataResponse.data!.total!, hasMoreOrder));
-        } else if (dataResponse.status == "error" &&
-            dataResponse.message.reason == "auth_token_error") {
+          emit(GetSaleSuccess(dataResponse.data!.list!, dataResponse.data!.total!, hasMoreOrder));
+        } else if (dataResponse.status == "error" && dataResponse.message.reason == "auth_token_error") {
           final bloc = RefreshBloc();
           bloc.add(const RefreshTokenEvent());
           emit(GetSaleFailure("Token"));
-        } else if (dataResponse.status == "error" &&
-            dataResponse.message.show) {
+        } else if (dataResponse.status == "error" && dataResponse.message.show) {
           emit(GetSaleFailure(dataResponse.message.text!));
         } else {
           emit(GetSaleFailure("Серверийн алдаа"));
@@ -127,46 +113,37 @@ class SaleBloc extends Bloc<SaleEvent, SaleState> {
         if (Utils.getUserRole() == "BOSS") {
           if (event.searchAgian) {
             if (event.storeId == "-1") {
-              path =
-                  "/v1/product/sale/list?sort=desc&page=${event.page}&limit=100&from_date=${formatDateTime(event.beginDate)}&to_date=${formatDateTime(event.endDate)}&is_warehouse=1";
+              path = "/v1/product/sale/list?sort=desc&page=${event.page}&limit=1000&from_date=${formatDateTime(event.beginDate)}&to_date=${formatDateTime(event.endDate)}&is_warehouse=1";
             } else {
               if (event.storeId == "") {
-                path =
-                    "/v1/product/sale/list?sort=desc&page=${event.page}&limit=100&from_date=${formatDateTime(event.beginDate)}&to_date=${formatDateTime(event.endDate)}";
+                path = "/v1/product/sale/list?sort=desc&page=${event.page}&limit=1000&from_date=${formatDateTime(event.beginDate)}&to_date=${formatDateTime(event.endDate)}";
               } else {
-                path =
-                    "/v1/product/sale/list?sort=desc&page=${event.page}&limit=100&from_date=${formatDateTime(event.beginDate)}&to_date=${formatDateTime(event.endDate)}&store_id=${event.storeId}";
+                path = "/v1/product/sale/list?sort=desc&page=${event.page}&limit=1000&from_date=${formatDateTime(event.beginDate)}&to_date=${formatDateTime(event.endDate)}&store_id=${event.storeId}";
               }
             }
           } else {
-            path =
-                '/v1/product/sale/list?sort=desc&page=${event.page}&limit=100';
+            path = '/v1/product/sale/list?sort=desc&page=${event.page}&limit=1000';
           }
         } else {
           if (event.searchAgian) {
-            path =
-                '/v1/product/sale/list?sort=desc&page=${event.page}&limit=100&store_id=${Utils.getStoreId()}&from_date=${formatDateTime(event.beginDate)}&to_date=${formatDateTime(event.endDate)}';
+            path = '/v1/product/sale/list?sort=desc&page=${event.page}&limit=1000&store_id=${Utils.getStoreId()}&from_date=${formatDateTime(event.beginDate)}&to_date=${formatDateTime(event.endDate)}';
           } else {
-            path =
-                '/v1/product/sale/list?sort=desc&page=${event.page}&limit=100&store_id=${Utils.getStoreId()}';
+            path = '/v1/product/sale/list?sort=desc&page=${event.page}&limit=1000&store_id=${Utils.getStoreId()}';
           }
         }
         Response response = await apiService.getRequest(path);
-        MainSaleProductResponseModel dataResponse =
-            MainSaleProductResponseModel.fromJson(response.data);
+        MainSaleProductResponseModel dataResponse = MainSaleProductResponseModel.fromJson(response.data);
         if (response.statusCode == 200 && dataResponse.status == "success") {
           bool hasMoreOrder = true;
           if (dataResponse.data!.list!.length < 40) {
             hasMoreOrder = false;
           }
           emit(GetMainSaleSuccess(dataResponse.data!, hasMoreOrder));
-        } else if (dataResponse.status == "error" &&
-            dataResponse.message.reason == "auth_token_error") {
+        } else if (dataResponse.status == "error" && dataResponse.message.reason == "auth_token_error") {
           final bloc = RefreshBloc();
           bloc.add(const RefreshTokenEvent());
           emit(GetMainSaleFailure("Token"));
-        } else if (dataResponse.status == "error" &&
-            dataResponse.message.show) {
+        } else if (dataResponse.status == "error" && dataResponse.message.show) {
           emit(GetMainSaleFailure(dataResponse.message.text!));
         } else {
           emit(GetMainSaleFailure("Серверийн алдаа"));
@@ -180,24 +157,16 @@ class SaleBloc extends Bloc<SaleEvent, SaleState> {
       try {
         String accessToken = Utils.getToken();
         final apiService = ApiTokenService(accessToken);
-        var body = {
-          "saleId": event.saleId,
-          "stock": event.stock,
-          "_amount": event.amount
-        };
-        Response response =
-            await apiService.postRequest('/v1/product/sale/return', body: body);
-        AuthenticationResponseModel dataResponse =
-            AuthenticationResponseModel.fromJson(response.data);
+        var body = {"saleId": event.saleId, "stock": event.stock, "_amount": event.amount};
+        Response response = await apiService.postRequest('/v1/product/sale/return', body: body);
+        AuthenticationResponseModel dataResponse = AuthenticationResponseModel.fromJson(response.data);
         if (response.statusCode == 200 && dataResponse.status == "success") {
           emit(SaleProductBackSuccess());
-        } else if (dataResponse.status == "error" &&
-            dataResponse.message.reason == "auth_token_error") {
+        } else if (dataResponse.status == "error" && dataResponse.message.reason == "auth_token_error") {
           final bloc = RefreshBloc();
           bloc.add(const RefreshTokenEvent());
           emit(SaleProductBackFailure("Token"));
-        } else if (dataResponse.status == "error" &&
-            dataResponse.message.show) {
+        } else if (dataResponse.status == "error" && dataResponse.message.show) {
           emit(SaleProductBackFailure(dataResponse.message.text!));
         } else {
           emit(SaleProductBackFailure("Серверийн алдаа"));

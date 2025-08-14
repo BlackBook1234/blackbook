@@ -39,7 +39,6 @@ class KSuccessDialog extends StatelessWidget {
             shape: RoundedRectangleBorder(
               borderRadius: BorderRadius.circular(16.0),
             ),
-            // padding: EdgeInsets.all(16.0),
             child: Padding(
               padding: const EdgeInsets.all(24.0),
               child: Column(
@@ -78,7 +77,6 @@ class KSuccessDialog extends StatelessWidget {
                               onPressed: () {
                                 Navigator.of(context).pop(false);
                               },
-                              // disabled: true
                               color: kPrimaryColor,
                               contentColor: kWhite,
                               shadow: false,

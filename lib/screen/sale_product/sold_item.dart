@@ -15,11 +15,7 @@ import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:intl/intl.dart';
 
 class SoldItemScreen extends StatefulWidget {
-  const SoldItemScreen(
-      {super.key,
-      required this.id,
-      required this.begindate,
-      required this.endDate});
+  const SoldItemScreen({super.key, required this.id, required this.begindate, required this.endDate});
   final int id;
   final DateTime begindate, endDate;
   @override
@@ -46,27 +42,22 @@ class _SoldItemScreenState extends State<SoldItemScreen> with BaseStateMixin {
   @override
   void initState() {
     _controller = ScrollController()..addListener(_loadMoreOrder);
-    _bloc.add(GetSaleEvent(widget.id, searchAgian, searchValue, _page,
-        widget.begindate, widget.endDate));
+    _bloc.add(GetSaleEvent(widget.id, searchAgian, searchValue, _page, widget.begindate, widget.endDate));
     super.initState();
   }
 
   void _loadMoreOrder() {
-    if (_hasMoreOrder &&
-        _controller.position.extentAfter == 0 &&
-        !_loadingOrder) {
+    if (_hasMoreOrder && _controller.position.extentAfter == 0 && !_loadingOrder) {
       setState(() {
         _loadingOrder = true;
         _page++;
       });
-      _bloc.add(GetSaleEvent(widget.id, searchAgian, searchValue, _page,
-          widget.begindate, widget.endDate));
+      _bloc.add(GetSaleEvent(widget.id, searchAgian, searchValue, _page, widget.begindate, widget.endDate));
     }
   }
 
   void _agianSearch() {
-    _bloc.add(GetSaleEvent(widget.id, searchAgian, searchValue, _page,
-        widget.begindate, widget.endDate));
+    _bloc.add(GetSaleEvent(widget.id, searchAgian, searchValue, _page, widget.begindate, widget.endDate));
     // _bloc.add(
     //     GetSaleEvent(_page, searchAgian, storeId, productType, searchValue));
   }
@@ -80,15 +71,10 @@ class _SoldItemScreenState extends State<SoldItemScreen> with BaseStateMixin {
     _bloc.add(SaleProductBack(data.price!, data.sale_id!, data.stock!));
   }
 
-  _showLogOutWarning(
-      BuildContext context, SaleProductInDetialModel data) async {
+  _showLogOutWarning(BuildContext context, SaleProductInDetialModel data) async {
     showDialog<void>(
       context: context,
-      builder: (ctx) => CustomDialog(
-          onPressedSubmit: () => _backProduct(data),
-          title: 'Анхаар',
-          desc: "Зарагдсан барааг буцаах уу?",
-          type: 2),
+      builder: (ctx) => CustomDialog(onPressedSubmit: () => _backProduct(data), title: 'Анхаар', desc: "Зарагдсан барааг буцаах уу?", type: 2),
     );
   }
 
@@ -107,8 +93,7 @@ class _SoldItemScreenState extends State<SoldItemScreen> with BaseStateMixin {
                 }
                 if (state is GetSaleFailure) {
                   if (state.message == "Token") {
-                    _bloc.add(GetSaleEvent(widget.id, searchAgian, searchValue,
-                        _page, widget.begindate, widget.endDate));
+                    _bloc.add(GetSaleEvent(widget.id, searchAgian, searchValue, _page, widget.begindate, widget.endDate));
                   } else {
                     setState(() {
                       _loadingOrder = false;
@@ -137,8 +122,7 @@ class _SoldItemScreenState extends State<SoldItemScreen> with BaseStateMixin {
                 }
                 if (state is SaleProductBackFailure) {
                   if (state.message == "Token") {
-                    _bloc.add(
-                        SaleProductBack(backamount!, backsaleId!, backstock!));
+                    _bloc.add(SaleProductBack(backamount!, backsaleId!, backstock!));
                   } else {
                     Utils.cancelLoader(context);
                     ErrorMessage.attentionMessage(context, state.message);
@@ -168,8 +152,7 @@ class _SoldItemScreenState extends State<SoldItemScreen> with BaseStateMixin {
                 backgroundColor: kPrimarySecondColor),
             body: Column(children: [
               Padding(
-                  padding:
-                      const EdgeInsets.symmetric(vertical: 10, horizontal: 20),
+                  padding: const EdgeInsets.symmetric(vertical: 10, horizontal: 20),
                   child: Row(children: [
                     Expanded(
                         child: SizedBox(
@@ -181,27 +164,17 @@ class _SoldItemScreenState extends State<SoldItemScreen> with BaseStateMixin {
                                   });
                                 },
                                 decoration: InputDecoration(
-                                    enabledBorder: OutlineInputBorder(
-                                        borderRadius: BorderRadius.circular(10),
-                                        borderSide: const BorderSide(
-                                            color: Colors.black26, width: 1)),
+                                    enabledBorder: OutlineInputBorder(borderRadius: BorderRadius.circular(10), borderSide: const BorderSide(color: Colors.black26, width: 1)),
                                     hoverColor: Colors.black12,
                                     focusColor: Colors.black12,
-                                    focusedBorder: OutlineInputBorder(
-                                        borderRadius: BorderRadius.circular(10),
-                                        borderSide: const BorderSide(
-                                            color: Colors.black26, width: 1)),
+                                    focusedBorder: OutlineInputBorder(borderRadius: BorderRadius.circular(10), borderSide: const BorderSide(color: Colors.black26, width: 1)),
                                     fillColor: kWhite,
                                     hintText: "Барааны код",
                                     filled: true,
                                     contentPadding: const EdgeInsets.all(10),
-                                    prefixIcon: const Icon(Icons.search,
-                                        color: kPrimaryColor),
-                                    border: OutlineInputBorder(
-                                        borderRadius: BorderRadius.circular(10),
-                                        borderSide: BorderSide.none),
-                                    hintStyle:
-                                        const TextStyle(fontSize: 14))))),
+                                    prefixIcon: const Icon(Icons.search, color: kPrimaryColor),
+                                    border: OutlineInputBorder(borderRadius: BorderRadius.circular(10), borderSide: BorderSide.none),
+                                    hintStyle: const TextStyle(fontSize: 14))))),
                     const SizedBox(width: 10),
                     InkWell(
                         onTap: () {
@@ -215,17 +188,8 @@ class _SoldItemScreenState extends State<SoldItemScreen> with BaseStateMixin {
                             width: 80,
                             height: 38,
                             decoration: BoxDecoration(
-                                color: kPrimaryColor,
-                                boxShadow: [
-                                  BoxShadow(
-                                      color: Colors.grey.shade300,
-                                      blurRadius: 3,
-                                      offset: const Offset(2, 2))
-                                ],
-                                borderRadius: BorderRadius.circular(10)),
-                            child: const Center(
-                                child: Text("Хайх",
-                                    style: TextStyle(color: kWhite)))))
+                                color: kPrimaryColor, boxShadow: [BoxShadow(color: Colors.grey.shade300, blurRadius: 3, offset: const Offset(2, 2))], borderRadius: BorderRadius.circular(10)),
+                            child: const Center(child: Text("Хайх", style: TextStyle(color: kWhite)))))
                   ])),
               Expanded(
                   child: ListView.builder(
@@ -233,11 +197,10 @@ class _SoldItemScreenState extends State<SoldItemScreen> with BaseStateMixin {
                       itemCount: list.length,
                       itemBuilder: (context, index) {
                         return Padding(
-                            padding: const EdgeInsets.symmetric(
-                                vertical: 8, horizontal: 20),
+                            padding: const EdgeInsets.symmetric(vertical: 8, horizontal: 20),
                             child: Container(
                                 decoration: BoxDecoration(
-                                    color: kWhite,
+                                    color: list[index].price == list[index].price_sell ? kWhite : Colors.red.shade50,
                                     boxShadow: [
                                       BoxShadow(
                                         color: Colors.grey.shade300,
@@ -249,121 +212,66 @@ class _SoldItemScreenState extends State<SoldItemScreen> with BaseStateMixin {
                                 child: ListTile(
                                     trailing: Utils.getUserRole() == "BOSS"
                                         ? InkWell(
-                                            child: const Icon(
-                                                Icons.settings_backup_restore,
-                                                color: kPrimaryColor),
+                                            child: const Icon(Icons.settings_backup_restore, color: kPrimaryColor),
                                             onTap: () {
-                                              _showLogOutWarning(
-                                                  context, list[index]);
+                                              _showLogOutWarning(context, list[index]);
                                             },
                                           )
                                         : const SizedBox.shrink(),
                                     leading: SizedBox(
                                       width: 100,
                                       child: Row(
-                                        mainAxisAlignment:
-                                            MainAxisAlignment.spaceBetween,
+                                        mainAxisAlignment: MainAxisAlignment.spaceBetween,
                                         children: [
                                           Text(
                                             (index + 1).toString(),
-                                            style: const TextStyle(
-                                                fontSize: 12,
-                                                fontWeight: FontWeight.w500),
+                                            style: const TextStyle(fontSize: 12, fontWeight: FontWeight.w500),
                                           ),
                                           GestureDetector(
                                               onTap: () async {
-                                                await showDialog(
-                                                    context: context,
-                                                    builder: (_) => imageDialog(
-                                                        list[index]
-                                                            .product_photo,
-                                                        context));
+                                                await showDialog(context: context, builder: (_) => imageDialog(list[index].product_photo, context));
                                               },
                                               child: Container(
                                                   height: 80.0,
                                                   width: 80.0,
-                                                  decoration: BoxDecoration(
-                                                      borderRadius:
-                                                          BorderRadius.circular(
-                                                              20.0)),
+                                                  decoration: BoxDecoration(borderRadius: BorderRadius.circular(20.0)),
                                                   child: ClipRRect(
-                                                      borderRadius:
-                                                          BorderRadius.circular(
-                                                              9),
-                                                      child: list[index]
-                                                                  .product_photo ==
-                                                              null
-                                                          ? Image.asset(
-                                                              "assets/images/saleProduct.jpg",
-                                                              fit: BoxFit.cover)
-                                                          : Image.network(
-                                                              list[index]
-                                                                  .product_photo!,
-                                                              fit: BoxFit.cover))))
+                                                      borderRadius: BorderRadius.circular(9),
+                                                      child: list[index].product_photo == null
+                                                          ? Image.asset("assets/images/saleProduct.jpg", fit: BoxFit.cover)
+                                                          : Image.network(list[index].product_photo!, fit: BoxFit.cover))))
                                         ],
                                       ),
                                     ),
-                                    title: Text(
-                                        "Барааны нэр: ${list[index].product_name}",
-                                        style: const TextStyle(
-                                            fontSize: 12.0,
-                                            fontWeight: FontWeight.bold)),
-                                    subtitle: Column(
-                                        mainAxisAlignment:
-                                            MainAxisAlignment.start,
-                                        crossAxisAlignment:
-                                            CrossAxisAlignment.start,
-                                        children: [
-                                          Text(
-                                            "Барааны код: ${list[index].product_code}",
-                                            style: const TextStyle(
-                                                fontSize: 12.0,
-                                                fontWeight: FontWeight.normal),
-                                          ),
-                                          Utils.getUserRole() == "BOSS"
-                                              ? Text(
-                                                  'Авсан үнэ: ${format.format(list[index].cost)}₮',
-                                                  style: const TextStyle(
-                                                      fontSize: 11.0,
-                                                      fontWeight:
-                                                          FontWeight.normal))
-                                              : const SizedBox.shrink(),
-                                          Text(
-                                            'Зарсан үнэ: ${format.format(list[index].price)}₮',
-                                            style: const TextStyle(
-                                                fontSize: 11.0,
-                                                fontWeight: FontWeight.normal),
-                                          ),
-                                          Text(
-                                            'Төрөл: ${list[index].money_type == "CASH" ? "Бэлэн" : list[index].money_type == "ACC" ? "Шилжүүлэг" : "Карт"}',
-                                            style: const TextStyle(
-                                                fontSize: 11.0,
-                                                fontWeight: FontWeight.normal),
-                                          ),
-                                          Text('Хэмжээ: ${list[index].type}',
-                                              style: const TextStyle(
-                                                  fontSize: 11.0,
-                                                  fontWeight:
-                                                      FontWeight.normal)),
-                                          Text('Тоо: ${list[index].stock}ш',
-                                              style: const TextStyle(
-                                                  fontSize: 11.0,
-                                                  fontWeight:
-                                                      FontWeight.normal))
-                                        ]))));
+                                    title: Text("Барааны нэр: ${list[index].product_name}", style: const TextStyle(fontSize: 12.0, fontWeight: FontWeight.bold)),
+                                    subtitle: Column(mainAxisAlignment: MainAxisAlignment.start, crossAxisAlignment: CrossAxisAlignment.start, children: [
+                                      Text(
+                                        "Барааны код: ${list[index].product_code}",
+                                        style: const TextStyle(fontSize: 12.0, fontWeight: FontWeight.normal),
+                                      ),
+                                      Utils.getUserRole() == "BOSS"
+                                          ? Text('Авсан үнэ: ${format.format(list[index].cost)}₮', style: const TextStyle(fontSize: 11.0, fontWeight: FontWeight.normal))
+                                          : const SizedBox.shrink(),
+                                      Text(
+                                        'Зарах үнэ: ${format.format(list[index].price)}₮',
+                                        style: const TextStyle(fontSize: 11.0, fontWeight: FontWeight.normal),
+                                      ),
+                                      Text(
+                                        'Зарсан үнэ: ${format.format(list[index].price_sell ?? 0)}₮',
+                                        style: const TextStyle(fontSize: 11.0, fontWeight: FontWeight.normal),
+                                      ),
+                                      Text(
+                                        'Төрөл: ${list[index].money_type == "CASH" ? "Бэлэн" : list[index].money_type == "ACC" ? "Шилжүүлэг" : "Карт"}',
+                                        style: const TextStyle(fontSize: 11.0, fontWeight: FontWeight.normal),
+                                      ),
+                                      Text('Хэмжээ: ${list[index].type}', style: const TextStyle(fontSize: 11.0, fontWeight: FontWeight.normal)),
+                                      Text('Тоо: ${list[index].stock}ш', style: const TextStyle(fontSize: 11.0, fontWeight: FontWeight.normal))
+                                    ]))));
                       })),
               Padding(
                   padding: const EdgeInsets.all(10),
                   child: Container(
-                      decoration: BoxDecoration(
-                          color: kWhite,
-                          boxShadow: [
-                            BoxShadow(
-                                color: Colors.grey.shade300,
-                                blurRadius: 3,
-                                offset: const Offset(2, 2))
-                          ],
-                          borderRadius: BorderRadius.circular(10)),
+                      decoration: BoxDecoration(color: kWhite, boxShadow: [BoxShadow(color: Colors.grey.shade300, blurRadius: 3, offset: const Offset(2, 2))], borderRadius: BorderRadius.circular(10)),
                       child: InkWell(
                           onTap: () {
                             showModalBottomSheet(
@@ -382,8 +290,7 @@ class _SoldItemScreenState extends State<SoldItemScreen> with BaseStateMixin {
                               height: 60,
                               width: MediaQuery.of(context).size.width / 1.1,
                               child: Padding(
-                                  padding: const EdgeInsets.symmetric(
-                                      vertical: 20, horizontal: 10),
+                                  padding: const EdgeInsets.symmetric(vertical: 20, horizontal: 10),
                                   child: Row(children: [
                                     InkWell(
                                         onTap: () {
@@ -395,16 +302,10 @@ class _SoldItemScreenState extends State<SoldItemScreen> with BaseStateMixin {
                                             }
                                           });
                                         },
-                                        child: Icon(show == true
-                                            ? Icons.visibility
-                                            : Icons.visibility_off)),
+                                        child: Icon(show == true ? Icons.visibility : Icons.visibility_off)),
                                     Expanded(
-                                        child: Text(
-                                            "Нийт үнийн дүн: ${show ? amount!.price.toString() : ""}₮",
-                                            textAlign: TextAlign.center,
-                                            style: const TextStyle(
-                                                fontWeight: FontWeight.bold,
-                                                fontSize: 14)))
+                                        child: Text("Нийт үнийн дүн: ${show ? amount!.price_sell.toString() : ""}₮",
+                                            textAlign: TextAlign.center, style: const TextStyle(fontWeight: FontWeight.bold, fontSize: 14)))
                                   ]))))))
             ])));
   }

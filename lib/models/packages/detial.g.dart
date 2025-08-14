@@ -10,9 +10,8 @@ PackagesDetial _$PackagesDetialFromJson(Map<String, dynamic> json) =>
     PackagesDetial(
       amount: (json['amount'] as num?)?.toInt(),
       oldAmount: (json['oldAmount'] as num?)?.toInt(),
-      description: (json['description'] as List<dynamic>?)
-          ?.map((e) => e as String)
-          .toList(),
+      image: json['image'] as String?,
+      description: json['description'] as String?,
       title: json['title'] as String?,
       period: (json['period'] as num?)?.toInt(),
       key: json['key'] as String?,
@@ -25,5 +24,6 @@ Map<String, dynamic> _$PackagesDetialToJson(PackagesDetial instance) =>
       'period': instance.period,
       'key': instance.key,
       'title': instance.title,
+      'image': instance.image,
       'description': instance.description,
     };

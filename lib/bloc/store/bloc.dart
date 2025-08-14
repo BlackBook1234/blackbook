@@ -77,14 +77,14 @@ class StoreBloc extends Bloc<StoreEvent, StoreState> {
         if (event.searchAgian) {
           if (event.chosenType == "-1") {
             path =
-                '/v1/product/store/list?page=${event.page}&limit=40&is_warehouse=1&q=${event.searchValue}&category_id=${event.chosenValue}&sort=desc';
+                '/v1/product/store/list?page=${event.page}&limit=1000&is_warehouse=1&q=${event.searchValue}&category_id=${event.chosenValue}&sort=desc';
           } else {
             path =
-                '/v1/product/store/list?page=${event.page}&limit=40&sort=desc&q=${event.searchValue}&category_id=${event.chosenValue}&store_id=${event.chosenType}';
+                '/v1/product/store/list?page=${event.page}&limit=1000&sort=desc&q=${event.searchValue}&category_id=${event.chosenValue}&store_id=${event.chosenType}';
           }
         } else {
           path =
-              '/v1/product/store/list?page=${event.page}&limit=40&is_warehouse=1';
+              '/v1/product/store/list?page=${event.page}&limit=1000&is_warehouse=1';
         }
         Response response = await apiService.getRequest(path);
         ProductResponseModel dataResponse =

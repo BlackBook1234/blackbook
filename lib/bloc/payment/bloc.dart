@@ -16,18 +16,15 @@ class PaymentBloc extends Bloc<PaymentEvent, PaymentState> {
       try {
         String accessToken = Utils.getToken();
         final apiService = ApiTokenService(accessToken);
-        Response response = await apiService.getRequest('/v1/payment/packages');
-        PackagesResponse responseData =
-            PackagesResponse.fromJson(response.data);
+        Response response = await apiService.getRequest(event.url);
+        PackagesResponse responseData = PackagesResponse.fromJson(response.data);
         if (response.statusCode == 200 && responseData.status == "success") {
           emit(PackagesSuccess(responseData.data!));
-        } else if (responseData.status == "error" &&
-            responseData.message.reason == "auth_token_error") {
+        } else if (responseData.status == "error" && responseData.message.reason == "auth_token_error") {
           final bloc = RefreshBloc();
           bloc.add(const RefreshTokenEvent());
           emit(PackagesFailure("Token"));
-        } else if (responseData.status == "error" &&
-            responseData.message.show) {
+        } else if (responseData.status == "error" && responseData.message.show) {
           emit(PackagesFailure(responseData.message.text!));
         } else {
           emit(PackagesFailure("Серверийн алдаа"));
@@ -39,20 +36,22 @@ class PaymentBloc extends Bloc<PaymentEvent, PaymentState> {
     on<GetInvoiceEvent>((event, emit) async {
       emit(InvoiceLoading());
       try {
-        var body = {"type": event.keys};
+        var body = {};
+        if (event.storeId != "") {
+          body = {"type": event.keys, "store_id": event.storeId};
+        } else {
+          body = {"type": event.keys};
+        }
         final apiService = ApiTokenService(Utils.getToken());
-        Response response =
-            await apiService.postRequest('/v1/payment/invoice', body: body);
+        Response response = await apiService.postRequest('/v1/payment/invoice', body: body);
         InvoiceResponse responseData = InvoiceResponse.fromJson(response.data);
         if (response.statusCode == 200 && responseData.status == "success") {
           emit(InvoiceSuccess(responseData.data!));
-        } else if (responseData.status == "error" &&
-            responseData.message.reason == "auth_token_error") {
+        } else if (responseData.status == "error" && responseData.message.reason == "auth_token_error") {
           final bloc = RefreshBloc();
           bloc.add(const RefreshTokenEvent());
           emit(InvoiceFailure("Token"));
-        } else if (responseData.status == "error" &&
-            responseData.message.show) {
+        } else if (responseData.status == "error" && responseData.message.show) {
           emit(InvoiceFailure(responseData.message.text!));
         } else {
           emit(InvoiceFailure("Серверийн алдаа"));
@@ -66,18 +65,15 @@ class PaymentBloc extends Bloc<PaymentEvent, PaymentState> {
       try {
         final apiService = ApiTokenService(Utils.getToken());
         Map<String, int> body = {"orderId": event.orderId};
-        Response response =
-            await apiService.postRequest('/v1/payment/check', body: body);
+        Response response = await apiService.postRequest('/v1/payment/check', body: body);
         InvoiceResponse responseData = InvoiceResponse.fromJson(response.data);
         if (response.statusCode == 200 && responseData.status == "success") {
           emit(CheckInvoiceSuccess());
-        } else if (responseData.status == "error" &&
-            responseData.message.reason == "auth_token_error") {
+        } else if (responseData.status == "error" && responseData.message.reason == "auth_token_error") {
           final bloc = RefreshBloc();
           bloc.add(const RefreshTokenEvent());
           emit(CheckInvoiceFailure("Token"));
-        } else if (responseData.status == "error" &&
-            responseData.message.show) {
+        } else if (responseData.status == "error" && responseData.message.show) {
           emit(CheckInvoiceFailure(responseData.message.text!));
         } else {
           emit(CheckInvoiceFailure("Төлбөр төлөгдөөгүй"));

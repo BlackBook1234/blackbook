@@ -6,7 +6,7 @@ part 'product_inlist.g.dart';
 @JsonSerializable()
 class ProductInDetialModel {
   String? type, created_at, store_name;
-  int? cost, price, stock, id, warehouse_stock, store_id, transfer_id;
+  int? cost, price, stock, id, warehouse_stock, store_id, transfer_id,price_sell;
   // ignore: deprecated_member_use
   @JsonKey(ignore: true)
   int ware_stock = 0;
@@ -17,6 +17,7 @@ class ProductInDetialModel {
       this.transfer_id,
       this.created_at,
       this.price,
+      this.price_sell,
       this.store_name,
       this.store_id,
       this.stock,

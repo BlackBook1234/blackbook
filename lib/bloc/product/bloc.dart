@@ -54,22 +54,22 @@ class ProductBloc extends Bloc<ProductEvent, ProductState> {
           if (event.searchAgian) {
             if (event.chosenType == "-1") {
               path =
-                  "/v1/product/my/list?page=${event.page}&sort=desc&limit=100&q=${event.searchValue}&category_id=${event.chosenValue}&is_warehouse=1";
+                  "/v1/product/my/list?page=${event.page}&sort=desc&limit=1000&q=${event.searchValue}&category_id=${event.chosenValue}&is_warehouse=1";
             } else {
               path =
-                  "/v1/product/my/list?page=${event.page}&sort=desc&limit=100&q=${event.searchValue}&category_id=${event.chosenValue}&store_id=${event.chosenType}";
+                  "/v1/product/my/list?page=${event.page}&sort=desc&limit=1000&q=${event.searchValue}&category_id=${event.chosenValue}&store_id=${event.chosenType}";
             }
           } else {
             path =
-                '/v1/product/my/list?page=${event.page}&is_warehouse=1&limit=100&sort=desc';
+                '/v1/product/my/list?page=${event.page}&is_warehouse=1&limit=1000&sort=desc';
           }
         } else {
           if (event.searchAgian) {
             path =
-                '/v1/product/my/list?limit=100&store_id=${Utils.getStoreId()}&page=${event.page}&sort=desc&q=${event.searchValue}&category_id=${event.chosenValue}';
+                '/v1/product/my/list?limit=1000&store_id=${Utils.getStoreId()}&page=${event.page}&sort=desc&q=${event.searchValue}&category_id=${event.chosenValue}';
           } else {
             path =
-                '/v1/product/my/list?limit=100&store_id=${Utils.getStoreId()}&page=${event.page}&sort=desc';
+                '/v1/product/my/list?limit=1000&store_id=${Utils.getStoreId()}&page=${event.page}&sort=desc';
           }
         }
         Response response = await apiService.getRequest(path);
@@ -105,10 +105,10 @@ class ProductBloc extends Bloc<ProductEvent, ProductState> {
         String path = "";
         if (event.searchAgian) {
           path =
-              '/v1/product/store/list?page=${event.page}&limit=100&store_id=${event.id}&sort=desc&category_id=${event.chosenValue}&q=${event.searchValue}';
+              '/v1/product/store/list?page=${event.page}&limit=1000&store_id=${event.id}&sort=desc&category_id=${event.chosenValue}&q=${event.searchValue}';
         } else {
           path =
-              '/v1/product/store/list?page=${event.page}&limit=100&store_id=${event.id}&sort=desc';
+              '/v1/product/store/list?page=${event.page}&limit=1000&store_id=${event.id}&sort=desc';
         }
         Response response = await apiService.getRequest(path);
         ProductResponseModel dataResponse =
@@ -143,18 +143,18 @@ class ProductBloc extends Bloc<ProductEvent, ProductState> {
         if (event.searchAgian) {
           if (event.chosenType == "-1") {
             path =
-                '/v1/product/my/list?page=${event.page}&limit=100&q=${event.searchValue}&category_id=${event.chosenValue}&sort=desc&is_warehouse=1';
+                '/v1/product/my/list?page=${event.page}&limit=1000&q=${event.searchValue}&category_id=${event.chosenValue}&sort=desc&is_warehouse=1';
           } else {
             if (event.chosenType == "") {
               path =
-                  '/v1/product/my/list?page=${event.page}&limit=100&q=${event.searchValue}&category_id=${event.chosenValue}&sort=desc';
+                  '/v1/product/my/list?page=${event.page}&limit=1000&q=${event.searchValue}&category_id=${event.chosenValue}&sort=desc';
             } else {
               path =
-                  '/v1/product/my/list?page=${event.page}&limit=100&q=${event.searchValue}&category_id=${event.chosenValue}&store_id=${event.chosenType}&sort=desc';
+                  '/v1/product/my/list?page=${event.page}&limit=1000&q=${event.searchValue}&category_id=${event.chosenValue}&store_id=${event.chosenType}&sort=desc';
             }
           }
         } else {
-          path = '/v1/product/my/list?page=${event.page}&limit=100&sort=desc';
+          path = '/v1/product/my/list?page=${event.page}&limit=1000&sort=desc';
         }
         Response response = await apiService.getRequest(path);
         ProductResponseModel dataResponse =

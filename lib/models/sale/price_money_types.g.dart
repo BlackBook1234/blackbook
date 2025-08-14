@@ -11,11 +11,13 @@ TotalDetialSaleModel _$TotalDetialSaleModelFromJson(
     TotalDetialSaleModel(
       amount: (json['amount'] as num?)?.toInt(),
       name: json['name'] as String?,
+      amount_sell: (json['amount_sell'] as num?)?.toInt(),
     );
 
 Map<String, dynamic> _$TotalDetialSaleModelToJson(
         TotalDetialSaleModel instance) =>
     <String, dynamic>{
       'amount': instance.amount,
+      'amount_sell': instance.amount_sell,
       'name': instance.name,
     };

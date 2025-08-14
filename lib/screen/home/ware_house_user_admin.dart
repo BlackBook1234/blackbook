@@ -10,6 +10,7 @@ import 'package:black_book/models/product/product_store.dart';
 import 'package:black_book/models/product/response.dart';
 import 'package:black_book/provider/type.dart';
 import 'package:black_book/screen/core/add_razmer.dart';
+import 'package:black_book/screen/core/edit_product.dart';
 import 'package:black_book/util/utils.dart';
 import 'package:black_book/widget/alert/component/buttons.dart';
 import 'package:black_book/widget/alert/custom_dialog.dart';
@@ -132,6 +133,31 @@ class _WareHouseAdminScreenState extends State<WareHouseAdminScreen> with BaseSt
         }).then((value) {
       setState(() {
         _page = 1;
+        for (ProductStoreModel data in storeList) {
+          if (data.name == chosenType) {
+            storeId = data.id.toString();
+          } else if (chosenType == "Бүх дэлгүүр") {
+            storeId = "";
+          }
+        }
+        searchAgian = true;
+        list.clear();
+      });
+      _getProductData();
+    });
+  }
+
+  void _editProductBottom(ProductDetialModel datas) {
+    Navigator.push(context, CupertinoPageRoute(builder: (context) => EditProductScreen(data: datas))).then((a) {
+      setState(() {
+        _page = 1;
+        for (ProductStoreModel data in storeList) {
+          if (data.name == chosenType) {
+            storeId = data.id.toString();
+          } else if (chosenType == "Бүх дэлгүүр") {
+            storeId = "";
+          }
+        }
         searchAgian = true;
         list.clear();
       });
@@ -178,42 +204,62 @@ class _WareHouseAdminScreenState extends State<WareHouseAdminScreen> with BaseSt
     showDialog(
         context: context,
         builder: (BuildContext context) {
-          return AlertDialog(backgroundColor: Colors.white, title: const Column(children: [Center(child: Text("Бараа", style: TextStyle(fontSize: 16, fontWeight: FontWeight.bold, color: kPrimaryColor))), Divider()]), actions: [
-            Row(
-              mainAxisAlignment: MainAxisAlignment.spaceBetween,
-              children: [
-                Expanded(
-                  child: BlackBookButton(
-                    height: 40,
-                    borderRadius: 16,
-                    onPressed: () {
-                      Navigator.pop(context);
-                      _purchaseBottom(purchase!);
-                    },
-                    color: kDisable,
-                    child: const Center(
-                      child: Text("Нэмэх", style: TextStyle(color: kPrimaryColor)),
+          return AlertDialog(
+              backgroundColor: Colors.white,
+              title: const Column(children: [Center(child: Text("Бараа", style: TextStyle(fontSize: 16, fontWeight: FontWeight.bold, color: kPrimaryColor))), Divider()]),
+              actions: [
+                Column(
+                  children: [
+                    Row(
+                      mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                      children: [
+                        Expanded(
+                          child: BlackBookButton(
+                            height: 40,
+                            borderRadius: 16,
+                            onPressed: () {
+                              Navigator.pop(context);
+                              _purchaseBottom(purchase!);
+                            },
+                            color: kDisable,
+                            child: const Center(
+                              child: Text("Нэмэх", style: TextStyle(color: kPrimaryColor)),
+                            ),
+                          ),
+                        ),
+                        const SizedBox(
+                          width: 6,
+                        ),
+                        Expanded(
+                          child: BlackBookButton(
+                            height: 40,
+                            borderRadius: 16,
+                            onPressed: () {
+                              Navigator.pop(context);
+                              _showDeleteProduct(context);
+                            },
+                            color: kPrimaryColor,
+                            child: const Center(child: Text("Устгах")),
+                          ),
+                        ),
+                      ],
                     ),
-                  ),
+                    const SizedBox(height: 10),
+                    BlackBookButton(
+                      height: 40,
+                      borderRadius: 16,
+                      onPressed: () {
+                        Navigator.pop(context);
+                        _editProductBottom(purchase!);
+                      },
+                      color: kDisable,
+                      child: const Center(
+                        child: Text("Засах", style: TextStyle(color: kPrimaryColor)),
+                      ),
+                    ),
+                  ],
                 ),
-                const SizedBox(
-                  width: 6,
-                ),
-                Expanded(
-                  child: BlackBookButton(
-                    height: 40,
-                    borderRadius: 16,
-                    onPressed: () {
-                      Navigator.pop(context);
-                      _showDeleteProduct(context);
-                    },
-                    color: kPrimaryColor,
-                    child: const Center(child: Text("Устгах")),
-                  ),
-                ),
-              ],
-            ),
-          ]);
+              ]);
         }).then((value) {
       setState(() {
         _page = 1;
@@ -272,7 +318,11 @@ class _WareHouseAdminScreenState extends State<WareHouseAdminScreen> with BaseSt
         dismissOnCapturedTaps: false,
         child: Scaffold(
           floatingActionButtonLocation: FloatingActionButtonLocation.miniEndFloat,
-          floatingActionButton: FloatingActionButton(mini: true, backgroundColor: kDisable, onPressed: () => showNewDialog(context, chosenType, typeStore, categories, chosenValue), child: const Icon(Icons.remove_red_eye_outlined, color: kPrimaryColor)),
+          floatingActionButton: FloatingActionButton(
+              mini: true,
+              backgroundColor: kDisable,
+              onPressed: () => showNewDialog(context, chosenType, typeStore, categories, chosenValue),
+              child: const Icon(Icons.remove_red_eye_outlined, color: kPrimaryColor)),
           body: Stack(
             children: [
               Column(

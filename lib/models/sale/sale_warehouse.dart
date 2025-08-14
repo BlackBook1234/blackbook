@@ -5,11 +5,10 @@ part 'sale_warehouse.g.dart';
 
 @JsonSerializable()
 class SaleListWarehouseModel {
-  int? total_cost, total_price;
+  int? total_cost, total_price, total_price_sell;
   String? name;
 
   SaleListWarehouseModel({this.total_cost, this.total_price});
-  factory SaleListWarehouseModel.fromJson(Map<String, dynamic> json) =>
-      _$SaleListWarehouseModelFromJson(json);
+  factory SaleListWarehouseModel.fromJson(Map<String, dynamic> json) => _$SaleListWarehouseModelFromJson(json);
   Map<String, dynamic> toJson() => _$SaleListWarehouseModelToJson(this);
 }

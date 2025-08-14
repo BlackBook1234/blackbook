@@ -5,11 +5,10 @@ part 'price_money_types.g.dart';
 
 @JsonSerializable()
 class TotalDetialSaleModel {
-  int? amount;
+  int? amount, amount_sell;
   String? name;
 
-  TotalDetialSaleModel({this.amount, this.name});
-  factory TotalDetialSaleModel.fromJson(Map<String, dynamic> json) =>
-      _$TotalDetialSaleModelFromJson(json);
+  TotalDetialSaleModel({this.amount, this.name, this.amount_sell});
+  factory TotalDetialSaleModel.fromJson(Map<String, dynamic> json) => _$TotalDetialSaleModelFromJson(json);
   Map<String, dynamic> toJson() => _$TotalDetialSaleModelToJson(this);
 }

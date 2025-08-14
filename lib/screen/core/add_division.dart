@@ -1,9 +1,13 @@
+import 'package:black_book/api/api.dart';
+import 'package:black_book/api/component/api_error.dart';
 import 'package:black_book/bloc/store/bloc.dart';
 import 'package:black_book/bloc/store/event.dart';
 import 'package:black_book/bloc/store/state.dart';
 import 'package:black_book/constant.dart';
 import 'package:black_book/models/store/store_detial.dart';
+import 'package:black_book/models/user_data/user_data.dart';
 import 'package:black_book/screen/login/loginpay.dart';
+import 'package:black_book/screen/login/packages.dart';
 import 'package:black_book/util/utils.dart';
 import 'package:black_book/widget/alert/component/buttons.dart';
 import 'package:black_book/widget/alert/custom_dialog.dart';
@@ -28,6 +32,8 @@ class _AddDivisionState extends State<AddDivision> with BaseStateMixin {
   final TextEditingController phoneNumber = TextEditingController();
   final TextEditingController storeName = TextEditingController();
   List<StoreDetialModel> lst = [];
+  UserDataModel userModel = UserDataModel();
+  String? user;
 
   void onCreate() {
     _bloc.add(CreateStoreEvent(storeName.text, int.parse(phoneNumber.text)));
@@ -35,8 +41,13 @@ class _AddDivisionState extends State<AddDivision> with BaseStateMixin {
 
   @override
   void initState() {
+    setExpireDate();
     _bloc.add(const GetStoreEvent());
     super.initState();
+  }
+
+  void setExpireDate() {
+    userModel = UserDataModel(paymentExpireDate: Utils.getUserInfo().paymentExpireDate);
   }
 
   _showLogOutWarning(BuildContext contexts, String message, String keys) async {
@@ -46,13 +57,30 @@ class _AddDivisionState extends State<AddDivision> with BaseStateMixin {
           onPressedSubmit: () {
             Navigator.pop(context);
             Navigator.of(ctx).push(
-              CupertinoPageRoute(builder: (ctx) => PayScreen(keys: keys)),
+              CupertinoPageRoute(builder: (ctx) => PayScreen(keys: keys, storeId: "", isMain: false)),
             );
           },
           title: 'Анхаар',
           desc: message,
           type: 3),
     );
+  }
+
+  Future<void> _getUserData() async {
+    try {
+      userModel = await api.refreshToken();
+      _bloc.add(const GetStoreEvent());
+    } on APIError catch (e) {
+      if (e.message != "Интернэт холболтоо шалгана уу.") {
+        setState(() {
+          user = null;
+        });
+      } else if (e.message == "token_expired") {
+        setState(() {
+          user = null;
+        });
+      }
+    }
   }
 
   @override
@@ -80,6 +108,7 @@ class _AddDivisionState extends State<AddDivision> with BaseStateMixin {
               if (state is StoreSuccess) {
                 Utils.cancelLoader(context);
                 showSuccessDialog("Мэдээлэл", false, "Амжилттай үүсгэлээ");
+                _bloc.add(const GetStoreEvent());
                 // AlertMessage.statusMessage(
                 //     context, "Мэдээлэл", "Амжилттай буцаагдлаа", false);
                 Future.delayed(const Duration(seconds: 1), () {
@@ -105,7 +134,9 @@ class _AddDivisionState extends State<AddDivision> with BaseStateMixin {
             if (state is GetStoreSuccess) {
               // Utils.cancelLoader(context);
               setState(() {
-                lst = state.list;
+                lst.clear();
+                lst.add(StoreDetialModel(name: "Агуулах", phone_number: Utils.getPhone(), payment_end_date: userModel.paymentExpireDate, id: 0));
+                lst.addAll(state.list);
               });
             }
           },
@@ -136,10 +167,15 @@ class _AddDivisionState extends State<AddDivision> with BaseStateMixin {
                         Padding(
                             padding: const EdgeInsets.symmetric(vertical: 20),
                             child: Container(
-                                decoration: BoxDecoration(color: kWhite, boxShadow: [BoxShadow(color: Colors.grey.shade300, blurRadius: 3, offset: const Offset(2, 2))], borderRadius: BorderRadius.circular(10)),
+                                decoration: BoxDecoration(
+                                    color: kWhite, boxShadow: [BoxShadow(color: Colors.grey.shade300, blurRadius: 3, offset: const Offset(2, 2))], borderRadius: BorderRadius.circular(10)),
                                 child: InkWell(
                                     onTap: () {},
-                                    child: SizedBox(width: MediaQuery.of(context).size.width / 1.1, child: const Padding(padding: EdgeInsets.symmetric(vertical: 20), child: Text("Салбар дэлгүүр нээх", textAlign: TextAlign.center, style: TextStyle(fontWeight: FontWeight.bold, fontSize: 13.0))))))),
+                                    child: SizedBox(
+                                        width: MediaQuery.of(context).size.width / 1.1,
+                                        child: const Padding(
+                                            padding: EdgeInsets.symmetric(vertical: 20),
+                                            child: Text("Салбар дэлгүүр нээх", textAlign: TextAlign.center, style: TextStyle(fontWeight: FontWeight.bold, fontSize: 13.0))))))),
                         Padding(
                             padding: const EdgeInsets.only(bottom: 10),
                             child: SizedBox(
@@ -201,6 +237,26 @@ class _AddDivisionState extends State<AddDivision> with BaseStateMixin {
                                     subtitle: Text(
                                       lst[index].phone_number.toString(),
                                       style: const TextStyle(fontSize: 13.0, color: Colors.black38, fontWeight: FontWeight.w600),
+                                    ),
+                                    trailing: Column(
+                                      children: [
+                                        if (lst[index].payment_end_date != null)
+                                          Text(
+                                            formatDateTime(DateTime.parse((lst[index].payment_end_date).toString())),
+                                            style: const TextStyle(fontSize: 13.0, color: Colors.black38, fontWeight: FontWeight.w600),
+                                          ),
+                                        BlackBookButton(
+                                          height: 30,
+                                          onPressed: () {
+                                            Navigator.push(
+                                                context,
+                                                CupertinoPageRoute(
+                                                    builder: (context) => Packages(lst[index].name == "Агуулах" ? "/v1/payment/packages" : '/v1/payment/packages_store', lst[index].id.toString(),
+                                                        lst[index].name == "Агуулах" ? true : false))).then((val) => {_getUserData()});
+                                          },
+                                          child: const Text("Сунгах"),
+                                        ),
+                                      ],
                                     ),
                                   ),
                                 ),

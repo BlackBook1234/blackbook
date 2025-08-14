@@ -5,7 +5,7 @@ part 'store_detial.g.dart';
 @JsonSerializable()
 class StoreDetialModel {
   // ignore: non_constant_identifier_names
-  String? name, phone_number, created_at;
+  String? name, phone_number, created_at, payment_end_date;
   // ignore: non_constant_identifier_names
   int? is_main, id;
 
@@ -15,6 +15,8 @@ class StoreDetialModel {
 
   StoreDetialModel(
       {this.name,
+      // ignore: non_constant_identifier_names
+      this.payment_end_date,
       this.id,
       // ignore: non_constant_identifier_names
       this.phone_number,

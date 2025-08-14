@@ -1,5 +1,6 @@
 import "package:black_book/constant.dart";
 import "package:black_book/models/product/store_amount.dart";
+import "package:black_book/widget/alert/component/buttons.dart";
 import "package:flutter/material.dart";
 
 class BottomSheetStore extends StatelessWidget {
@@ -12,31 +13,17 @@ class BottomSheetStore extends StatelessWidget {
           Expanded(
               child: SingleChildScrollView(
                   child: Column(children: [
-            Text(title,
-                style: const TextStyle(
-                    color: kPrimarySecondColor,
-                    fontSize: 14,
-                    fontWeight: FontWeight.bold)),
+            Text(title, style: const TextStyle(color: kPrimarySecondColor, fontSize: 14, fontWeight: FontWeight.bold)),
             const Divider(),
-            ListTile(
-                subtitle: Column(
-                    crossAxisAlignment: CrossAxisAlignment.start,
-                    children: [
-                  Text("Борлуулалтын үнэ: ${data.total_price}"),
-                  Text("Цэвэр ашиг: ${data.total_cost}")
-                ]))
+            ListTile(subtitle: Column(crossAxisAlignment: CrossAxisAlignment.start, children: [Text("Борлуулалтын үнэ: ${data.total_price}"), Text("Цэвэр ашиг: ${data.total_cost}")]))
           ]))),
-          SizedBox(
-              width: double.infinity,
-              child: ElevatedButton(
-                  style: OutlinedButton.styleFrom(
-                      shape: RoundedRectangleBorder(
-                          borderRadius: BorderRadius.circular(20)),
-                      backgroundColor: kPrimaryColor),
-                  onPressed: () {
-                    Navigator.pop(context);
-                  },
-                  child: const Text("Ok", style: TextStyle(color: kWhite))))
+          BlackBookButton(
+            width: double.infinity,
+            onPressed: () {
+              Navigator.pop(context);
+            },
+            child: const Text("Ok"),
+          ),
         ]));
   }
 

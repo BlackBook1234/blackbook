@@ -5,6 +5,7 @@ import 'package:black_book/bloc/authentication/event.dart';
 import 'package:black_book/bloc/authentication/state.dart';
 import 'package:black_book/constant.dart';
 import 'package:black_book/screen/home/navigator.dart';
+import 'package:black_book/util/router.dart';
 import 'package:black_book/util/utils.dart';
 import 'package:black_book/widget/alert/component/buttons.dart';
 import 'package:black_book/widget/alert/error.dart';
@@ -19,11 +20,7 @@ import 'component/pin_code_text.dart';
 import 'packages.dart';
 
 class AuthenticationScreen extends StatefulWidget {
-  const AuthenticationScreen(
-      {super.key,
-      required this.deviceToken,
-      required this.deviceType,
-      required this.phoneNumber});
+  const AuthenticationScreen({super.key, required this.deviceToken, required this.deviceType, required this.phoneNumber});
   @override
   State<AuthenticationScreen> createState() => _LoginScreenState();
   final String deviceType;
@@ -31,8 +28,7 @@ class AuthenticationScreen extends StatefulWidget {
   final String phoneNumber;
 }
 
-class _LoginScreenState extends State<AuthenticationScreen>
-    with BaseStateMixin {
+class _LoginScreenState extends State<AuthenticationScreen> with BaseStateMixin {
   int timer = 120;
   String showTimer = '02:00';
   late Timer _timer;
@@ -45,8 +41,7 @@ class _LoginScreenState extends State<AuthenticationScreen>
     if (!_isInputValid) return;
     String resultString = _otpTxtCtrl.text;
     if (resultString.length == 6) {
-      _bloc.add(UserAuthenticationEvent(widget.deviceType, widget.deviceToken,
-          int.tryParse(widget.phoneNumber) ?? 0, _otpTxtCtrl.text));
+      _bloc.add(UserAuthenticationEvent(widget.deviceType, widget.deviceToken, int.tryParse(widget.phoneNumber) ?? 0, _otpTxtCtrl.text));
     } else {
       ErrorMessage.attentionMessage(context, "6 оронтой тоо оруулна уу!");
     }
@@ -78,8 +73,7 @@ class _LoginScreenState extends State<AuthenticationScreen>
     Duration duration = Duration(seconds: seconds);
     int minutes = duration.inMinutes;
     int remainingSeconds = duration.inSeconds % 60;
-    String formattedTime =
-        '$minutes:${remainingSeconds.toString().padLeft(2, '0')}';
+    String formattedTime = '$minutes:${remainingSeconds.toString().padLeft(2, '0')}';
     return formattedTime;
   }
 
@@ -128,8 +122,7 @@ class _LoginScreenState extends State<AuthenticationScreen>
                             screenIndex: 0,
                           )));
                 } else {
-                  Navigator.of(context).push(CupertinoPageRoute(
-                      builder: (context) => const Packages()));
+                  Navigator.push(context, NoSwipeCupertinoRoute(builder: (context) => const Packages('/v1/payment/packages', "", false)));
                 }
               }
             })
@@ -151,16 +144,9 @@ class _LoginScreenState extends State<AuthenticationScreen>
               Padding(
                   padding: const EdgeInsets.symmetric(horizontal: 32),
                   child: Column(children: [
-                    SizedBox(
-                        height: 80,
-                        child: Image.asset('assets/images/logo.png')),
+                    SizedBox(height: 80, child: Image.asset('assets/images/logo.png')),
                     const SizedBox(height: 10),
-                    const Text(
-                        "Таны утсан дээр ирсэн 6 оронтой баталгаажуулах тоог оруулна уу.",
-                        style: TextStyle(
-                            fontSize: 12,
-                            color: Colors.black38,
-                            fontWeight: FontWeight.bold)),
+                    const Text("Таны утсан дээр ирсэн 6 оронтой баталгаажуулах тоог оруулна уу.", style: TextStyle(fontSize: 12, color: Colors.black38, fontWeight: FontWeight.bold)),
                     // const SizedBox(height: 18),
                     // Container(
                     //     decoration: BoxDecoration(
@@ -182,22 +168,14 @@ class _LoginScreenState extends State<AuthenticationScreen>
                   ])),
               _buildBody(),
               const Spacer(),
-              Text(showTimer,
-                  style: const TextStyle(
-                      fontSize: 14,
-                      color: Colors.black38,
-                      fontWeight: FontWeight.bold)),
+              Text(showTimer, style: const TextStyle(fontSize: 14, color: Colors.black38, fontWeight: FontWeight.bold)),
               Padding(
-                padding: EdgeInsets.only(
-                    right: 10,
-                    left: 10,
-                    bottom: MediaQuery.of(context).padding.bottom),
+                padding: EdgeInsets.only(right: 10, left: 10, bottom: MediaQuery.of(context).padding.bottom),
                 child: BlackBookButton(
                   width: double.infinity,
                   onPressed: () {
                     if (showTimer == "0:00") {
-                      showWarningDialog(
-                          "Хугацаа дуусхаас өмнө баталгаажуулах тоог оруулна уу");
+                      showWarningDialog("Хугацаа дуусхаас өмнө баталгаажуулах тоог оруулна уу");
                     } else {
                       onLogin();
                     }
@@ -249,8 +227,7 @@ class _LoginScreenState extends State<AuthenticationScreen>
             child: PinTextField(
               autofocus: true,
               controller: _otpTxtCtrl,
-              androidSmsAutofillMethod:
-                  AndroidSmsAutofillMethod.smsUserConsentApi,
+              androidSmsAutofillMethod: AndroidSmsAutofillMethod.smsUserConsentApi,
             ),
           ),
         ],

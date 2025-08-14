@@ -12,7 +12,8 @@ abstract class SaleEvent extends Equatable {
 class CreateSaleEvent extends SaleEvent {
   final List<ProductInDetialModel> list;
   final String moneyType;
-  const CreateSaleEvent(this.list, this.moneyType);
+  final int sellAmount;
+  const CreateSaleEvent(this.list, this.moneyType, this.sellAmount);
 
   @override
   List<Object> get props => [list];
@@ -24,8 +25,7 @@ class GetSaleEvent extends SaleEvent {
   final String searchValue;
   final bool searchAgian;
   final DateTime begindate, endDate;
-  const GetSaleEvent(this.storeId, this.searchAgian, this.searchValue,
-      this.page, this.begindate, this.endDate);
+  const GetSaleEvent(this.storeId, this.searchAgian, this.searchValue, this.page, this.begindate, this.endDate);
   @override
   List<Object> get props => [storeId, searchAgian, searchValue];
 }
@@ -36,8 +36,7 @@ class GetMainSaleEvent extends SaleEvent {
   final String storeId;
   final bool searchAgian;
   final int page;
-  const GetMainSaleEvent(
-      this.page, this.beginDate, this.endDate, this.storeId, this.searchAgian);
+  const GetMainSaleEvent(this.page, this.beginDate, this.endDate, this.storeId, this.searchAgian);
   @override
   List<Object> get props => [page, beginDate, endDate, storeId, searchAgian];
 }

@@ -14,6 +14,7 @@ ProductInDetialModel _$ProductInDetialModelFromJson(
       transfer_id: (json['transfer_id'] as num?)?.toInt(),
       created_at: json['created_at'] as String?,
       price: (json['price'] as num?)?.toInt(),
+      price_sell: (json['price_sell'] as num?)?.toInt(),
       store_name: json['store_name'] as String?,
       store_id: (json['store_id'] as num?)?.toInt(),
       stock: (json['stock'] as num?)?.toInt(),
@@ -34,4 +35,5 @@ Map<String, dynamic> _$ProductInDetialModelToJson(
       'warehouse_stock': instance.warehouse_stock,
       'store_id': instance.store_id,
       'transfer_id': instance.transfer_id,
+      'price_sell': instance.price_sell,
     };

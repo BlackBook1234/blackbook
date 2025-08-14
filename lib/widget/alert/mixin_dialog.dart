@@ -6,6 +6,7 @@ import 'package:black_book/util/utils.dart';
 import 'package:black_book/widget/alert/custom_dialog.dart';
 import 'package:black_book/widget/alert/inviation_dialog.dart';
 import 'package:black_book/widget/alert/new_dialog.dart';
+import 'package:black_book/widget/alert/payment_expire.dart';
 import 'package:black_book/widget/alert/update.dart';
 import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
@@ -108,6 +109,17 @@ mixin BaseStateMixin<T extends StatefulWidget> on State<T> {
         barrierDismissible: false,
         context: context,
         builder: (ctx) => const UpdateDialog(),
+      );
+    }
+    return Future.value(null);
+  }
+
+  Future<S?> expirePaymentDialog<S>(BuildContext context) {
+    if (mounted) {
+      return showDialog<S>(
+        barrierDismissible: false,
+        context: context,
+        builder: (ctx) => const PaymentExpireDialog(),
       );
     }
     return Future.value(null);

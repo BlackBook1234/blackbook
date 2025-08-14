@@ -1,4 +1,5 @@
 import 'package:black_book/global_keys.dart';
+import 'package:black_book/models/user_data/user_data.dart';
 import 'package:black_book/provider/loader.dart';
 import 'package:black_book/provider/user_provider.dart';
 import 'package:flutter/material.dart';
@@ -14,64 +15,43 @@ class Utils {
   }
 
   static CommonProvider getCommonProvider() {
-    return Provider.of<CommonProvider>(GlobalKeys.navigatorKey.currentContext!,
-        listen: false);
+    return Provider.of<CommonProvider>(GlobalKeys.navigatorKey.currentContext!, listen: false);
   }
 
   static String getToken() {
-    return Provider.of<CommonProvider>(GlobalKeys.navigatorKey.currentContext!,
-                listen: false)
-            .userInfo!
-            .accessToken ??
-        '';
+    return Provider.of<CommonProvider>(GlobalKeys.navigatorKey.currentContext!, listen: false).userInfo!.accessToken ?? '';
+  }
+
+  static UserDataModel getUserInfo() {
+    return Provider.of<CommonProvider>(GlobalKeys.navigatorKey.currentContext!, listen: false).userInfo!;
   }
 
   static String getRefreshToken() {
-    return Provider.of<CommonProvider>(GlobalKeys.navigatorKey.currentContext!,
-                listen: false)
-            .userInfo!
-            .refreshToken ??
-        '';
+    return Provider.of<CommonProvider>(GlobalKeys.navigatorKey.currentContext!, listen: false).userInfo!.refreshToken ?? '';
   }
 
   static String getUserRole() {
-    return Provider.of<CommonProvider>(GlobalKeys.navigatorKey.currentContext!,
-                listen: false)
-            .userInfo!
-            .type ??
-        '';
+    return Provider.of<CommonProvider>(GlobalKeys.navigatorKey.currentContext!, listen: false).userInfo!.type ?? '';
+  }
+
+  static bool getAgreement() {
+    return Provider.of<CommonProvider>(GlobalKeys.navigatorKey.currentContext!, listen: false).userInfo!.isRegistration ?? true;
   }
 
   static int getStoreId() {
-    return Provider.of<CommonProvider>(GlobalKeys.navigatorKey.currentContext!,
-                listen: false)
-            .userInfo!
-            .storeId ??
-        0;
+    return Provider.of<CommonProvider>(GlobalKeys.navigatorKey.currentContext!, listen: false).userInfo!.storeId ?? 0;
   }
 
   static int getIpaid() {
-    return Provider.of<CommonProvider>(GlobalKeys.navigatorKey.currentContext!,
-                listen: false)
-            .userInfo!
-            .isPaid ??
-        0;
+    return Provider.of<CommonProvider>(GlobalKeys.navigatorKey.currentContext!, listen: false).userInfo!.isPaid ?? 0;
   }
 
   static String getPhone() {
-    return Provider.of<CommonProvider>(GlobalKeys.navigatorKey.currentContext!,
-                listen: false)
-            .userInfo!
-            .phone ??
-        "";
+    return Provider.of<CommonProvider>(GlobalKeys.navigatorKey.currentContext!, listen: false).userInfo!.phone ?? "";
   }
 
   static String getstoreName() {
-    return Provider.of<CommonProvider>(GlobalKeys.navigatorKey.currentContext!,
-                listen: false)
-            .userInfo!
-            .storeName ??
-        "";
+    return Provider.of<CommonProvider>(GlobalKeys.navigatorKey.currentContext!, listen: false).userInfo!.storeName ?? "";
   }
 
   static Color fromHex(String hexString) {

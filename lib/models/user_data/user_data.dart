@@ -15,7 +15,10 @@ class UserDataModel {
       position,
       refreshToken,
       tenantName,
+      paymentExpireDate,
       mustUpdate,
+      // ignore: non_constant_identifier_names
+      payment_end_date,
       type;
   int? active,
       userId,
@@ -25,6 +28,7 @@ class UserDataModel {
       isAdmin,
       storeId,
       isPaid;
+      bool? isRegistration;
 
   UserDataModel(
       {this.accessToken,
@@ -33,6 +37,7 @@ class UserDataModel {
       this.countryCode,
       this.active,
       this.avatar,
+      this.paymentExpireDate,
       this.email,
       this.mustUpdate,
       this.isPaid,
@@ -46,6 +51,9 @@ class UserDataModel {
       this.storeId,
       this.refreshToken,
       this.tenantId,
+      this.isRegistration,
+      // ignore: non_constant_identifier_names
+      this.payment_end_date,
       this.tenantName});
   factory UserDataModel.fromJson(Map<String, dynamic> json) =>
       _$UserDataModelFromJson(json);

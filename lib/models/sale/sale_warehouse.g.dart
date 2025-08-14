@@ -11,12 +11,15 @@ SaleListWarehouseModel _$SaleListWarehouseModelFromJson(
     SaleListWarehouseModel(
       total_cost: (json['total_cost'] as num?)?.toInt(),
       total_price: (json['total_price'] as num?)?.toInt(),
-    )..name = json['name'] as String?;
+    )
+      ..total_price_sell = (json['total_price_sell'] as num?)?.toInt()
+      ..name = json['name'] as String?;
 
 Map<String, dynamic> _$SaleListWarehouseModelToJson(
         SaleListWarehouseModel instance) =>
     <String, dynamic>{
       'total_cost': instance.total_cost,
       'total_price': instance.total_price,
+      'total_price_sell': instance.total_price_sell,
       'name': instance.name,
     };

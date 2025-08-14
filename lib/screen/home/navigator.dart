@@ -37,12 +37,14 @@ class _NavigatorScreenState extends State<NavigatorScreen> with BaseStateMixin {
 
   @override
   void initState() {
-    refreshPage(context);
-    super.initState();
-    setState(() {
-      screenIndex = widget.screenIndex;
+    WidgetsBinding.instance.addPostFrameCallback((_) {
+      refreshPage(context);
+      super.initState();
+      setState(() {
+        screenIndex = widget.screenIndex;
+      });
+      _checkInvitaion();
     });
-    _checkInvitaion();
   }
 
   Future<void> refreshPage(BuildContext context) async {
@@ -70,6 +72,10 @@ class _NavigatorScreenState extends State<NavigatorScreen> with BaseStateMixin {
 
   Future<void> _getUpdateStatus() async {
     try {
+      if (Utils.getUserRole() != "BOSS" && DateTime.parse(Utils.getUserInfo().paymentExpireDate ?? "2050-01-01").isAfter(DateTime.now())) {
+        expirePaymentDialog(context);
+        return;
+      }
       var res = await api.getUpdateStatus();
       if (res.data.mustUpdate) {
         if (context.mounted) {
