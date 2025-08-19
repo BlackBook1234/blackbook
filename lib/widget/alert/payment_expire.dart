@@ -1,4 +1,9 @@
+import 'package:black_book/provider/user_provider.dart';
+import 'package:black_book/screen/login/login.dart';
+import 'package:black_book/widget/alert/component/buttons.dart';
+import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
+import 'package:provider/provider.dart';
 
 class PaymentExpireDialog extends StatelessWidget {
   const PaymentExpireDialog({super.key});
@@ -23,16 +28,25 @@ class PaymentExpireDialog extends StatelessWidget {
                 Padding(
                     padding: const EdgeInsets.symmetric(vertical: 20),
                     child: SizedBox(height: 40, width: 40, child: ClipRRect(borderRadius: BorderRadius.circular(9), child: Image.asset("assets/images/mainLogo.png", fit: BoxFit.cover)))),
-                const SizedBox(
+                SizedBox(
                   height: 150,
                   child: Column(
                     crossAxisAlignment: CrossAxisAlignment.center,
                     children: [
-                      SizedBox(height: 30),
-                      Text(
+                      const SizedBox(height: 10),
+                      const Text(
                         "Агуулахын эрхээр нэвтэрч сунгалтаа хийнэ үү. Хугацаа дууссан байна",
                         textAlign: TextAlign.center,
                         style: TextStyle(fontSize: 16, fontWeight: FontWeight.w800, color: Colors.black),
+                      ),
+                      const SizedBox(height: 20),
+                      BlackBookButton(
+                        width: double.infinity,
+                        onPressed: () {
+                          Provider.of<CommonProvider>(context, listen: false).logout();
+                          Navigator.pushAndRemoveUntil(context, CupertinoPageRoute(builder: (context) => const LoginScreen()), (route) => false);
+                        },
+                        child: const Text("Гарах"),
                       ),
                     ],
                   ),

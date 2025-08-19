@@ -178,6 +178,7 @@ class API {
     DeviceModel model = await UDevice().getDeviceUUID();
     var requestBody = <String, String>{"deviceToken": model.deviceToken, "deviceType": model.deviceInfo, "refreshToken": Utils.getRefreshToken()};
     final value = await client.post('/v1/auth/refresh', data: requestBody);
+    print(value);
     UserDataResponseModel userData = UserDataResponseModel.fromJson(value);
     Utils.getCommonProvider().setUserInfo(userData.data!);
     return userData.data!;
