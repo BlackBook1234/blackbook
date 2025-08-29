@@ -34,6 +34,8 @@ class _AddDivisionState extends State<AddDivision> with BaseStateMixin {
   List<StoreDetialModel> lst = [];
   UserDataModel userModel = UserDataModel();
   String? user;
+  bool isCall = false;
+  String createStorePhoneNumber = "";
 
   void onCreate() {
     _bloc.add(CreateStoreEvent(storeName.text, int.parse(phoneNumber.text)));
@@ -44,6 +46,9 @@ class _AddDivisionState extends State<AddDivision> with BaseStateMixin {
     setExpireDate();
     _bloc.add(const GetStoreEvent());
     super.initState();
+    setState(() {
+      isCall = false;
+    });
   }
 
   void setExpireDate() {
@@ -107,14 +112,19 @@ class _AddDivisionState extends State<AddDivision> with BaseStateMixin {
               }
               if (state is StoreSuccess) {
                 Utils.cancelLoader(context);
-                showSuccessDialog("Мэдээлэл", false, "Амжилттай үүсгэлээ");
                 _bloc.add(const GetStoreEvent());
-                // AlertMessage.statusMessage(
-                //     context, "Мэдээлэл", "Амжилттай буцаагдлаа", false);
-                Future.delayed(const Duration(seconds: 1), () {
-                  Navigator.pop(context);
-                  Navigator.pop(context);
+                setState(() {
+                  isCall = true;
+                  createStorePhoneNumber = state.storeId;
                 });
+                // showSuccessDialog("Мэдээлэл", false, "Амжилттай үүсгэлээ");
+                // _bloc.add(const GetStoreEvent());
+                // // AlertMessage.statusMessage(
+                // //     context, "Мэдээлэл", "Амжилттай буцаагдлаа", false);
+                // Future.delayed(const Duration(seconds: 1), () {
+                //   Navigator.pop(context);
+                //   Navigator.pop(context);
+                // });
               }
             }),
         BlocListener<StoreBloc, StoreState>(
@@ -138,6 +148,19 @@ class _AddDivisionState extends State<AddDivision> with BaseStateMixin {
                 lst.add(StoreDetialModel(name: "Агуулах", phone_number: Utils.getPhone(), payment_end_date: userModel.paymentExpireDate, id: 0));
                 lst.addAll(state.list);
               });
+              if (isCall) {
+                for (StoreDetialModel data in lst) {
+                  if (data.phone_number == createStorePhoneNumber) {
+                    Navigator.push(context, CupertinoPageRoute(builder: (context) => Packages('/v1/payment/packages_store', data.id.toString(), false))).then((val) => {
+                          showSuccessDialog("Мэдээлэл", false, "Амжилттай үүсгэлээ"),
+                          Future.delayed(const Duration(seconds: 1), () {
+                            Navigator.pop(context);
+                            Navigator.pop(context);
+                          })
+                        });
+                  }
+                }
+              }
             }
           },
         )

@@ -72,8 +72,9 @@ class _NavigatorScreenState extends State<NavigatorScreen> with BaseStateMixin {
 
   Future<void> _getUpdateStatus() async {
     try {
-      if (Utils.getUserRole() != "BOSS" && DateTime.parse(Utils.getUserInfo().paymentExpireDate ?? "2050-01-01").isBefore(DateTime.now())) {
-        expirePaymentDialog(context);
+      final userData = await api.refreshToken();
+      if (DateTime.parse(userData.paymentExpireDate ?? "2050-01-01").isBefore(DateTime.now())) {
+        expirePaymentDialog(context).then((value) => {});
         return;
       }
       var res = await api.getUpdateStatus();

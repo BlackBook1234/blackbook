@@ -1,10 +1,10 @@
 import 'package:black_book/api/component/api_error.dart';
 import 'package:black_book/constant.dart';
 import 'package:black_book/provider/user_provider.dart';
+import 'package:black_book/screen/core/add_division.dart';
 import 'package:black_book/screen/friend/friend_list.dart';
 import 'package:black_book/screen/home/navigator.dart';
 import 'package:black_book/screen/home/widget/banners_carousel.dart';
-import 'package:black_book/screen/sale_product/sold.dart';
 import 'package:black_book/screen/login/login.dart';
 import 'package:black_book/screen/transfer/share_list.dart';
 import 'package:black_book/screen/share/share_product.dart';
@@ -145,11 +145,7 @@ class _NavBarState extends State<NavBar> with BaseStateMixin {
                               ),
                             ),
                             onTap: () {
-                              Navigator.of(context).push(CupertinoPageRoute(
-                                  builder: (context) => const ShareListHistoryScreen(
-                                        inComeOutCome: false,
-                                        sourceId: '',
-                                      )));
+                              Navigator.of(context).push(CupertinoPageRoute(builder: (context) => const ShareListHistoryScreen(inComeOutCome: false, sourceId: '')));
                             }),
                         ListTile(
                             trailing: SvgPicture.asset("assets/svg/right_arrow.svg", width: 7, colorFilter: const ColorFilter.mode(Colors.white60, BlendMode.srcIn)),
@@ -161,9 +157,9 @@ class _NavBarState extends State<NavBar> with BaseStateMixin {
                         ListTile(
                             trailing: SvgPicture.asset("assets/svg/right_arrow.svg", width: 7, colorFilter: const ColorFilter.mode(Colors.white60, BlendMode.srcIn)),
                             leading: SvgPicture.asset("assets/svg/sold_item.svg", height: 28, colorFilter: const ColorFilter.mode(Colors.white60, BlendMode.srcIn)),
-                            title: const Text("Зарагдсан бараа", style: TextStyle(color: Colors.white60, fontSize: 13.0, fontWeight: FontWeight.bold)),
+                            title: const Text("Эрх сунгах", style: TextStyle(color: Colors.white60, fontSize: 13.0, fontWeight: FontWeight.bold)),
                             onTap: () {
-                              Navigator.of(context).push(CupertinoPageRoute(builder: (context) => const SoldItemMainScreen()));
+                              Navigator.of(context).push(CupertinoPageRoute(builder: (context) => const AddDivision()));
                             })
                       ])))
             ]),

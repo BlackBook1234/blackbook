@@ -54,6 +54,9 @@ class _SoldItemMainScreenState extends State<SoldItemMainScreen> with BaseStateM
   @override
   void initState() {
     super.initState();
+     setState(() {
+      chosenType = Utils.getstoreName();
+    });
     // _scrollController = ScrollController();
     // _scrollController.addListener(_loadMorePages);
     _getProductData();

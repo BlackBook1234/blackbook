@@ -27,9 +27,10 @@ class StoreFailure extends StoreState {
 }
 
 class StoreSuccess extends StoreState {
-  StoreSuccess();
+  final String storeId;
+  StoreSuccess(this.storeId);
   @override
-  List<Object?> get props => [];
+  List<Object?> get props => [storeId];
 }
 
 //Дэлгүүрийн мэдээлэл авах
@@ -75,8 +76,7 @@ class GetStoreProductSuccess extends StoreState {
   final List<ProductStoreModel>? stores;
   final bool hasMoreOrder;
   final List<CategoriesModel> categories;
-  GetStoreProductSuccess(
-      this.list, this.amount, this.stores, this.hasMoreOrder,this.categories);
+  GetStoreProductSuccess(this.list, this.amount, this.stores, this.hasMoreOrder, this.categories);
   @override
   List<Object?> get props => [list, amount, stores, hasMoreOrder];
 }
