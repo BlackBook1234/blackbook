@@ -98,7 +98,7 @@ class MyAppState extends State<MyApp> with BaseStateMixin {
             // NavigatorScreen(screenIndex: 0,)
             user == null
                 ? const LoginScreen()
-                : Utils.getUserRole() == "WORKER" || Utils.getIpaid() == 1
+                : Utils.getUserRole() == "WORKER" || DateTime.parse(Utils.getUserInfo().paymentExpireDate ?? "2050-01-01").isAfter(DateTime.now())
                     ? const NavigatorScreen(
                         screenIndex: 0,
                       )
