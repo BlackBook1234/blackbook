@@ -72,6 +72,17 @@ class API {
     });
   }
 
+  Future<dynamic> getStoreInfo(int storeId) async {
+    return await client.get('/v1/store/getInfo/$storeId').then((value) async {
+      if (value == "auth_token_error") {
+        await refreshToken();
+        return getStoreInfo(storeId);
+      } else {
+        return value;
+      }
+    });
+  }
+
   Future<void> editProduct(EditProductModel data) async {
     return await client.post('/v1/product/update', data: data).then((value) async {
       if (value == "auth_token_error") {

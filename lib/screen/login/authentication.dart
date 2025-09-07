@@ -116,7 +116,7 @@ class _LoginScreenState extends State<AuthenticationScreen> with BaseStateMixin 
                       builder: (context) => const NavigatorScreen(
                             screenIndex: 0,
                           )));
-                } else if (state.data.isPaid == 1) {
+                } else if (DateTime.parse(state.data.paymentExpireDate ?? "2050-01-01").isAfter(DateTime.now())) {
                   Navigator.of(context).push(CupertinoPageRoute(
                       builder: (context) => const NavigatorScreen(
                             screenIndex: 0,

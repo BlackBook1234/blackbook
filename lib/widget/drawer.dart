@@ -154,13 +154,15 @@ class _NavBarState extends State<NavBar> with BaseStateMixin {
                             onTap: () {
                               Navigator.of(context).push(CupertinoPageRoute(builder: (context) => const ShareProductScreen()));
                             }),
-                        ListTile(
-                            trailing: SvgPicture.asset("assets/svg/right_arrow.svg", width: 7, colorFilter: const ColorFilter.mode(Colors.white60, BlendMode.srcIn)),
-                            leading: SvgPicture.asset("assets/svg/sold_item.svg", height: 28, colorFilter: const ColorFilter.mode(Colors.white60, BlendMode.srcIn)),
-                            title: const Text("Эрх сунгах", style: TextStyle(color: Colors.white60, fontSize: 13.0, fontWeight: FontWeight.bold)),
-                            onTap: () {
-                              Navigator.of(context).push(CupertinoPageRoute(builder: (context) => const AddDivision()));
-                            })
+                        Utils.getUserRole() == "BOSS"
+                            ? ListTile(
+                                trailing: SvgPicture.asset("assets/svg/right_arrow.svg", width: 7, colorFilter: const ColorFilter.mode(Colors.white60, BlendMode.srcIn)),
+                                leading: SvgPicture.asset("assets/svg/sold_item.svg", height: 28, colorFilter: const ColorFilter.mode(Colors.white60, BlendMode.srcIn)),
+                                title: const Text("Эрх сунгах", style: TextStyle(color: Colors.white60, fontSize: 13.0, fontWeight: FontWeight.bold)),
+                                onTap: () {
+                                  Navigator.of(context).push(CupertinoPageRoute(builder: (context) => const AddDivision()));
+                                })
+                            : const SizedBox.shrink(),
                       ])))
             ]),
             const Expanded(
