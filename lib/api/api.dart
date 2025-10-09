@@ -29,7 +29,7 @@ class API {
   API._internal();
   factory API() => _instance;
   final client = APIHttpClient();
-  final int limit = 1000;
+  final int limit = 100000;
 
   Future<void> addFriendRequest({
     required String phoneNumber,
@@ -207,22 +207,22 @@ class API {
     if (Utils.getUserRole() == "BOSS") {
       if (searchAgian) {
         if (storeId == "-1") {
-          path = '/v1/product/my/list?page=$page&limit=1000&q=$searchValue&category_id=$category&sort=desc&is_warehouse=1';
+          path = '/v1/product/my/list?page=$page&limit=1000000&q=$searchValue&category_id=$category&sort=desc&is_warehouse=1';
         } else {
-          path = '/v1/product/my/list?page=$page&limit=1000&q=$searchValue&category_id=$category&store_id=$storeId&sort=desc';
+          path = '/v1/product/my/list?page=$page&limit=1000000&q=$searchValue&category_id=$category&store_id=$storeId&sort=desc';
         }
       } else {
-        path = '/v1/product/my/list?page=$page&limit=1000&sort=desc&is_warehouse=1';
+        path = '/v1/product/my/list?page=$page&limit=1000000&sort=desc&is_warehouse=1';
       }
     } else {
       if (searchAgian) {
         if (storeId == "-1") {
-          path = '/v1/product/my/list?page=$page&limit=1000&q=$searchValue&category_id=$category&sort=desc&is_warehouse=1';
+          path = '/v1/product/my/list?page=$page&limit=1000000&q=$searchValue&category_id=$category&sort=desc&is_warehouse=1';
         } else {
-          path = '/v1/product/my/list?page=$page&limit=1000&q=$searchValue&category_id=$category&store_id=$storeId&sort=desc';
+          path = '/v1/product/my/list?page=$page&limit=1000000&q=$searchValue&category_id=$category&store_id=$storeId&sort=desc';
         }
       } else {
-        path = '/v1/product/my/list?page=$page&limit=1000&sort=desc&store_id=${Utils.getStoreId()}';
+        path = '/v1/product/my/list?page=$page&limit=1000000&sort=desc&store_id=${Utils.getStoreId()}';
       }
     }
     return await client.get(path).then((value) async {
@@ -239,15 +239,15 @@ class API {
     String path = "";
     if (searchAgian) {
       if (storeId == "-1") {
-        path = '/v1/product/my/list?page=$page&limit=1000&q=$searchValue&category_id=$category&sort=desc&is_warehouse=1';
+        path = '/v1/product/my/list?page=$page&limit=1000000&q=$searchValue&category_id=$category&sort=desc&is_warehouse=1';
       } else {
-        path = '/v1/product/my/list?page=$page&limit=1000&q=$searchValue&category_id=$category&store_id=$storeId&sort=desc';
+        path = '/v1/product/my/list?page=$page&limit=1000000&q=$searchValue&category_id=$category&store_id=$storeId&sort=desc';
       }
     } else {
       if (Utils.getUserRole() == "BOSS") {
-        path = '/v1/product/my/list?page=$page&limit=1000&sort=desc&is_warehouse=1';
+        path = '/v1/product/my/list?page=$page&limit=1000000&sort=desc&is_warehouse=1';
       } else {
-        path = '/v1/product/my/list?page=$page&limit=1000&sort=desc&store_id=${Utils.getStoreId()}';
+        path = '/v1/product/my/list?page=$page&limit=1000000&sort=desc&store_id=${Utils.getStoreId()}';
       }
     }
     return await client.get(path).then((value) async {

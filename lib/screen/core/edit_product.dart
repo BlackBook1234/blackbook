@@ -25,7 +25,8 @@ class _BottomSheetsWidgetState extends State<EditProductScreen> with BaseStateMi
   EditProductModel editData = EditProductModel(name: '', code: '', categoryId: 0, photoUrl: '', sizes: []);
   final TextEditingController productName = TextEditingController();
   final TextEditingController productCode = TextEditingController();
-  String warningText = "";
+  final TextEditingController costPrice = TextEditingController();
+  final TextEditingController price = TextEditingController();
   List<DynamicItemWidget> dynamicList = [];
 
   @override
@@ -33,12 +34,14 @@ class _BottomSheetsWidgetState extends State<EditProductScreen> with BaseStateMi
     setState(() {
       productCode.text = widget.data.code ?? "";
       productName.text = widget.data.name ?? "";
+      costPrice.text = widget.data.sizes!.first.cost.toString();
+      price.text = widget.data.sizes!.first.price.toString();
     });
     super.initState();
   }
 
   addDataInDraft(ProductDetialModel data) {
-    if ((productName.text.isEmpty || productCode.text.isEmpty) && warningText == "") {
+    if ((productName.text.isEmpty || productCode.text.isEmpty || costPrice.text.isEmpty || price.text.isEmpty)) {
       showWarningDialog("Утга бүрэн оруулна уу!");
       return;
     }
@@ -53,8 +56,8 @@ class _BottomSheetsWidgetState extends State<EditProductScreen> with BaseStateMi
       for (ProductInDetialModel otpList in data.sizes!) {
         SizeModel inData = SizeModel(
           type: otpList.type ?? "",
-          cost: otpList.cost ?? 0,
-          price: otpList.price ?? 0,
+          cost: costPrice.text.isEmpty ? 0 : int.parse(costPrice.text),
+          price: price.text.isEmpty ? 0 : int.parse(price.text),
           stock: otpList.stock ?? 0,
           id: otpList.id ?? 0,
         );
@@ -126,6 +129,8 @@ class _BottomSheetsWidgetState extends State<EditProductScreen> with BaseStateMi
                     ])),
                 _buildTextField(productName, "Барааны нэр"),
                 _buildTextField(productCode, "Барааны код"),
+                _buildNumberField(costPrice, "Авсан үнэ"),
+                _buildNumberField(price, "Зарах үнэ"),
                 const Divider(),
                 const SizedBox(height: 10),
                 KeyboardDismissOnTap(
@@ -218,6 +223,28 @@ class _BottomSheetsWidgetState extends State<EditProductScreen> with BaseStateMi
         child: TextField(
           controller: controller,
           textInputAction: TextInputAction.done,
+          style: const TextStyle(fontSize: 14, fontWeight: FontWeight.bold),
+          decoration: InputDecoration(
+            labelText: labelText,
+            labelStyle: const TextStyle(fontWeight: FontWeight.bold, fontSize: 14, color: Colors.black38),
+            enabledBorder: OutlineInputBorder(borderSide: const BorderSide(color: Colors.black12), borderRadius: BorderRadius.circular(10)),
+            focusedBorder: OutlineInputBorder(borderSide: const BorderSide(color: Colors.black26), borderRadius: BorderRadius.circular(10)),
+          ),
+        ),
+      ),
+    );
+  }
+
+  Widget _buildNumberField(TextEditingController controller, String labelText) {
+    return Padding(
+      padding: const EdgeInsets.only(bottom: 10),
+      child: SizedBox(
+        height: 50,
+        child: TextField(
+          controller: controller,
+          textInputAction: TextInputAction.done,
+          keyboardType: TextInputType.number,
+          inputFormatters: [FilteringTextInputFormatter.digitsOnly],
           style: const TextStyle(fontSize: 14, fontWeight: FontWeight.bold),
           decoration: InputDecoration(
             labelText: labelText,
