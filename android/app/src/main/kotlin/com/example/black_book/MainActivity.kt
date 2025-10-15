@@ -1,4 +1,4 @@
-package com.candy.black_book
+package com.candy.black_book_mn
 
 import io.flutter.embedding.android.FlutterActivity
 

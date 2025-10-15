@@ -20,7 +20,11 @@ import 'component/pin_code_text.dart';
 import 'packages.dart';
 
 class AuthenticationScreen extends StatefulWidget {
-  const AuthenticationScreen({super.key, required this.deviceToken, required this.deviceType, required this.phoneNumber});
+  const AuthenticationScreen(
+      {super.key,
+      required this.deviceToken,
+      required this.deviceType,
+      required this.phoneNumber});
   @override
   State<AuthenticationScreen> createState() => _LoginScreenState();
   final String deviceType;
@@ -28,7 +32,8 @@ class AuthenticationScreen extends StatefulWidget {
   final String phoneNumber;
 }
 
-class _LoginScreenState extends State<AuthenticationScreen> with BaseStateMixin {
+class _LoginScreenState extends State<AuthenticationScreen>
+    with BaseStateMixin {
   int timer = 120;
   String showTimer = '02:00';
   late Timer _timer;
@@ -41,7 +46,8 @@ class _LoginScreenState extends State<AuthenticationScreen> with BaseStateMixin 
     if (!_isInputValid) return;
     String resultString = _otpTxtCtrl.text;
     if (resultString.length == 6) {
-      _bloc.add(UserAuthenticationEvent(widget.deviceType, widget.deviceToken, int.tryParse(widget.phoneNumber) ?? 0, _otpTxtCtrl.text));
+      _bloc.add(UserAuthenticationEvent(widget.deviceType, widget.deviceToken,
+          int.tryParse(widget.phoneNumber) ?? 0, _otpTxtCtrl.text));
     } else {
       ErrorMessage.attentionMessage(context, "6 оронтой тоо оруулна уу!");
     }
@@ -73,7 +79,8 @@ class _LoginScreenState extends State<AuthenticationScreen> with BaseStateMixin 
     Duration duration = Duration(seconds: seconds);
     int minutes = duration.inMinutes;
     int remainingSeconds = duration.inSeconds % 60;
-    String formattedTime = '$minutes:${remainingSeconds.toString().padLeft(2, '0')}';
+    String formattedTime =
+        '$minutes:${remainingSeconds.toString().padLeft(2, '0')}';
     return formattedTime;
   }
 
@@ -116,13 +123,24 @@ class _LoginScreenState extends State<AuthenticationScreen> with BaseStateMixin 
                       builder: (context) => const NavigatorScreen(
                             screenIndex: 0,
                           )));
-                } else if (DateTime.parse(state.data.paymentExpireDate ?? "2050-01-01").isAfter(DateTime.now())) {
+                } else if (state.data.paymentExpireDate == null) {
+                  Navigator.push(
+                      context,
+                      NoSwipeCupertinoRoute(
+                          builder: (context) => const Packages(
+                              '/v1/payment/packages', "", false)));
+                } else if (DateTime.parse(state.data.paymentExpireDate ?? "")
+                    .isAfter(DateTime.now())) {
                   Navigator.of(context).push(CupertinoPageRoute(
                       builder: (context) => const NavigatorScreen(
                             screenIndex: 0,
                           )));
                 } else {
-                  Navigator.push(context, NoSwipeCupertinoRoute(builder: (context) => const Packages('/v1/payment/packages', "", false)));
+                  Navigator.push(
+                      context,
+                      NoSwipeCupertinoRoute(
+                          builder: (context) => const Packages(
+                              '/v1/payment/packages', "", false)));
                 }
               }
             })
@@ -144,9 +162,16 @@ class _LoginScreenState extends State<AuthenticationScreen> with BaseStateMixin 
               Padding(
                   padding: const EdgeInsets.symmetric(horizontal: 32),
                   child: Column(children: [
-                    SizedBox(height: 80, child: Image.asset('assets/images/logo.png')),
+                    SizedBox(
+                        height: 80,
+                        child: Image.asset('assets/images/logo.png')),
                     const SizedBox(height: 10),
-                    const Text("Таны утсан дээр ирсэн 6 оронтой баталгаажуулах тоог оруулна уу.", style: TextStyle(fontSize: 12, color: Colors.black38, fontWeight: FontWeight.bold)),
+                    const Text(
+                        "Таны утсан дээр ирсэн 6 оронтой баталгаажуулах тоог оруулна уу.",
+                        style: TextStyle(
+                            fontSize: 12,
+                            color: Colors.black38,
+                            fontWeight: FontWeight.bold)),
                     // const SizedBox(height: 18),
                     // Container(
                     //     decoration: BoxDecoration(
@@ -168,14 +193,22 @@ class _LoginScreenState extends State<AuthenticationScreen> with BaseStateMixin 
                   ])),
               _buildBody(),
               const Spacer(),
-              Text(showTimer, style: const TextStyle(fontSize: 14, color: Colors.black38, fontWeight: FontWeight.bold)),
+              Text(showTimer,
+                  style: const TextStyle(
+                      fontSize: 14,
+                      color: Colors.black38,
+                      fontWeight: FontWeight.bold)),
               Padding(
-                padding: EdgeInsets.only(right: 10, left: 10, bottom: MediaQuery.of(context).padding.bottom),
+                padding: EdgeInsets.only(
+                    right: 10,
+                    left: 10,
+                    bottom: MediaQuery.of(context).padding.bottom),
                 child: BlackBookButton(
                   width: double.infinity,
                   onPressed: () {
                     if (showTimer == "0:00") {
-                      showWarningDialog("Хугацаа дуусхаас өмнө баталгаажуулах тоог оруулна уу");
+                      showWarningDialog(
+                          "Хугацаа дуусхаас өмнө баталгаажуулах тоог оруулна уу");
                     } else {
                       onLogin();
                     }
@@ -227,7 +260,8 @@ class _LoginScreenState extends State<AuthenticationScreen> with BaseStateMixin 
             child: PinTextField(
               autofocus: true,
               controller: _otpTxtCtrl,
-              androidSmsAutofillMethod: AndroidSmsAutofillMethod.smsUserConsentApi,
+              androidSmsAutofillMethod:
+                  AndroidSmsAutofillMethod.smsUserConsentApi,
             ),
           ),
         ],

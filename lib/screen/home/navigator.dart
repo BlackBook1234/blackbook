@@ -256,7 +256,7 @@ class _NavigatorScreenState extends State<NavigatorScreen> with BaseStateMixin {
                 ],
               ),
               Positioned(
-                bottom: Platform.isIOS ? 20 : 0,
+                bottom: 20,
                 right: 0,
                 child: CustomBottomNavigationBar(
                   onIconPresedCallback: onBottomIconPressed,

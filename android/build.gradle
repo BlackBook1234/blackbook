@@ -6,11 +6,9 @@ buildscript {
     }
 
     dependencies {
+        classpath "com.android.tools.build:gradle:8.1.4"   // ✅ AGP 8.1.4 ашигла
         classpath "org.jetbrains.kotlin:kotlin-gradle-plugin:$kotlin_version"
-        // classpath 'com.google.gms:google-services:3.0.0'
-        //visualize the method count
-        // classpath 'com.getkeepsafe.dexcount:dexcount-gradle-plugin:0.6.2'
-        // classpath 'com.android.tools.build:gradle:7.5.0'
+        // classpath 'com.google.gms:google-services:4.4.2'  // Хэрэв Firebase хэрэглэж байвал
     }
 }
 

@@ -21,7 +21,7 @@ class BottomSheetsWidget extends StatelessWidget {
             ListTile(
                 subtitle: Column(crossAxisAlignment: CrossAxisAlignment.start, children: [
               Text("Борлуулалтын нийт үнэ: ${format.format(data.price_sell ?? 0)}₮"),
-              Utils.getUserRole() == "BOSS" ? Text("Цэвэр ашиг: ${format.format(data.incomeSell ?? 0)}₮") : const SizedBox.shrink(),
+              Utils.getUserRole() == "BOSS" ? Text("Цэвэр ашиг: ${format.format(data.income ?? 0)}₮") : const SizedBox.shrink(),
               Text(
                   "Шилжүүлэг: ${format.format(data.price_money_types!.first.amount_sell ?? 0)}₮\nКарт: ${format.format(data.price_money_types![1].amount_sell ?? 0)}₮\nБэлэн: ${format.format(data.price_money_types!.last.amount_sell ?? 0)}₮"),
               Text("Зарсан барааны тоо: ${format.format(data.count ?? 0)}"),
