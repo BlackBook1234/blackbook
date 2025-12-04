@@ -1,5 +1,5 @@
 import 'package:black_book/constant.dart';
-import 'package:figma_squircle/figma_squircle.dart';
+// import 'package:figma_squircle/figma_squircle.dart';
 import 'package:flutter/material.dart';
 
 import 'touch_scale.dart';
@@ -137,13 +137,16 @@ class BlackBookButton extends StatelessWidget {
     Decoration containerDecoration = smoothCorner
         ? ShapeDecoration(
             color: color,
-            shape: SmoothRectangleBorder(
-              borderRadius: SmoothBorderRadius(
-                cornerRadius: borderRadius,
-                cornerSmoothing: 0.7,
-              ),
-              // border: border != null ? Border.all(color: Colors.black, width: border!) : null,
+            shape: RoundedRectangleBorder(
+              borderRadius: BorderRadius.circular(borderRadius),
             ),
+            // shape: SmoothRectangleBorder(
+            //   borderRadius: SmoothBorderRadius(
+            //     cornerRadius: borderRadius,
+            //     cornerSmoothing: 0.7,
+            //   ),
+            //   // border: border != null ? Border.all(color: Colors.black, width: border!) : null,
+            // ),
             shadows: (shadow && (!disabled))
                 ? [
                     BoxShadow(

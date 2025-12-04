@@ -1,4 +1,4 @@
-import 'package:figma_squircle/figma_squircle.dart';
+// import 'package:figma_squircle/figma_squircle.dart';
 import 'package:flutter/material.dart';
 
 class DialogBox extends StatelessWidget {
@@ -26,12 +26,7 @@ class DialogBox extends StatelessWidget {
             ),
             child: Material(
               color: Colors.white,
-              shape: SmoothRectangleBorder(
-                borderRadius: SmoothBorderRadius(
-                  cornerRadius: 24.0,
-                  cornerSmoothing: 0.7,
-                ),
-              ),
+            
               elevation: 16.0,
               shadowColor: Colors.black,
               child: Padding(

@@ -22,7 +22,7 @@ def flutterVersionCode = localProperties.getProperty('flutter.versionCode') ?: '
 def flutterVersionName = localProperties.getProperty('flutter.versionName') ?: '1.0'
 
 android {
-    namespace "com.candy.black_book_mn"
+    namespace "com.candy.black_book_application"
 
     // ✅ зөвхөн шинэ синтакс ашигла
     compileSdk 34
@@ -51,7 +51,7 @@ android {
     }
 
     defaultConfig {
-        applicationId "com.candy.black_book_mn"
+        applicationId "com.candy.black_book_application"
 
         // ✅ давхардаж байсан мөрүүдийг цэвэрлэв
         minSdk flutter.minSdkVersion
